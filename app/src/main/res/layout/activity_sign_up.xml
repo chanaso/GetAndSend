@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="16dp"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".SingUpActivity">
+
+    <EditText
+        android:id="@+id/userNameID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="User Name" />
+
+    <EditText
+        android:id="@+id/phoneNumberID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="phone number"
+        android:inputType="phone" />
+
+    <EditText
+        android:id="@+id/passID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Password" />
+
+    <EditText
+        android:id="@+id/passConID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Confirm Password" />
+
+    <EditText
+        android:id="@+id/verifyID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="verification code"
+        android:inputType="number" />
+
+    <Button
+        android:id="@+id/btnSignUpID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:padding="20dp"
+        android:text="SIGN UP"
+        android:textSize="18sp" />
+
+</LinearLayout>
