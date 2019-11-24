@@ -18,9 +18,9 @@ import com.google.firebase.database.core.view.View;
 
 import java.util.concurrent.TimeUnit;
 
-public class SignUpActivity extends AppCompatActivity {
+public class SignUpActivity extends AppCompatActivity implements View.OnClickListener {
 
-    FirebaseAuth auth;
+    private FirebaseAuth mAuth;
     EditText userName, phoneNumber, pass, passCon;
     PhoneAuthProvider.OnVerificationStateChangedCallbacks mcallback;
 
@@ -28,46 +28,48 @@ public class SignUpActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+
         userName = (EditText)findViewById(R.id.userNameID);
         phoneNumber = (EditText)findViewById(R.id.phoneNumberID);
         pass = (EditText)findViewById(R.id.passID);
         passCon = (EditText)findViewById(R.id.passConID);
-        auth = FirebaseAuth.getInstance();
 
-        mcallback = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-            @Override
-            public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
+        mAuth = FirebaseAuth.getInstance();
 
-            }
+        findViewById(R.id.btnSignUpID).setOnClickListener(this);
 
-            @Override
-            public void onVerificationFailed(FirebaseException e) {
-
-            }
-
-            @Override
-            public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-                super.onCodeSent(s, forceResendingToken);
-            }
-        };
     }
 
-    public void send_sms(View v){
-        String number = phoneNumber.getText().toString();
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                number, 60, TimeUnit.SECONDS, this, mcallback
-        );
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(mAuth.getCurrentUser() != null){
+            //handle the already user
+        }
     }
 
-    public void sign_in_phone(PhoneAuthCredential credential){
-        auth.signInWithCredential(credential)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){
-                            Toast.makeText(getApplicationContext(), "user signed in successfuly", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+    private void registerUser(){
+        String name = userName.getText().toString().trim();
+        String phone = phoneNumber.getText().toString().trim();
+        String pass = this.pass.getText().toString().trim();
+        String passCon = this.passCon.getText().toString().trim();
+
+        if(name.isEmpty()){
+            userName.setError("user name required");
+            userName.requestFocus();
+            return;
+        }
+
+        if(phone.isEmpty()){
+            phoneNumber.setError("phone number required");
+            phoneNumber.requestFocus();
+            return;
+        }
+
+        if(pass.isEmpty()){
+            this.pass.setError("password required");
+        }
     }
+
+
 }

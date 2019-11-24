@@ -35,14 +35,6 @@
         android:layout_height="wrap_content"
         android:hint="Confirm Password" />
 
-    <EditText
-        android:id="@+id/verifyID"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="verification code"
-        android:inputType="number" />
-
     <Button
         android:id="@+id/btnSignUpID"
         android:layout_width="match_parent"
