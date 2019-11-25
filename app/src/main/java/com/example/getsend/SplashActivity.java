@@ -39,10 +39,12 @@ public class SplashActivity extends AppCompatActivity
                     SystemClock.sleep(1000); //Thread.sleep(1000);
                     timeLeft--;
                 }
-                startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                startActivity(new Intent(SplashActivity.this, LoginActivity.class));
                 finish();
             }
         }).start();
     }
 }
+
+
 
