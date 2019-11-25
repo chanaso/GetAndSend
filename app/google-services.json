@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "679563348259",
+    "firebase_url": "https://getsend-a147c.firebaseio.com",
+    "project_id": "getsend-a147c",
+    "storage_bucket": "getsend-a147c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:679563348259:android:9a5fd6e527adb9fefd6496",
+        "android_client_info": {
+          "package_name": "com.example.getsend"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "679563348259-oo3emvl6rtddil02raqro1f03bkc800s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.getsend",
+            "certificate_hash": "785e59d5a99babdeb64b9f148b86bbb0ddb81297"
+          }
+        },
+        {
+          "client_id": "679563348259-tcqblua3pf226ldrbnf0edl2pd9tu9sh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvx1NrNT9f5CUDXt8BxY5B1_17Tg5vtkY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "679563348259-tcqblua3pf226ldrbnf0edl2pd9tu9sh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
