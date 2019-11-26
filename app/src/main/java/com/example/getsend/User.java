@@ -1,7 +1,7 @@
 package com.example.getsend;
 
 public class User {
-    public String name, email, phone, pass;
+    public String name, email, phone, password;
 
     public User(){
 
@@ -32,17 +32,17 @@ public class User {
     }
 
     public String getPass() {
-        return pass;
+        return password;
     }
 
     public void setPass(String pass) {
-        this.pass = pass;
+        this.password = pass;
     }
 
     public User(String name, String email, String phone, String pass) {
         this.name = name;
         this.email = email;
         this.phone = phone;
-        this.pass = pass;
+        this.password = pass;
     }
 }

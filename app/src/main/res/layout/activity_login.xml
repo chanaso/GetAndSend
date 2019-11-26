@@ -20,11 +20,11 @@
         app:srcCompat="@drawable/icon" />
 
     <EditText
-        android:id="@+id/userNameID"
+        android:id="@+id/emailID"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:hint="User Name"
+        android:hint="email"
         android:inputType=""
         android:padding="14dp" />
 

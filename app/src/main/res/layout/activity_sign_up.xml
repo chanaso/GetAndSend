@@ -7,13 +7,15 @@
     android:layout_margin="16dp"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".SingUpActivity">
+    tools:context=".SignUpActivity">
 
     <EditText
-        android:id="@+id/userNameID"
+        android:id="@+id/userID"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="User Name" />
+        android:ems="10"
+        android:hint="User name"
+        android:inputType="textPersonName" />
 
     <EditText
         android:id="@+id/emailID"
