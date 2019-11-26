@@ -3,6 +3,7 @@ package com.example.getsend;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,8 +19,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.concurrent.TimeUnit;
 
@@ -28,6 +32,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     EditText userName, email, phoneNumber, pass, passCon;
     private ProgressBar progressBar;
     private FirebaseAuth mAuth;
+    FirebaseUser userCur;
     private DatabaseReference ref;
 //    private FirebaseDatabase database;
 
@@ -61,155 +66,76 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 //        updateUI(currentUser);
     }
 
-    private void registerUser(){
+    private void registerUser() {
         final String name = userName.getText().toString().trim();
         final String phone = phoneNumber.getText().toString().trim();
         final String email = this.email.getText().toString().trim();
         final String pass = this.pass.getText().toString().trim();
         final String passCon = this.passCon.getText().toString().trim();
 
-        if(name.isEmpty()){
+        if (name.isEmpty()) {
             userName.setError("user name required");
             userName.requestFocus();
             return;
         }
 
-        if(phone.isEmpty()){
+        if (phone.isEmpty()) {
             phoneNumber.setError("phone number required");
             phoneNumber.requestFocus();
             return;
         }
 
-        if(phone.length() != 10){
+        if (phone.length() != 10) {
             phoneNumber.setError("please enter a valid phone number");
             phoneNumber.requestFocus();
             return;
         }
 
-        if(email.isEmpty()){
+        if (email.isEmpty()) {
             this.email.setError("email required");
             this.email.requestFocus();
             return;
         }
 
-        if(pass.length() < 6){
+        if (pass.length() < 6) {
             this.pass.setError("password should be at least 6 numbers");
             this.pass.requestFocus();
             return;
         }
 
-        if(pass.isEmpty()){
+        if (pass.isEmpty()) {
             this.pass.setError("password required");
             this.pass.requestFocus();
             return;
         }
 
-        if(!pass.equals(passCon))
-        {
+        if (!pass.equals(passCon)) {
             this.pass.setError("passwords not the same");
             this.pass.requestFocus();
             return;
         }
-        User user = new User(name, email, phone, pass);
-        ref.push().setValue(user);
-        Toast.makeText(SignUpActivity.this, "registration success",Toast.LENGTH_LONG).show();
 
+        final User user = new User(name, email, phone, pass);
+        ref.orderByChild("phone").equalTo(user.getPhone()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-//        mAuth.createUserWithEmailAndPassword(email, pass)
-//                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<AuthResult> task) {
-//                        if (task.isSuccessful()) {
-//                            // Sign in success, update UI with the signed-in user's information
-////                            Log.d(TAG, "createUserWithEmail:success");
-//                            FirebaseUser user = mAuth.getCurrentUser();
-////                            updateUI(user);
-//                        } else {
-//                            // If sign in fails, display a message to the user.
-////                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
-//                            Toast.makeText(SignUpActivity.this, "Authentication failed.",
-//                                    Toast.LENGTH_SHORT).show();
-////                            updateUI(null);
-//                        }
-//
-//                        // ...
-//                    }
-//                });
+                if (dataSnapshot.exists()) {
+                    Toast.makeText(SignUpActivity.this, "user phone number already exist", Toast.LENGTH_LONG).show();
+                    }else {
+                        ref.push().setValue(user);
+                        Toast.makeText(SignUpActivity.this, "registration success", Toast.LENGTH_LONG).show();
+                        FirebaseUser currUser = mAuth.getCurrentUser();
+                        startActivity(new Intent(SignUpActivity.this, MainActivity.class));
+                }
+                }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//        DatabaseReference myRef = database.getReference("users");
-//        User user = new User(name, email, phone, pass);
-//        myRef.setValue(user);
-////        progressBar.setVisibility(View.VISIBLE);
-//        database.createUserWithEmailAndPassword(email, pass)
-//                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<AuthResult> task) {
-//                        if(task.isSuccessful()){
-//                            User user = new User(name, email, phone, pass);
-//
-//                            FirebaseDatabase.getInstance().getReference("Users")
-//                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-//                            .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                @Override
-//                                public void onComplete(@NonNull Task<Void> task) {
-////                                    progressBar.setVisibility(View.GONE);
-//                                    if(task.isSuccessful()){
-//                                        Toast.makeText(SignUpActivity.this, "registration success",Toast.LENGTH_LONG).show();
-//                                    }else {
-//                                        //failure
-//                                    }
-//                                }
-//                            });
-//                        }else{
-//                            Toast.makeText(SignUpActivity.this, task.getException().getMessage(),Toast.LENGTH_LONG).show();
-//                        }
-//                    }
-//                });
+            }
+     });
     }
-
-//    private void updateUI(FirebaseUser user) {
-////        hideProgressDialog();
-//        if (user != null) {
-//            mStatusTextView.setText(getString(R.string.google_status_fmt, user.getEmail()));
-//            mDetailTextView.setText(getString(R.string.firebase_status_fmt, user.getUid()));
-//
-//            findViewById(R.id.btnSignUpID).setVisibility(View.GONE);
-//            findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
-//        } else {
-//            mStatusTextView.setText(R.string.signed_out);
-//            mDetailTextView.setText(null);
-//
-//            findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
-//            findViewById(R.id.sign_out_and_disconnect).setVisibility(View.GONE);
-//        }
-//    }
     @Override
     public void onClick(android.view.View v) {
         switch (v.getId()){
