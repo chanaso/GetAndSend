@@ -4,7 +4,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -12,17 +15,22 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
-import com.google.firebase.database.core.view.View;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.concurrent.TimeUnit;
 
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener {
 
+    EditText userName, email, phoneNumber, pass, passCon;
+    private ProgressBar progressBar;
     private FirebaseAuth mAuth;
-    EditText userName, phoneNumber, pass, passCon;
-    PhoneAuthProvider.OnVerificationStateChangedCallbacks mcallback;
+    private DatabaseReference ref;
+//    private FirebaseDatabase database;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,10 +38,15 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_sign_up);
 
         userName = (EditText)findViewById(R.id.userNameID);
+        email = (EditText)findViewById(R.id.emailID);
         phoneNumber = (EditText)findViewById(R.id.phoneNumberID);
         pass = (EditText)findViewById(R.id.passID);
         passCon = (EditText)findViewById(R.id.passConID);
+        progressBar = findViewById(R.id.progressBarID);
+        ref = FirebaseDatabase.getInstance().getReference().child("user");
+//        progressBar.setVisibility(View.GONE);
 
+//        database = FirebaseDatabase.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
         findViewById(R.id.btnSignUpID).setOnClickListener(this);
@@ -43,16 +56,17 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onStart() {
         super.onStart();
-        if(mAuth.getCurrentUser() != null){
-            //handle the already user
-        }
+        // Check if user is signed in (non-null) and update UI accordingly.
+//        FirebaseUser currentUser = mAuth.getCurrentUser();
+//        updateUI(currentUser);
     }
 
     private void registerUser(){
-        String name = userName.getText().toString().trim();
-        String phone = phoneNumber.getText().toString().trim();
-        String pass = this.pass.getText().toString().trim();
-        String passCon = this.passCon.getText().toString().trim();
+        final String name = userName.getText().toString().trim();
+        final String phone = phoneNumber.getText().toString().trim();
+        final String email = this.email.getText().toString().trim();
+        final String pass = this.pass.getText().toString().trim();
+        final String passCon = this.passCon.getText().toString().trim();
 
         if(name.isEmpty()){
             userName.setError("user name required");
@@ -66,10 +80,142 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             return;
         }
 
+        if(phone.length() != 10){
+            phoneNumber.setError("please enter a valid phone number");
+            phoneNumber.requestFocus();
+            return;
+        }
+
+        if(email.isEmpty()){
+            this.email.setError("email required");
+            this.email.requestFocus();
+            return;
+        }
+
+        if(pass.length() < 6){
+            this.pass.setError("password should be at least 6 numbers");
+            this.pass.requestFocus();
+            return;
+        }
+
         if(pass.isEmpty()){
             this.pass.setError("password required");
+            this.pass.requestFocus();
+            return;
         }
+
+        if(!pass.equals(passCon))
+        {
+            this.pass.setError("passwords not the same");
+            this.pass.requestFocus();
+            return;
+        }
+        User user = new User(name, email, phone, pass);
+        ref.push().setValue(user);
+        Toast.makeText(SignUpActivity.this, "registration success",Toast.LENGTH_LONG).show();
+
+
+//        mAuth.createUserWithEmailAndPassword(email, pass)
+//                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<AuthResult> task) {
+//                        if (task.isSuccessful()) {
+//                            // Sign in success, update UI with the signed-in user's information
+////                            Log.d(TAG, "createUserWithEmail:success");
+//                            FirebaseUser user = mAuth.getCurrentUser();
+////                            updateUI(user);
+//                        } else {
+//                            // If sign in fails, display a message to the user.
+////                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
+//                            Toast.makeText(SignUpActivity.this, "Authentication failed.",
+//                                    Toast.LENGTH_SHORT).show();
+////                            updateUI(null);
+//                        }
+//
+//                        // ...
+//                    }
+//                });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//        DatabaseReference myRef = database.getReference("users");
+//        User user = new User(name, email, phone, pass);
+//        myRef.setValue(user);
+////        progressBar.setVisibility(View.VISIBLE);
+//        database.createUserWithEmailAndPassword(email, pass)
+//                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<AuthResult> task) {
+//                        if(task.isSuccessful()){
+//                            User user = new User(name, email, phone, pass);
+//
+//                            FirebaseDatabase.getInstance().getReference("Users")
+//                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+//                            .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                @Override
+//                                public void onComplete(@NonNull Task<Void> task) {
+////                                    progressBar.setVisibility(View.GONE);
+//                                    if(task.isSuccessful()){
+//                                        Toast.makeText(SignUpActivity.this, "registration success",Toast.LENGTH_LONG).show();
+//                                    }else {
+//                                        //failure
+//                                    }
+//                                }
+//                            });
+//                        }else{
+//                            Toast.makeText(SignUpActivity.this, task.getException().getMessage(),Toast.LENGTH_LONG).show();
+//                        }
+//                    }
+//                });
     }
 
-
+//    private void updateUI(FirebaseUser user) {
+////        hideProgressDialog();
+//        if (user != null) {
+//            mStatusTextView.setText(getString(R.string.google_status_fmt, user.getEmail()));
+//            mDetailTextView.setText(getString(R.string.firebase_status_fmt, user.getUid()));
+//
+//            findViewById(R.id.btnSignUpID).setVisibility(View.GONE);
+//            findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
+//        } else {
+//            mStatusTextView.setText(R.string.signed_out);
+//            mDetailTextView.setText(null);
+//
+//            findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
+//            findViewById(R.id.sign_out_and_disconnect).setVisibility(View.GONE);
+//        }
+//    }
+    @Override
+    public void onClick(android.view.View v) {
+        switch (v.getId()){
+            case R.id.btnSignUpID:
+                registerUser();
+                break;
+        }
+    }
 }
