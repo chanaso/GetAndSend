@@ -41,7 +41,7 @@
     <Button
         android:id="@+id/btnLogInID"
         android:layout_width="130dp"
-        android:layout_height="45dp"
+        android:layout_height="50dp"
         android:layout_gravity="center"
         android:layout_margin="10dp"
         android:background="?attr/colorControlHighlight"
