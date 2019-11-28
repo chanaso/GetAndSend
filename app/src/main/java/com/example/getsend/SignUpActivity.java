@@ -150,7 +150,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                                         ref.orderByChild("phone").equalTo(user.getPhone()).addListenerForSingleValueEvent(new ValueEventListener() {
                                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                                 if (dataSnapshot.exists()) {
-                                                    Toast.makeText(SignUpActivity.this, "user email already exist", Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(SignUpActivity.this, "user phone number already exist", Toast.LENGTH_LONG).show();
                                                 }
                                                 else {
                                                     ref.push().setValue(user);
