@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -26,6 +27,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     EditText edtxtEmail;
     EditText edtxtPassword;
     private FirebaseAuth mAuth;
+    SharedPreferences sharedPref;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +43,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         btnLogIn.setOnClickListener(this);
         txtCreatAccount.setOnClickListener(this);
+        sharedPref = getSharedPreferences("data",MODE_PRIVATE);
 
     }
 
@@ -58,6 +62,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     // Sign in success, update UI with the signed-in user's information
 //                                    Log.d(TAG, "signInWithEmail:success");
                                     FirebaseUser user = mAuth.getCurrentUser();
+                                    SharedPreferences.Editor prefEditor = sharedPref.edit();
+                                    prefEditor.putInt("isLogged",1);
+                                    prefEditor.commit();
                                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
 
                                 } else {

@@ -26,6 +26,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -63,6 +64,19 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 //        updateUI(currentUser);
     }
 
+    public static boolean isValid(String email)
+    {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+
+                "[a-zA-Z0-9_+&*-]+)*@" +
+                "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
+                "A-Z]{2,7}$";
+
+        Pattern pat = Pattern.compile(emailRegex);
+        if (email == null)
+            return false;
+        return pat.matcher(email).matches();
+    }
+
     private void registerUser(){
         final String name = userName.getText().toString().trim();
         final String phone = phoneNumber.getText().toString().trim();
@@ -90,6 +104,12 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
         if(email.isEmpty()){
             this.email.setError("email required");
+            this.email.requestFocus();
+            return;
+        }
+
+        if(!isValid(email)){
+            this.email.setError("illegal email");
             this.email.requestFocus();
             return;
         }
@@ -127,10 +147,10 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if(task.isSuccessful()){
-                                        ref.orderByChild("email").equalTo(user.getEmail()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        ref.orderByChild("phone").equalTo(user.getPhone()).addListenerForSingleValueEvent(new ValueEventListener() {
                                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                                 if (dataSnapshot.exists()) {
-                                                    Toast.makeText(SignUpActivity.this, "user email already exist", Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(SignUpActivity.this, "user phone number already exist", Toast.LENGTH_LONG).show();
                                                 }
                                                 else {
                                                     ref.push().setValue(user);
