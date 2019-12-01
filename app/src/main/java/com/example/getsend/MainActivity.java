@@ -1,19 +1,18 @@
 package com.example.getsend;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.location.Location;
 import android.os.Bundle;
-import android.widget.Button;
 import android.view.View;
+import android.widget.Button;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.mapbox.android.core.location.LocationEngineListener;
+import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
-
-import com.mapbox.android.core.permissions.PermissionsListener;
-import com.mapbox.android.core.location.LocationEngineListener;
 
 import java.util.List;
 
@@ -28,8 +27,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         Mapbox.getInstance(this,"sk.eyJ1IjoiYW5hZWx6IiwiYSI6ImNrM2c2YnVtbDBiZ2QzaXAwcjM1ZjF3NWUifQ.8sjrOysub87S9Ic-ENb7qg");
         setContentView(R.layout.activity_main);
-        goBtn = findViewById(R.id.btnGo);
-        goBtn.setOnClickListener(this);
+
         mapView = findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
