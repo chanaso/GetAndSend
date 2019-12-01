@@ -33,7 +33,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="3dp"
                     android:background="#66ccff"
-                    android:text="Invite messengers"
+                    android:text="Invite delivery"
                     android:textColor="#000000"
                     android:padding="11dp"/>
 
@@ -43,7 +43,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="3dp"
                     android:background="#66ccff"
-                    android:text="Join as messenger"
+                    android:text="Join as deliverman"
                     android:textColor="#000000"
                     android:padding="11dp"/>
             </LinearLayout>

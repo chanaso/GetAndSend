@@ -153,7 +153,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                                                     Toast.makeText(SignUpActivity.this, "user phone number already exist", Toast.LENGTH_LONG).show();
                                                 }
                                                 else {
-                                                    ref.push().setValue(user);
+//                                                    ref.push().setValue(user);
                                                     Toast.makeText(SignUpActivity.this, "registration success", Toast.LENGTH_LONG).show();
                                                     FirebaseUser currUser = mAuth.getCurrentUser();
                                                     startActivity(new Intent(SignUpActivity.this, MainActivity.class));
