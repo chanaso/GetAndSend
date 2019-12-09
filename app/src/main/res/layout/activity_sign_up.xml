@@ -17,21 +17,57 @@
         android:hint="User name"
         android:inputType="textPersonName" />
 
-    <EditText
-        android:id="@+id/emailID"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="e-mail"
-        android:inputType="textEmailAddress" />
+        android:orientation="horizontal">
+
+        <com.hbb20.CountryCodePicker
+            android:id="@+id/ccp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:ccpDialog_allowSearch="true"
+            app:ccpDialog_fastScroller_bubbleTextAppearance="@style/TextAppearance.AppCompat.Display1"
+            app:ccpDialog_initialScrollToSelection="true"
+            app:ccpDialog_keyboardAutoPopup="true"
+            app:ccpDialog_showFlag="true"
+            app:ccpDialog_showNameCode="true"
+            app:ccpDialog_showPhoneCode="true"
+            app:ccpDialog_showTitle="true"
+            app:ccp_clickable="true"
+            app:ccp_defaultNameCode="IL"
+            app:ccp_defaultPhoneCode="972"
+            app:ccp_rememberLastSelection="true"
+            app:ccp_showArrow="true"
+            app:ccp_showFlag="true"
+            app:ccp_showFullName="true"
+            app:ccp_showNameCode="true"
+            app:ccp_showPhoneCode="true"
+            app:ccp_textSize="18sp" />
+
+        <EditText
+            android:id="@+id/phoneNumberID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="phone number"
+            android:inputType="phone" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnVerifyID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Get verification code" />
 
     <EditText
-        android:id="@+id/phoneNumberID"
+        android:id="@+id/verificationCodeID"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="phone number"
-        android:inputType="phone" />
+        android:hint="verification code"
+        android:inputType="textPersonName" />
 
     <EditText
         android:id="@+id/passID"
