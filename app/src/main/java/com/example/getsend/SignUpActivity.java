@@ -36,15 +36,11 @@ import java.util.regex.Pattern;
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText userName, phoneNumber, pass, passCon, verifiCode;
-    private Spinner spinner;
     private String codeSend;
     private ProgressBar progressBar;
     private FirebaseAuth mAuth;
     private DatabaseReference ref;
     private CountryCodePicker ccp;
-
-
-//    private FirebaseDatabase database;
 
 
     @Override
@@ -53,15 +49,13 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_sign_up);
 
         userName = (EditText)findViewById(R.id.userID);
-//        spinner = findViewById(R.id.spinnerID);
-//        spinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, count));
         ccp = (CountryCodePicker) findViewById(R.id.ccp);
         phoneNumber = (EditText)findViewById(R.id.phoneNumberID);
         verifiCode = (EditText)findViewById(R.id.verificationCodeID);
         pass = (EditText)findViewById(R.id.passID);
         passCon = (EditText)findViewById(R.id.passConID);
         progressBar = findViewById(R.id.progressBarID);
-        ref = FirebaseDatabase.getInstance().getReference().child("user");
+        ref = FirebaseDatabase.getInstance().getReference().child("User");
         mAuth = FirebaseAuth.getInstance();
 
         findViewById(R.id.btnSignUpID).setOnClickListener(this);
@@ -72,7 +66,10 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     private void sendVerificationCode() {
 
         final String name = userName.getText().toString().trim();
-        final String phone = phoneNumber.getText().toString().trim();
+        final String prePhone = ccp.getSelectedCountryCode();
+        final String phone = "+" + prePhone + phoneNumber.getText().toString().trim();
+        Toast.makeText(SignUpActivity.this, phone, Toast.LENGTH_LONG).show();
+
 
         if(name.isEmpty()){
             userName.setError("user name required");
@@ -110,7 +107,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
             super.onCodeSent(s, forceResendingToken);
             codeSend = s;
-            Toast.makeText(SignUpActivity.this, codeSend, Toast.LENGTH_LONG).show();
+            Toast.makeText(SignUpActivity.this, "sended", Toast.LENGTH_LONG).show();
 
         }
     };
@@ -126,7 +123,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
     private void registerUser(){
         final String name = userName.getText().toString().trim();
-        final String phone = phoneNumber.getText().toString().trim();
+        final String prePhone = ccp.getSelectedCountryCode();
+        final String phone = "+" + prePhone + phoneNumber.getText().toString().trim();
         final String code = verifiCode.getText().toString().trim();
         final String pass = this.pass.getText().toString().trim();
         final String passCon = this.passCon.getText().toString().trim();
@@ -153,55 +151,15 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
         User user = new User(name, phone, pass);
         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(codeSend, code);
-        signInWithPhoneAuthCredential(credential);
-//        mAuth.createUserWithEmailAndPassword(email, pass)
-//                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<AuthResult> task) {
-//                        if(task.isSuccessful()){
-//                            final User user = new User(name, email, phone, pass);
-//
-//                            FirebaseDatabase.getInstance().getReference("Users")
-//                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-//                            .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                @Override
-//                                public void onComplete(@NonNull Task<Void> task) {
-//                                    if(task.isSuccessful()){
-//                                        ref.orderByChild("phone").equalTo(user.getPhone()).addListenerForSingleValueEvent(new ValueEventListener() {
-//                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                                                if (dataSnapshot.exists()) {
-//                                                    Toast.makeText(SignUpActivity.this, "user phone number already exist", Toast.LENGTH_LONG).show();
-//                                                }
-//                                                else {
-////                                                    ref.push().setValue(user);
-//                                                    Toast.makeText(SignUpActivity.this, "registration success", Toast.LENGTH_LONG).show();
-//                                                    FirebaseUser currUser = mAuth.getCurrentUser();
-//                                                    startActivity(new Intent(SignUpActivity.this, MainActivity.class));
-//                                                }
-//                                            }
-//
-//                                            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                                            }
-//                                        });
-//                                        Toast.makeText(SignUpActivity.this, "registration success",Toast.LENGTH_LONG).show();
-//                                    }else {
-//                                        //failure
-//                                    }
-//                                }
-//                            });
-//                        }else{
-//                            Toast.makeText(SignUpActivity.this, task.getException().getMessage(),Toast.LENGTH_LONG).show();
-//                        }
-//                    }
-//                });
+        signInWithPhoneAuthCredential(credential, user);
     }
-    private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
+    private void signInWithPhoneAuthCredential(PhoneAuthCredential credential, User user) {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            ref.push().setValue(user);
                             Toast.makeText(SignUpActivity.this, "registration success", Toast.LENGTH_LONG).show();
                             startActivity(new Intent(SignUpActivity.this, MainActivity.class));
 

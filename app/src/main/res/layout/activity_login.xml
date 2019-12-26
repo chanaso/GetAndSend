@@ -20,7 +20,7 @@
         app:srcCompat="@drawable/icon" />
 
     <EditText
-        android:id="@+id/emailID"
+        android:id="@+id/phoneID"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
