@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -36,6 +37,7 @@ import java.util.regex.Pattern;
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText userName, phoneNumber, pass, passCon, verifiCode;
+    private Button btnSignUp, btnVerify;
     private String codeSend;
 //    private ProgressBar progressBar;
     private FirebaseAuth mAuth;
@@ -48,6 +50,9 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
+        btnSignUp = findViewById(R.id.btnSignUpID);
+        btnVerify = findViewById(R.id.btnVerifyID);
+
         userName = (EditText)findViewById(R.id.userID);
         ccp = (CountryCodePicker) findViewById(R.id.ccp);
         phoneNumber = (EditText)findViewById(R.id.phoneNumberID);
@@ -58,8 +63,9 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         ref = FirebaseDatabase.getInstance().getReference().child("User");
         mAuth = FirebaseAuth.getInstance();
 
-        findViewById(R.id.btnSignUpID).setOnClickListener(this);
-        findViewById(R.id.btnVerifyID).setOnClickListener(this);
+
+        btnSignUp.setOnClickListener(this);
+        btnVerify.setOnClickListener(this);
 
     }
 
@@ -68,7 +74,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         final String name = userName.getText().toString().trim();
         final String prePhone = ccp.getSelectedCountryCode();
         final String phone = "+" + prePhone + phoneNumber.getText().toString().trim();
-        Toast.makeText(SignUpActivity.this, phone, Toast.LENGTH_LONG).show();
 
 
         if(name.isEmpty()){
@@ -162,6 +167,12 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
         if(pass.isEmpty()){
             this.pass.setError("password required");
+            this.pass.requestFocus();
+            return;
+        }
+
+        if(code.isEmpty()){
+            this.pass.setError("verification code required");
             this.pass.requestFocus();
             return;
         }

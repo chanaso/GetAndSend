@@ -26,8 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
-    Button btnLogIn;
-    TextView txtCreatAccount;
+
     EditText edtxtPhone;
     EditText edtxtPassword;
     private FirebaseAuth mAuth;
@@ -41,14 +40,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        btnLogIn = findViewById(R.id.btnLogInID);
-        txtCreatAccount = findViewById(R.id.txtCreateAccountID);
         edtxtPhone = findViewById(R.id.phoneID);
         edtxtPassword = findViewById(R.id.passID);
         mAuth = FirebaseAuth.getInstance();
 
-        btnLogIn.setOnClickListener(this);
-        txtCreatAccount.setOnClickListener(this);
+        findViewById(R.id.btnLogInID).setOnClickListener(this);
+        findViewById(R.id.txtCreateAccountID).setOnClickListener(this);
         sharedPref = getSharedPreferences("data",MODE_PRIVATE);
 
     }
