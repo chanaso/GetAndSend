@@ -37,7 +37,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
     private EditText userName, phoneNumber, pass, passCon, verifiCode;
     private String codeSend;
-    private ProgressBar progressBar;
+//    private ProgressBar progressBar;
     private FirebaseAuth mAuth;
     private DatabaseReference ref;
     private CountryCodePicker ccp;
@@ -54,7 +54,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         verifiCode = (EditText)findViewById(R.id.verificationCodeID);
         pass = (EditText)findViewById(R.id.passID);
         passCon = (EditText)findViewById(R.id.passConID);
-        progressBar = findViewById(R.id.progressBarID);
+//        progressBar = findViewById(R.id.progressBarID);
         ref = FirebaseDatabase.getInstance().getReference().child("User");
         mAuth = FirebaseAuth.getInstance();
 
@@ -83,12 +83,36 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             return;
         }
 
-//        if(phone.length() != 13){
-//            phoneNumber.setError("please enter a valid phone number");
-//            phoneNumber.requestFocus();
-//            return;
-//        }
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(phone, 60, TimeUnit.SECONDS, TaskExecutors.MAIN_THREAD, mCallbacks);        // OnVerificationStateChangedCallbacks
+        if(phone.length() != 13){
+            phoneNumber.setError("please enter a valid phone number");
+            phoneNumber.requestFocus();
+            return;
+        }
+
+        ref.orderByChild("phone").equalTo(phone).addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            if (dataSnapshot.getValue() != null){
+                //it means user already registered
+                Toast.makeText(SignUpActivity.this, "User exist already", Toast.LENGTH_LONG).show();
+                phoneNumber.requestFocus();
+                return;
+            }
+            else{
+                //It is new users
+                PhoneAuthProvider.getInstance().verifyPhoneNumber(phone, 60, TimeUnit.SECONDS, TaskExecutors.MAIN_THREAD, mCallbacks);        // OnVerificationStateChangedCallbacks
+            }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+
     }
 
     PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
