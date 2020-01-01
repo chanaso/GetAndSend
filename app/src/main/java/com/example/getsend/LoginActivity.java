@@ -15,14 +15,18 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskExecutors;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.hbb20.CountryCodePicker;
+import java.util.concurrent.TimeUnit;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -32,14 +36,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private FirebaseAuth mAuth;
     SharedPreferences sharedPref;
     private DatabaseReference ref;
-
-
+    private CountryCodePicker ccp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        ccp = (CountryCodePicker) findViewById(R.id.ccp);
         edtxtPhone = findViewById(R.id.phoneID);
         edtxtPassword = findViewById(R.id.passID);
         mAuth = FirebaseAuth.getInstance();
@@ -47,6 +51,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         findViewById(R.id.btnLogInID).setOnClickListener(this);
         findViewById(R.id.txtCreateAccountID).setOnClickListener(this);
         sharedPref = getSharedPreferences("data",MODE_PRIVATE);
+        ref = FirebaseDatabase.getInstance().getReference().child("User");
+
 
     }
 
@@ -55,32 +61,42 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         switch (v.getId()){
             case R.id.btnLogInID:
             {
-                String phone = edtxtPhone.getText().toString().trim();
+                final String prePhone = ccp.getSelectedCountryCode();
+                final String phone = "+" + prePhone + edtxtPhone.getText().toString().trim();
                 String pass = edtxtPassword.getText().toString().trim();
-
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-                ref.child("User").child(phone).addListenerForSingleValueEvent(new ValueEventListener() {
+                userLogin();
+                ref.orderByChild("phone").equalTo(phone).addListenerForSingleValueEvent(new ValueEventListener() {
+                    String value;
                     @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists()){
-                            // use "username" already exists
-                            Toast.makeText(LoginActivity.this, "User exist!", Toast.LENGTH_SHORT).show();
-                            // Let the user know he needs to pick another username.
-                        } else {
-                            // User does not exist. NOW call createUserWithEmailAndPassword
-                            Toast.makeText(LoginActivity.this, "User not exist!", Toast.LENGTH_SHORT).show();
-
-//                            mAuth.createUserWithPassword(...);
-                            // Your previous code here.
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.getValue() != null){
+                            //it means user already registered
+                            for(DataSnapshot data: dataSnapshot.getChildren()) {
+                                value=data.child("pass").getValue().toString();
+                            }
+                            if(value.equals(pass)){
+                                //register user phone & password correct
+                                    FirebaseUser user = mAuth.getCurrentUser();
+                                    SharedPreferences.Editor prefEditor = sharedPref.edit();
+                                    prefEditor.putInt("isLogged",1);
+                                    prefEditor.commit();
+                                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                            }
+                        }
+                        else{
+                            //It is new users
+                            Toast.makeText(LoginActivity.this, "User not exist", Toast.LENGTH_LONG).show();
 
                         }
                     }
 
                     @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
                     }
                 });
+
+
 //                mAuth.signInWithEmailAndPassword(email, pass)
 //                        .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
 //                            @Override
@@ -129,17 +145,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public void userLogin() {
-        String userName = edtxtPhone.getText().toString().trim();
+        String phone = edtxtPhone.getText().toString().trim();
         String password = edtxtPassword.getText().toString().trim();
-        if (TextUtils.isEmpty(userName)) {
-            Toast.makeText(this, "please enter User Name", Toast.LENGTH_LONG).show();
+        if (phone.isEmpty()) {
+            edtxtPhone.setError("phone number required");
+            edtxtPhone.requestFocus();
             return;
         }
-        if (TextUtils.isEmpty(password)) {
-            Toast.makeText(this, "please enter password", Toast.LENGTH_LONG).show();
+        if (password.isEmpty()) {
+            edtxtPassword.setError("password required");
+            edtxtPassword.requestFocus();
             return;
         }
-
     }
 
 }
