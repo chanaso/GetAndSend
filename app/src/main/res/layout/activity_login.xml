@@ -22,12 +22,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingTop="5dp">
 
         <com.hbb20.CountryCodePicker
             android:id="@+id/ccp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingTop="12dp"
             app:ccpDialog_allowSearch="true"
             app:ccpDialog_fastScroller_bubbleTextAppearance="@style/TextAppearance.AppCompat.Display1"
             app:ccpDialog_initialScrollToSelection="true"
@@ -53,10 +55,10 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:hint="phone number"
-            android:inputType=""
-            android:padding="14dp" />
-
+            android:inputType="phone"
+            android:ems="10" />
     </LinearLayout>
+
     <EditText
         android:id="@+id/passID"
         android:layout_width="match_parent"

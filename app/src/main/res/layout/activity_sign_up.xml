@@ -26,6 +26,7 @@
             android:id="@+id/ccp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="bottom"
             app:ccpDialog_allowSearch="true"
             app:ccpDialog_fastScroller_bubbleTextAppearance="@style/TextAppearance.AppCompat.Display1"
             app:ccpDialog_initialScrollToSelection="true"

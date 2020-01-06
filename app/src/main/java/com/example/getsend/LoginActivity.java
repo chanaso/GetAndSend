@@ -82,6 +82,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     prefEditor.commit();
                                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                             }
+                            else{
+                                //wrong password
+                                Toast.makeText(LoginActivity.this, "Inncorrect password", Toast.LENGTH_LONG).show();
+                            }
                         }
                         else{
                             //It is new users
