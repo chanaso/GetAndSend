@@ -39,7 +39,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     private EditText userName, phoneNumber, pass, passCon, verifiCode;
     private Button btnSignUp, btnVerify;
     private String codeSend;
-//    private ProgressBar progressBar;
     private FirebaseAuth mAuth;
     private DatabaseReference ref;
     private CountryCodePicker ccp;
@@ -52,30 +51,25 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
         btnSignUp = findViewById(R.id.btnSignUpID);
         btnVerify = findViewById(R.id.btnVerifyID);
-
         userName = (EditText)findViewById(R.id.userID);
         ccp = (CountryCodePicker) findViewById(R.id.ccp);
         phoneNumber = (EditText)findViewById(R.id.phoneNumberID);
         verifiCode = (EditText)findViewById(R.id.verificationCodeID);
         pass = (EditText)findViewById(R.id.passID);
         passCon = (EditText)findViewById(R.id.passConID);
-//        progressBar = findViewById(R.id.progressBarID);
         ref = FirebaseDatabase.getInstance().getReference().child("User");
         mAuth = FirebaseAuth.getInstance();
 
-
         btnSignUp.setOnClickListener(this);
         btnVerify.setOnClickListener(this);
-
     }
 
     private void sendVerificationCode() {
-
         final String name = userName.getText().toString().trim();
         final String prePhone = ccp.getSelectedCountryCode();
         final String phone = "+" + prePhone + phoneNumber.getText().toString().trim();
 
-
+        // validation check
         if(name.isEmpty()){
             userName.setError("user name required");
             userName.requestFocus();
@@ -94,6 +88,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             return;
         }
 
+        //  check if the user exist in the db
         ref.orderByChild("Phone").equalTo(phone).addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
@@ -105,7 +100,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 return;
             }
             else{
-                //It is new users
+                //It is new user
                 PhoneAuthProvider.getInstance().verifyPhoneNumber(phone, 60, TimeUnit.SECONDS, TaskExecutors.MAIN_THREAD, mCallbacks);        // OnVerificationStateChangedCallbacks
             }
             }
@@ -115,11 +110,9 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
             }
         });
-
-
-
     }
 
+    // send verification code to the entered number
     PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
         @Override
         public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
@@ -131,7 +124,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             Toast.makeText(SignUpActivity.this, "code faile", Toast.LENGTH_LONG).show();
 
         }
-
         @Override
         public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
             super.onCodeSent(s, forceResendingToken);
@@ -158,7 +150,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         final String pass = this.pass.getText().toString().trim();
         final String passCon = this.passCon.getText().toString().trim();
 
-
+        // integrity input check
         if(pass.length() < 6){
             this.pass.setError("password should be at least 6 numbers");
             this.pass.requestFocus();
@@ -188,12 +180,14 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(codeSend, code);
         signInWithPhoneAuthCredential(credential, user);
     }
+     // sign up user and check if the input code is matched
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential, User user) {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            //matched input code and push user details to db
                             ref.push().setValue(user);
                             Toast.makeText(SignUpActivity.this, "registration success", Toast.LENGTH_LONG).show();
                             startActivity(new Intent(SignUpActivity.this, MainActivity.class));

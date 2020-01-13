@@ -16,9 +16,6 @@ public class SplashActivity extends AppCompatActivity
     private SharedPreferences sharedPref;
     private int number;
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -50,7 +47,7 @@ public class SplashActivity extends AppCompatActivity
                     startActivity(new Intent(SplashActivity.this, LoginActivity.class));
                     finish();
                 } else {
-                    //Open this Home activity
+                    //Open Home activity
                     startActivity(new Intent(SplashActivity.this, MainActivity.class));
                     finish();
                 }

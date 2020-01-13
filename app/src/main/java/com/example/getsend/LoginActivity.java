@@ -30,7 +30,6 @@ import java.util.concurrent.TimeUnit;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
-
     EditText edtxtPhone;
     EditText edtxtPassword;
     private FirebaseAuth mAuth;
@@ -52,78 +51,56 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         findViewById(R.id.txtCreateAccountID).setOnClickListener(this);
         sharedPref = getSharedPreferences("data",MODE_PRIVATE);
         ref = FirebaseDatabase.getInstance().getReference().child("User");
-
-
     }
 
+    public void loginUser(){
+        final String prePhone = ccp.getSelectedCountryCode();
+        final String phone = "+" + prePhone + edtxtPhone.getText().toString().trim();
+        String pass = edtxtPassword.getText().toString().trim();
+        integrityCheck();
+
+        //check if the user is regiter already and if the phine number exist in db
+        ref.orderByChild("phone").equalTo(phone).addListenerForSingleValueEvent(new ValueEventListener() {
+            String value;
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() != null){
+                    //it means user already registered
+                    for(DataSnapshot data: dataSnapshot.getChildren()) {
+                        value=data.child("pass").getValue().toString();
+                    }
+                    //check if the input password is correct
+                    if(value.equals(pass)){
+                        //register user phone & password correct
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        // save the registered user and lead to the main activity
+                        SharedPreferences.Editor prefEditor = sharedPref.edit();
+                        prefEditor.putInt("isLogged",1);
+                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    }
+                    else{
+                        //wrong password
+                        Toast.makeText(LoginActivity.this, "Inncorrect password", Toast.LENGTH_LONG).show();
+                    }
+                }
+                else{
+                    //It is new users
+                    Toast.makeText(LoginActivity.this, "User not exist", Toast.LENGTH_LONG).show();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btnLogInID:
             {
-                final String prePhone = ccp.getSelectedCountryCode();
-                final String phone = "+" + prePhone + edtxtPhone.getText().toString().trim();
-                String pass = edtxtPassword.getText().toString().trim();
-                userLogin();
-                ref.orderByChild("phone").equalTo(phone).addListenerForSingleValueEvent(new ValueEventListener() {
-                    String value;
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.getValue() != null){
-                            //it means user already registered
-                            for(DataSnapshot data: dataSnapshot.getChildren()) {
-                                value=data.child("pass").getValue().toString();
-                            }
-                            if(value.equals(pass)){
-                                //register user phone & password correct
-                                    FirebaseUser user = mAuth.getCurrentUser();
-                                    SharedPreferences.Editor prefEditor = sharedPref.edit();
-                                    prefEditor.putInt("isLogged",1);
-                                    prefEditor.commit();
-                                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                            }
-                            else{
-                                //wrong password
-                                Toast.makeText(LoginActivity.this, "Inncorrect password", Toast.LENGTH_LONG).show();
-                            }
-                        }
-                        else{
-                            //It is new users
-                            Toast.makeText(LoginActivity.this, "User not exist", Toast.LENGTH_LONG).show();
-
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-
-
-//                mAuth.signInWithEmailAndPassword(email, pass)
-//                        .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-//                            @Override
-//                            public void onComplete(@NonNull Task<AuthResult> task) {
-//                                if (task.isSuccessful()) {
-//                                    // Sign in success, update UI with the signed-in user's information
-////                                    Log.d(TAG, "signInWithEmail:success");
-//                                    FirebaseUser user = mAuth.getCurrentUser();
-//                                    SharedPreferences.Editor prefEditor = sharedPref.edit();
-//                                    prefEditor.putInt("isLogged",1);
-//                                    prefEditor.commit();
-//                                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
-//
-//                                } else {
-//                                    // If sign in fails, display a message to the user.
-////                                    Log.w(TAG, "signInWithEmail:failure", task.getException());
-//                                    Toast.makeText(LoginActivity.this, "Authentication failed.",
-//                                            Toast.LENGTH_SHORT).show();
-//                                }
-//
-//                                // ...
-//                            }
-//                        });
+               loginUser();
                 break;
             }
             case R.id.txtCreateAccountID:
@@ -148,7 +125,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         FirebaseAuth.getInstance().signOut(); // sign out user
     }
 
-    public void userLogin() {
+    public void integrityCheck() {
         String phone = edtxtPhone.getText().toString().trim();
         String password = edtxtPassword.getText().toString().trim();
         if (phone.isEmpty()) {
@@ -162,5 +139,4 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             return;
         }
     }
-
 }
