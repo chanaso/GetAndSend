@@ -128,12 +128,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void integrityCheck() {
         String phone = edtxtPhone.getText().toString().trim();
         String password = edtxtPassword.getText().toString().trim();
-        if (phone.isEmpty()) {
+        if (phone.matches("")) {
             edtxtPhone.setError("phone number required");
             edtxtPhone.requestFocus();
             return;
         }
-        if (password.isEmpty()) {
+        if (password.matches("")) {
             edtxtPassword.setError("password required");
             edtxtPassword.requestFocus();
             return;

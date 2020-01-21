@@ -157,13 +157,13 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             return;
         }
 
-        if(pass.isEmpty()){
+        if(pass.matches("")){
             this.pass.setError("password required");
             this.pass.requestFocus();
             return;
         }
 
-        if(code.isEmpty()){
+        if(code.matches("")){
             this.pass.setError("verification code required");
             this.pass.requestFocus();
             return;
