@@ -1,10 +1,12 @@
 package com.example.getsend;
 
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,6 +16,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.mapbox.android.core.location.LocationEngineListener;
@@ -31,9 +34,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private MapboxMap map;
     private Button goBtn ;
     private DrawerLayout drawer;
-    private TextView edtTxt;
     FirebaseAuth mAuth;
     FirebaseUser user;
+    private String userName;
+    private SharedPreferences sharedpref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +56,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open,R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-        edtTxt = (TextView) findViewById(R.id.UserNameID);
-        edtTxt.setText("vhfjdkf");
+
+        sharedpref = getSharedPreferences("userName", MODE_PRIVATE);
+        userName = sharedpref.getString("name", "");
+        NavigationView nav_view= (NavigationView)findViewById(R.id.nav_view);//this is navigation view from my main xml where i call another xml file
+        View header = nav_view.getHeaderView(0);//set View header to nav_view first element (i guess)
+        TextView txt = (TextView)header.findViewById(R.id.UserNameID);//now assign textview imeNaloga to header.id since we made View header.
+        txt.setText(userName);// And now just set text to that textview
+
     }
 
     @Override

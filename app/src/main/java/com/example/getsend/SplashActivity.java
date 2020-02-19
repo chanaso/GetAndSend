@@ -24,8 +24,8 @@ public class SplashActivity extends AppCompatActivity
         setContentView(R.layout.activity_splash);
 
         progressBar = findViewById(R.id.progressBarID);
-        SharedPreferences sh = getSharedPreferences("userName", MODE_PRIVATE);
-        userName = sh.getString("name", "");
+        sharedPref = getSharedPreferences("userName", MODE_PRIVATE);
+        userName = sharedPref.getString("name", "");
         startTimer();
     }
 
