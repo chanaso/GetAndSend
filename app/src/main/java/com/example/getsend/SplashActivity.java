@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.SystemClock;
 import android.os.Bundle;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,7 +15,7 @@ public class SplashActivity extends AppCompatActivity
     private int timeLeft;
     private ProgressBar progressBar;
     private SharedPreferences sharedPref;
-    private int number;
+    private String userName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -23,8 +24,8 @@ public class SplashActivity extends AppCompatActivity
         setContentView(R.layout.activity_splash);
 
         progressBar = findViewById(R.id.progressBarID);
-        sharedPref = getSharedPreferences("data",MODE_PRIVATE);
-        number = sharedPref.getInt("isLogged", 0);
+        SharedPreferences sh = getSharedPreferences("userName", MODE_PRIVATE);
+        userName = sh.getString("name", "");
         startTimer();
     }
 
@@ -42,12 +43,13 @@ public class SplashActivity extends AppCompatActivity
                     SystemClock.sleep(1000); //Thread.sleep(1000);
                     timeLeft--;
                 }
-                if(number == 0) {
-                    //Open the login activity and set this so that next it value is 1 then this conditin will be false.
+
+                if(userName.isEmpty()) {
+                    //Open the login activity if there is no user signed in.
                     startActivity(new Intent(SplashActivity.this, LoginActivity.class));
                     finish();
                 } else {
-                    //Open Home activity
+                    //Open Home activity the user is already registered
                     startActivity(new Intent(SplashActivity.this, MainActivity.class));
                     finish();
                 }

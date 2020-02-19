@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -42,6 +43,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     private FirebaseAuth mAuth;
     private DatabaseReference ref;
     private CountryCodePicker ccp;
+    SharedPreferences sharedPref;
 
 
     @Override
@@ -62,6 +64,9 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
         btnSignUp.setOnClickListener(this);
         btnVerify.setOnClickListener(this);
+
+        sharedPref = getSharedPreferences("userName",MODE_PRIVATE);
+
     }
 
     private void sendVerificationCode() {
@@ -186,10 +191,16 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
+                        String userName;
                         if (task.isSuccessful()) {
                             //matched input code and push user details to db
                             ref.push().setValue(user);
                             Toast.makeText(SignUpActivity.this, "registration success", Toast.LENGTH_LONG).show();
+                            // saving the username that registered.
+                            userName = user.getName();
+                            SharedPreferences.Editor prefEditor = sharedPref.edit();
+                            prefEditor.putString("name",userName);
+                            prefEditor.commit();
                             startActivity(new Intent(SignUpActivity.this, MainActivity.class));
 
                         } else {

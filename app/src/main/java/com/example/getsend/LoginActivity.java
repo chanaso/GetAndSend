@@ -36,6 +36,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     SharedPreferences sharedPref;
     private DatabaseReference ref;
     private CountryCodePicker ccp;
+    public static final String KEY_USER_NAME = "userName";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +51,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         findViewById(R.id.btnLogInID).setOnClickListener(this);
         findViewById(R.id.txtCreateAccountID).setOnClickListener(this);
-        sharedPref = getSharedPreferences("data",MODE_PRIVATE);
+        sharedPref = getSharedPreferences("userName",MODE_PRIVATE);
         ref = FirebaseDatabase.getInstance().getReference().child("User");
     }
 
@@ -64,18 +66,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             String value;
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String userName = "";
                 if (dataSnapshot.getValue() != null){
                     //it means user already registered
                     for(DataSnapshot data: dataSnapshot.getChildren()) {
                         value=data.child("pass").getValue().toString();
+                        userName = data.child("name").getValue().toString();
+
                     }
                     //check if the input password is correct
                     if(value.equals(pass)){
                         //register user phone & password correct
-                        FirebaseUser user = mAuth.getCurrentUser();
                         // save the registered user and lead to the main activity
                         SharedPreferences.Editor prefEditor = sharedPref.edit();
-                        prefEditor.putInt("isLogged",1);
+                        prefEditor.putString("name",userName);
+                        prefEditor.commit();
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
                     }
                     else{

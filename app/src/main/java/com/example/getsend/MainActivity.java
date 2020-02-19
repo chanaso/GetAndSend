@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +14,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.mapbox.android.core.location.LocationEngineListener;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.mapboxsdk.Mapbox;
@@ -27,6 +31,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private MapboxMap map;
     private Button goBtn ;
     private DrawerLayout drawer;
+    private TextView edtTxt;
+    FirebaseAuth mAuth;
+    FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +52,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open,R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
+        edtTxt = (TextView) findViewById(R.id.UserNameID);
+        edtTxt.setText("vhfjdkf");
     }
 
     @Override
