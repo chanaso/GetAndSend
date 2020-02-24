@@ -40,14 +40,16 @@
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/drawer_menu" />
 
+
     <com.mapbox.mapboxsdk.maps.MapView
         android:id="@+id/mapView"
-        android:layout_width="444dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="0.9"
         mapbox:mapbox_cameraTargetLat="31.804066"
         mapbox:mapbox_cameraTargetLng="35.213438"
-        mapbox:mapbox_cameraZoom="11">
+        mapbox:mapbox_styleUrl="mapbox://styles/mapbox/streets-v10"
+        mapbox:mapbox_cameraZoom="12">
 
         <LinearLayout
             android:layout_width="match_parent"
