@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         userName = sharedpref.getString("name", "");
         NavigationView nav_view= (NavigationView)findViewById(R.id.nav_view);//this is navigation view from my main xml where i call another xml file
         View header = nav_view.getHeaderView(0);//set View header to nav_view first element (i guess)
-        TextView txt = (TextView)header.findViewById(R.id.UserNameID);//now assign textview imeNaloga to header.id since we made View header.
+        TextView txt = (TextView)header.findViewById(R.id.UserNameID);//now assign textview to header.id since we made View header.
         txt.setText(userName);// And now just set text to that textview
 
     }
