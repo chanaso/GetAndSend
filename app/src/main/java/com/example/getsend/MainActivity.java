@@ -2,16 +2,17 @@ package com.example.getsend;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.drawerlayout.widget.DrawerLayout;
-
 import android.view.View;
+import android.content.Intent;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -62,6 +63,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
+        findViewById(R.id.btnInvite).setOnClickListener(this);
+        findViewById(R.id.btnJoin).setOnClickListener(this);
+
         Toolbar toolbar = findViewById(R.id.toolBar);
         setSupportActionBar(toolbar);
 
@@ -76,6 +80,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         View header = nav_view.getHeaderView(0);//set View header to nav_view first element (i guess)
         TextView txt = (TextView)header.findViewById(R.id.UserNameID);//now assign textview imeNaloga to header.id since we made View header.
         txt.setText(userName);// And now just set text to that textview
+
+
     }
 
     @Override
@@ -186,7 +192,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
-    public void onClick(View view) {
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.btnInvite:
+            {
+                startActivity(new Intent(MainActivity.this, InviteDeliveryActivity.class));
+                break;
+            }
+            case R.id.btnJoin:
+            {
+                startActivity(new Intent(MainActivity.this, JoinAsDeliverymanActivity.class));
+                break;
+            }
 
+        }
     }
 }
