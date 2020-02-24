@@ -1,5 +1,6 @@
 package com.example.getsend;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -98,6 +99,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         View header = nav_view.getHeaderView(0);//set View header to nav_view first element (i guess)
         TextView txt = (TextView)header.findViewById(R.id.UserNameID);//now assign textview imeNaloga to header.id since we made View header.
         txt.setText(userName);// And now just set text to that textview
+
+        btnInvite = findViewById(R.id.btnInvite);
+        btnInvite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, InviteDeliveryActivity.class);
+                startActivity(intent);
+            }
+        });
 
     }
 
