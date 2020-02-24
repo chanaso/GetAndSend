@@ -47,7 +47,6 @@
         android:layout_height="match_parent"
         mapbox:mapbox_cameraTargetLat="31.804066"
         mapbox:mapbox_cameraTargetLng="35.213438"
-        mapbox:mapbox_styleUrl="mapbox://styles/mapbox/streets-v10"
         mapbox:mapbox_cameraZoom="12">
 
         <LinearLayout
