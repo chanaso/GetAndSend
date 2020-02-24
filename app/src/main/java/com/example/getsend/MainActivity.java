@@ -1,12 +1,15 @@
 package com.example.getsend;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -30,10 +33,9 @@ import com.mapbox.mapboxsdk.maps.Style;
 
 import java.util.List;
 
-/**
- * Use the LocationComponent to easily add a device location "puck" to a Mapbox map.
- */
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener, PermissionsListener{
+
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener, PermissionsListener, NavigationView.OnNavigationItemSelectedListener
+{
 
     private PermissionsManager permissionsManager;
     private MapboxMap mapboxMap;
@@ -70,12 +72,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        //getting the current username from the sp
         sharedpref = getSharedPreferences("userName", MODE_PRIVATE);
         userName = sharedpref.getString("name", "");
+
         NavigationView nav_view= (NavigationView)findViewById(R.id.nav_view);//this is navigation view from my main xml where i call another xml file
         View header = nav_view.getHeaderView(0);//set View header to nav_view first element (i guess)
         TextView txt = (TextView)header.findViewById(R.id.UserNameID);//now assign textview imeNaloga to header.id since we made View header.
         txt.setText(userName);// And now just set text to that textview
+
+        nav_view.setNavigationItemSelectedListener(this);
+
     }
 
     @Override
@@ -185,6 +192,35 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onClick(View view) {
+
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.nav_profile:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new ProfileFragment()).commit();
+                break;
+            case R.id.nav_packeges:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new PackagesFragment()).commit();
+                break;
+            case R.id.nav_sign_out:
+                signOut();
+                break;
+
+        }
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    private void signOut() {
+        //delete the existing userName
+        SharedPreferences.Editor prefEditor = sharedpref.edit();
+        prefEditor.putString("name","");
+        prefEditor.commit();
+        startActivity(new Intent(MainActivity.this, LoginActivity.class));
 
     }
 }
