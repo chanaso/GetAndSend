@@ -202,12 +202,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.nav_profile:
+                startActivity(new Intent(MainActivity.this, ProfileActivity.class));
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new ProfileFragment()).commit();
                 break;
             case R.id.nav_packeges:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new PackagesFragment()).commit();
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+//                        new PackagesFragment()).commit();
                 break;
             case R.id.nav_sign_out:
                 signOut();
