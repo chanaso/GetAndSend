@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ProfileActivity">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -17,6 +18,7 @@
             android:gravity="center"
             android:padding="10dp"
             android:text="Profile"
+            android:textColor="#000000"
             android:textSize="24sp" />
 
         <ImageView
@@ -24,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="180dp"
             android:padding="10dp"
-            tools:srcCompat="@drawable/ic_profile" />
+            android:src="@drawable/ic_profile" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -40,12 +42,15 @@
                 android:gravity="center"
                 android:padding="10dp"
                 android:text="★★★★☆ "
+                android:textColor="#000000"
                 android:textSize="22dp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="#A5E3F4"
             android:orientation="horizontal"
             android:padding="10dp">
 
@@ -55,19 +60,24 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="User Name:"
-                android:textSize="16dp" />
+                android:textColor="#000000"
+                android:textSize="25dp" />
 
             <TextView
                 android:id="@+id/profileNameID"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textSize="16dp"/>
+                android:fontFamily="cursive"
+                android:textColor="#000000"
+                android:textSize="25dp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="#A5E3F4"
             android:orientation="horizontal"
             android:padding="10dp">
 
@@ -77,7 +87,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Phone number:"
-                android:textSize="16dp" />
+                android:textColor="#000000"
+                android:textSize="25dp" />
 
             <EditText
                 android:id="@+id/profilePhoneID"
@@ -85,8 +96,10 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ems="10"
+                android:fontFamily="cursive"
                 android:inputType="phone"
-                android:textSize="16dp"/>
+                android:textColor="#000000"
+                android:textSize="25dp" />
 
         </LinearLayout>
 

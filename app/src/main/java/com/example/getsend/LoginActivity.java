@@ -21,10 +21,10 @@ import com.hbb20.CountryCodePicker;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
-    EditText edtxtPhone;
-    EditText edtxtPassword;
+    private EditText edtxtPhone;
+    private EditText edtxtPassword;
     private FirebaseAuth mAuth;
-    SharedPreferences sharedPref;
+    private SharedPreferences sharedPref;
     private DatabaseReference ref;
     private CountryCodePicker ccp;
     public static final String KEY_USER_NAME = "userName";

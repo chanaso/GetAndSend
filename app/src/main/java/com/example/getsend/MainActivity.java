@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     FirebaseAuth mAuth;
     FirebaseUser user;
     private String userName;
-    private SharedPreferences sharedpref;
+    private SharedPreferences sharedPref;
     private Button btnInvite;
     private Button btnJoin;
 
@@ -75,8 +75,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         toggle.syncState();
 
         //getting the current username from the sp
-        sharedpref = getSharedPreferences("userName", MODE_PRIVATE);
-        userName = sharedpref.getString("name", "");
+        sharedPref = getSharedPreferences("userName", MODE_PRIVATE);
+        userName = sharedPref.getString("name", "");
 
         NavigationView nav_view= (NavigationView)findViewById(R.id.nav_view);//this is navigation view from my main xml where i call another xml file
         View header = nav_view.getHeaderView(0);//set View header to nav_view first element (i guess)
@@ -203,8 +203,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         switch (item.getItemId()){
             case R.id.nav_profile:
                 startActivity(new Intent(MainActivity.this, ProfileActivity.class));
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new ProfileFragment()).commit();
                 break;
             case R.id.nav_packeges:
 //                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
@@ -221,7 +219,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void signOut() {
         //delete the existing userName
-        SharedPreferences.Editor prefEditor = sharedpref.edit();
+        SharedPreferences.Editor prefEditor = sharedPref.edit();
         prefEditor.putString("name","");
         prefEditor.commit();
         startActivity(new Intent(MainActivity.this, LoginActivity.class));
