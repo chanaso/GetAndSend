@@ -197,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onClick(View view) {
 
     }
-
+    // navbar selection list and move to the selected option/activity
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
@@ -205,8 +205,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 startActivity(new Intent(MainActivity.this, ProfileActivity.class));
                 break;
             case R.id.nav_packeges:
-//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-//                        new PackagesFragment()).commit();
+                startActivity(new Intent(MainActivity.this, packagesActivity.class));
                 break;
             case R.id.nav_sign_out:
                 signOut();

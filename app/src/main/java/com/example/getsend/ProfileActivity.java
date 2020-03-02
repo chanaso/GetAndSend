@@ -10,8 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 public class ProfileActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPref;
-    private String userName;
-    private TextView edtProfile;
+    private String userName, phone;
+    private TextView edtProfile, edtPhone;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,8 +20,12 @@ public class ProfileActivity extends AppCompatActivity {
 
         //getting the current username from the sp
         userName = sharedPref.getString("name", "");
+        phone = sharedPref.getString("phone", "");
+
         edtProfile = findViewById(R.id.profileNameID);
         edtProfile.setText(userName);
 
+        edtPhone = findViewById(R.id.profilePhoneID);
+        edtPhone.setText(phone);
     }
 }
