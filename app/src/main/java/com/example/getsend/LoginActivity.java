@@ -57,7 +57,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             String value;
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String userName = "", phoneNumber = "";
+                String userName = "", phoneNumber = "", rate = "";
 
                 if (dataSnapshot.getValue() != null){
                     //it means user already registered
@@ -65,6 +65,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         value=data.child("pass").getValue().toString();
                         userName = data.child("name").getValue().toString();
                         phoneNumber = data.child("phone").getValue().toString();
+                        rate = data.child("rate").getValue().toString();
 
                     }
                     //check if the input password is correct
@@ -74,6 +75,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         SharedPreferences.Editor prefEditor = sharedPref.edit();
                         prefEditor.putString("name",userName);
                         prefEditor.putString("phone", phoneNumber);
+                        prefEditor.putString("rate", rate);
                         prefEditor.commit();
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
                     }

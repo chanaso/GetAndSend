@@ -175,7 +175,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             return;
         }
 
-        User user = new User(name, phone, pass);
+        User user = new User(name, phone, pass, 4);
         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(codeSend, code);
         signInWithPhoneAuthCredential(credential, user);
     }
@@ -195,6 +195,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                             SharedPreferences.Editor prefEditor = sharedPref.edit();
                             prefEditor.putString("name",userName);
                             prefEditor.putString("phone", user.getPhone());
+                            prefEditor.putString("rate", user.getRate()+"");
                             prefEditor.commit();
                             startActivity(new Intent(SignUpActivity.this, MainActivity.class));
 

@@ -44,8 +44,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private MapView mapView;
     private Button goBtn ;
     private DrawerLayout drawer;
-    FirebaseAuth mAuth;
-    FirebaseUser user;
     private String userName;
     private SharedPreferences sharedPref;
     private Button btnInvite;
