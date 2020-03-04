@@ -1,7 +1,18 @@
 package com.example.getsend;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
+import android.view.MenuItem;
 import android.view.View;
 import android.content.Intent;
 import android.widget.Button;
@@ -31,20 +42,17 @@ import com.mapbox.mapboxsdk.maps.Style;
 
 import java.util.List;
 
-/**
- * Use the LocationComponent to easily add a device location "puck" to a Mapbox map.
- */
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener, PermissionsListener{
+
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener, PermissionsListener, NavigationView.OnNavigationItemSelectedListener
+{
 
     private PermissionsManager permissionsManager;
     private MapboxMap mapboxMap;
     private MapView mapView;
     private Button goBtn ;
     private DrawerLayout drawer;
-    FirebaseAuth mAuth;
-    FirebaseUser user;
     private String userName;
-    private SharedPreferences sharedpref;
+    private SharedPreferences sharedPref;
     private Button btnInvite;
     private Button btnJoin;
 
@@ -74,12 +82,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        sharedpref = getSharedPreferences("userName", MODE_PRIVATE);
-        userName = sharedpref.getString("name", "");
+        //getting the current username from the sp
+        sharedPref = getSharedPreferences("userName", MODE_PRIVATE);
+        userName = sharedPref.getString("name", "");
+
         NavigationView nav_view= (NavigationView)findViewById(R.id.nav_view);//this is navigation view from my main xml where i call another xml file
         View header = nav_view.getHeaderView(0);//set View header to nav_view first element (i guess)
         TextView txt = (TextView)header.findViewById(R.id.UserNameID);//now assign textview imeNaloga to header.id since we made View header.
         txt.setText(userName);// And now just set text to that textview
+        nav_view.setNavigationItemSelectedListener(this);
+        nav_view.bringToFront();
+
 
 
     }
@@ -87,11 +100,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(@NonNull final MapboxMap mapboxMap) {
         MainActivity.this.mapboxMap = mapboxMap;
-
-        mapboxMap.setStyle(new Style.Builder().fromUri("mapbox://styles/mapbox/cjerxnqt3cgvp2rmyuxbeqme7"),
-                new Style.OnStyleLoaded() {
-                    @Override
-                    public void onStyleLoaded(@NonNull Style style) {
+        mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
+            @Override
+            public void onStyleLoaded(@NonNull Style style) {
                         enableLocationComponent(style);
                     }
                 });
@@ -206,5 +217,32 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
 
         }
+    }
+    // navbar selection list and move to the selected option/activity
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.nav_profile:
+                startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                break;
+            case R.id.nav_packeges:
+                startActivity(new Intent(MainActivity.this, packagesActivity.class));
+                break;
+            case R.id.nav_sign_out:
+                signOut();
+                break;
+
+        }
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    private void signOut() {
+        //delete the existing userName
+        SharedPreferences.Editor prefEditor = sharedPref.edit();
+        prefEditor.putString("name","");
+        prefEditor.commit();
+        startActivity(new Intent(MainActivity.this, LoginActivity.class));
+
     }
 }
