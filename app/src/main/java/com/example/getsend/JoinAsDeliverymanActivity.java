@@ -1,8 +1,8 @@
 package com.example.getsend;
 
-import android.os.Bundle;
-
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
 
 public class JoinAsDeliverymanActivity extends AppCompatActivity {
 

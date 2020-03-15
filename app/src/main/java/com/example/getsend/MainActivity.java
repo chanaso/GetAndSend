@@ -51,7 +51,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private MapView mapView;
     private Button goBtn ;
     private DrawerLayout drawer;
-    private String userName;
+    private User user;
+    private String userName, phone, rate;
     private SharedPreferences sharedPref;
     private Button btnInvite;
     private Button btnJoin;
@@ -71,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
+        user = new User();
         findViewById(R.id.btnInvite).setOnClickListener(this);
         findViewById(R.id.btnJoin).setOnClickListener(this);
 
@@ -85,6 +87,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         //getting the current username from the sp
         sharedPref = getSharedPreferences("userName", MODE_PRIVATE);
         userName = sharedPref.getString("name", "");
+        phone = sharedPref.getString("phone", "");
+        rate = sharedPref.getString("rate", "");
+        user.setName(userName);
+        user.setPhone(phone);
+        user.setRate(Integer.parseInt(rate));
 
         NavigationView nav_view= (NavigationView)findViewById(R.id.nav_view);//this is navigation view from my main xml where i call another xml file
         View header = nav_view.getHeaderView(0);//set View header to nav_view first element (i guess)

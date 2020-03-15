@@ -2,7 +2,9 @@ package com.example.getsend;
 
 public class User {
     private String name, phone, password;
-    private int rate;
+    private int rate, type = 0;
+    //type: 0- deliverman, 1- get delivery.
+
 
     public User(){
 
@@ -33,10 +35,19 @@ public class User {
     public void setRate(int rate){ this.rate = rate; }
     public int getRate(){ return rate; }
 
-    public User(String name, String phone, String pass, int rate) {
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public User(String name, String phone, String pass, int rate, int type) {
         this.name = name;
         this.phone = phone;
         this.password = pass;
         this.rate = rate;
+        this.type = type;
     }
 }
