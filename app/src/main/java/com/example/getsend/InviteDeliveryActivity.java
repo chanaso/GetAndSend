@@ -39,7 +39,11 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
 
     @Override
     public void onClick(View v) {
+        final String size = edtxtSize.getText().toString().trim();
+        final String location = edtxtLocation.getText().toString().trim();
+        final String destination = edtxtDestination.getText().toString().trim();
+        final double weight = Double.parseDouble(edtxtWeight.getText().toString());
         //edtxtWeight
-       // Package package = new Package(name, phone, pass, 4);
+        Package new_package = new Package(size, location, destination, weight);
     }
 }
