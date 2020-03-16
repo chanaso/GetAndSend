@@ -6,4 +6,11 @@
     <string name="access_token">sk.eyJ1IjoiYW5hZWx6IiwiYSI6ImNrM2c2YnVtbDBiZ2QzaXAwcjM1ZjF3NWUifQ.8sjrOysub87S9Ic-ENb7qg</string>
     <string name="textview">hello</string>
     <string name="textviewwight">the package wight</string>
+    <string name="order_delivery_view">Order delivery</string>
+    <string name="view2">Complete the following information about your package:</string>
+    <string name="weight_view">Weight:</string>
+    <string name="size_view">Size:</string>
+    <string name="location_view">Location:</string>
+    <string name="destination_view">Destination:</string>
+    <string name="hint_view">current location or post office where the package is located</string>
 </resources>
