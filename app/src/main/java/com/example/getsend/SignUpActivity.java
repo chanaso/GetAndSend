@@ -3,6 +3,7 @@ package com.example.getsend;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -120,7 +121,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
         @Override
         public void onVerificationFailed(@NonNull FirebaseException e) {
-            Toast.makeText(SignUpActivity.this, "code faile", Toast.LENGTH_LONG).show();
+            Toast.makeText(SignUpActivity.this, "code failed", Toast.LENGTH_LONG).show();
 
         }
         @Override
@@ -174,9 +175,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             this.pass.requestFocus();
             return;
         }
-
-        User user = new User(name, phone, pass, 4);
         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(codeSend, code);
+        User user = new User(name, phone, pass, 4, -1);
         signInWithPhoneAuthCredential(credential, user);
     }
      // sign up user and check if the input code is matched
@@ -185,27 +185,38 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        String userName;
                         if (task.isSuccessful()) {
-                            //matched input code and push user details to db
-                            ref.push().setValue(user);
-                            Toast.makeText(SignUpActivity.this, "registration success", Toast.LENGTH_LONG).show();
-                            // saving the username that registered.
-                            userName = user.getName();
-                            SharedPreferences.Editor prefEditor = sharedPref.edit();
-                            prefEditor.putString("name",userName);
-                            prefEditor.putString("phone", user.getPhone());
-                            prefEditor.putString("rate", user.getRate()+"");
-                            prefEditor.commit();
-                            startActivity(new Intent(SignUpActivity.this, MainActivity.class));
+                            ref.orderByChild("phone").equalTo(user.getPhone()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.getValue() != null) {
+                                        //it means user already registered
+                                        Toast.makeText(SignUpActivity.this, "This " + user.getPhone() + " phone number already exist!", Toast.LENGTH_LONG).show();
+                                    } else {
+                                        //matched input code and push user details to db
+                                        ref.push().setValue(user);
+                                        Toast.makeText(SignUpActivity.this, user+"User registered successfully!", Toast.LENGTH_LONG).show();
+                                        // saving the username that registered.
+                                        SharedPreferences.Editor prefEditor = sharedPref.edit();
+                                        prefEditor.putString("name", user.getName());
+                                        prefEditor.putString("phone", user.getPhone());
+                                        prefEditor.putString("rate", user.getRate() + "");
+                                        prefEditor.commit();
+                                        startActivity(new Intent(SignUpActivity.this, MainActivity.class));
+                                    }
+                                }
 
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
                         } else {
                             if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                                 // The verification code entered was invalid
                                 Toast.makeText(SignUpActivity.this, "Inncorrect Verification Code", Toast.LENGTH_LONG).show();
                             }
-                            }
-
+                        }
                     }
                 });
     }

@@ -1,20 +1,10 @@
 package com.example.getsend;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-
 import android.view.MenuItem;
 import android.view.View;
-import android.content.Intent;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,11 +13,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.mapboxsdk.Mapbox;
@@ -51,7 +40,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private MapView mapView;
     private Button goBtn ;
     private DrawerLayout drawer;
-    private String userName;
+    private User user;
+    private String userName, phone, rate;
     private SharedPreferences sharedPref;
     private Button btnInvite;
     private Button btnJoin;
@@ -71,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
+        user = new User();
         findViewById(R.id.btnInvite).setOnClickListener(this);
         findViewById(R.id.btnJoin).setOnClickListener(this);
 
@@ -85,6 +76,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         //getting the current username from the sp
         sharedPref = getSharedPreferences("userName", MODE_PRIVATE);
         userName = sharedPref.getString("name", "");
+        phone = sharedPref.getString("phone", "");
+        rate = sharedPref.getString("rate", "");
+        user.setName(userName);
+        user.setPhone(phone);
+        user.setRate(Integer.parseInt(rate));
 
         NavigationView nav_view= (NavigationView)findViewById(R.id.nav_view);//this is navigation view from my main xml where i call another xml file
         View header = nav_view.getHeaderView(0);//set View header to nav_view first element (i guess)
