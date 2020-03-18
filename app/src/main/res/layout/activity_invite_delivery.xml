@@ -69,14 +69,15 @@
             android:layout_height="wrap_content"
             android:text="@string/location_view" />
 
-        <EditText
-            android:id="@+id/edtxt_location"
-            android:layout_width="match_parent"
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_location_search"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:autofillHints=""
-            android:hint="@string/hint_view"
-            android:inputType="textPersonName"
-            android:textSize="12sp" />
+            android:layout_gravity="end|bottom"
+            android:layout_margin="14dp"
+            android:tint="@android:color/white"
+            app:backgroundTint="@color/colorPrimary"
+            app:srcCompat="@android:drawable/ic_search_category_default" />
 
         <TextView
             android:layout_width="wrap_content"

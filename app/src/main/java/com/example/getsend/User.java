@@ -5,7 +5,6 @@ public class User {
     private int rate, type;
     //type: 0- deliverman, 1- get delivery.
 
-
     public User(){
 
     }
