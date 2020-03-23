@@ -1,16 +1,4 @@
 package com.example.getsend;
-
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -84,14 +72,14 @@ public class InviteDeliveryActivity extends AppCompatActivity implements OnMapRe
                 addUserLocations();
 
                 // Add the symbol layer icon to map for future use
-//                style.addImage(symbolIconId, BitmapFactory.decodeResource(
-//                        InviteDeliveryActivity.this.getResources(), R.drawable.blue_marker_view));
+                style.addImage(symbolIconId, BitmapFactory.decodeResource(
+                        InviteDeliveryActivity.this.getResources(), R.drawable.blue_marker_view));
 
                 // Create an empty GeoJSON source using the empty feature collection
                 setUpSource(style);
 
                 // Set up a new symbol layer for displaying the searched location's feature coordinates
-//                setupLayer(style);
+                setupLayer(style);
             }
         });
     }
@@ -216,8 +204,25 @@ public class InviteDeliveryActivity extends AppCompatActivity implements OnMapRe
         mapView.onSaveInstanceState(outState);
     }
 }
-
-
+//
+//import android.os.Bundle;
+//import android.view.View;
+//import android.widget.Button;
+//import android.widget.EditText;
+//import android.widget.Toast;
+//
+//import androidx.appcompat.app.AppCompatActivity;
+//
+//import com.google.firebase.database.DatabaseReference;
+//import com.google.firebase.database.FirebaseDatabase;
+//
+//import android.app.Activity;
+//import android.content.Intent;
+//import android.graphics.BitmapFactory;
+//import android.graphics.Color;
+//import android.os.Bundle;
+//import androidx.annotation.NonNull;
+//
 //
 //public class InviteDeliveryActivity extends AppCompatActivity implements View.OnClickListener{
 //
