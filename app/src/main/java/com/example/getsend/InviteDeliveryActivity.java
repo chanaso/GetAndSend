@@ -1,4 +1,5 @@
 package com.example.getsend;
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -65,6 +66,8 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
         //create a new DB table of package if not exist
         reff = FirebaseDatabase.getInstance().getReference().child("Package");
         btnEnter.setOnClickListener(this);
+        initSearchFab();
+
 
     }
     private void initSearchFab() {
@@ -74,17 +77,23 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
                 Intent intent = new PlaceAutocomplete.IntentBuilder()
                         .accessToken(Mapbox.getAccessToken() != null ? Mapbox.getAccessToken() : getString(R.string.access_token))
                         .placeOptions(PlaceOptions.builder()
+                                .country("IL")
                                 .backgroundColor(Color.parseColor("#EEEEEE"))
                                 .limit(10)
-//                                .addInjectedFeature(home)
-//                                .addInjectedFeature(work)
                                 .build(PlaceOptions.MODE_CARDS))
                         .build(InviteDeliveryActivity.this);
                 startActivityForResult(intent, REQUEST_CODE_AUTOCOMPLETE);
             }
         });
     }
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_AUTOCOMPLETE) {
+            CarmenFeature feature = PlaceAutocomplete.getPlace(data);
+            Toast.makeText(this, feature.text(), Toast.LENGTH_LONG).show();
+        }
+    }
     @Override
     public void onClick(View v) {
         //create a new object of package
