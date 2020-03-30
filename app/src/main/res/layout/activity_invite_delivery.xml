@@ -68,13 +68,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/location_view" />
-        <EditText
-            android:id="@+id/edtxt_location"
+        <com.mapbox.services.android.ui.geocoder.GeocoderAutoCompleteView
+            android:id="@+id/autoTextView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:autofillHints=""
-            android:ems="10"
-            android:textSize="12sp" />
+            android:layout_height="wrap_content"/>
+<!--            android:hint="Enter address location"-->
+<!--            android:textColor="#000000"-->
+<!--            android:textColorHint="#000000" />-->
 
         <TextView
             android:layout_width="wrap_content"

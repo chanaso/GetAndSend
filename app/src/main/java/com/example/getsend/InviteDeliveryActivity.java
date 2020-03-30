@@ -1,59 +1,22 @@
 package com.example.getsend;
-import android.app.Activity;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.app.Activity;
-import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.os.Bundle;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
-
-import com.google.gson.JsonObject;
 import com.mapbox.api.geocoding.v5.GeocodingCriteria;
-import com.mapbox.api.geocoding.v5.models.CarmenFeature;
-import com.mapbox.geojson.Feature;
-import com.mapbox.geojson.FeatureCollection;
-import com.mapbox.geojson.Point;
-import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.camera.CameraPosition;
-import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
-import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.maps.MapView;
-import com.mapbox.mapboxsdk.maps.MapboxMap;
-import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
-import com.mapbox.mapboxsdk.maps.Style;
-import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete;
-import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions;
-import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
-import com.mapbox.mapboxsdk.style.light.Position;
-import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
-
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconImage;
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconOffset;
-
-
-import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import android.app.Activity;
-import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.os.Bundle;
-import androidx.annotation.NonNull;
+import com.mapbox.api.geocoding.v5.models.CarmenFeature;
+import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete;
+import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions;
+import com.mapbox.mapboxsdk.style.light.Position;
+import com.mapbox.services.android.ui.geocoder.GeocoderAutoCompleteView;
+import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
 
 
 public class InviteDeliveryActivity extends AppCompatActivity implements View.OnClickListener{
@@ -65,31 +28,61 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
     private Button btnEnter;
     private DatabaseReference reff;
     private Package new_package;
+    private AppCompatAutoCompleteTextView autoTextView;
+    private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
+//    private MapView mapView;
+//    private MapboxMap mapboxMap;
+    private CarmenFeature home;
+    private CarmenFeature work;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invite_delivery);
-
+        Mapbox.getInstance(this, getString(R.string.access_token));
         edtxtWeight = (EditText) findViewById(R.id.edtxt_weight);
         edtxtSize = (EditText) findViewById(R.id.edtxt_size);
-        edtxtLocation =(EditText) findViewById(R.id.edtxt_location);
-        GeocoderAutoCompleteView autocomplete = (GeocoderAutoCompleteView) findViewById (R.id.edtxt_location);
-        Autocomplete.setAccessToken (Mapbox.getAccessToken ());
-        Autocomplete.setType (GeocodingCriteria.TYPE_ADDRESS);
-        Autocomplete.setOnFeatureListener (new GeocoderAutoCompleteView.OnFeatureListener () {
-            @Override
-            Public void onFeatureClick (CarmenFeature feature) {
-                Position position = feature.asPosition ();
-            }
-        });
+//        edtxtLocation =(EditText) findViewById(R.id.edtxt_location);
+//        autoTextView = (AppCompatAutoCompleteTextView) findViewById(R.id.autoTextViewTextView);
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>
+//                (this, android.R.layout.select_dialog_item, );
+//        autoTextView.setThreshold(1); //will start working from first character
+//        autoTextView.setAdapter(adapter);
+        // Set up autocomplete widget
+//        GeocoderAutoCompleteView autocomplete = (GeocoderAutoCompleteView) findViewById(R.id.autoTextView);
+//        autocomplete.setAccessToken(getString(R.string.access_token));
+//        autocomplete.setType(GeocodingCriteria.TYPE_POI);
+//        autocomplete.setOnFeatureListener(new GeocoderAutoCompleteView.OnFeatureListener() {
+//            @Override
+//            public void OnFeatureClick(GeocodingFeature feature) {
+//                Position position = feature.asPosition();
+//                updateMap(position.getLatitude(), position.getLongitude());
+//            }
+//        });
+
         edtxtDestination = (EditText) findViewById(R.id.edtxt_destination);
         btnEnter = (Button) findViewById(R.id.btn_enter);
         //create a new DB table of package if not exist
         reff = FirebaseDatabase.getInstance().getReference().child("Package");
-
         btnEnter.setOnClickListener(this);
 
+    }
+    private void initSearchFab() {
+        findViewById(R.id.autoTextView).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new PlaceAutocomplete.IntentBuilder()
+                        .accessToken(Mapbox.getAccessToken() != null ? Mapbox.getAccessToken() : getString(R.string.access_token))
+                        .placeOptions(PlaceOptions.builder()
+                                .backgroundColor(Color.parseColor("#EEEEEE"))
+                                .limit(10)
+//                                .addInjectedFeature(home)
+//                                .addInjectedFeature(work)
+                                .build(PlaceOptions.MODE_CARDS))
+                        .build(InviteDeliveryActivity.this);
+                startActivityForResult(intent, REQUEST_CODE_AUTOCOMPLETE);
+            }
+        });
     }
 
     @Override
