@@ -30,7 +30,7 @@ public class Package {
         this.destination = destination;
     }
 
-    public void setWeight(int weight){ this.weight = weight; }
+    public void setWeight(double weight){ this.weight = weight; }
 
     public double getWeight(){ return weight; }
 
