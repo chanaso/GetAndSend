@@ -33,8 +33,7 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
     private DatabaseReference reff;
     private Package new_package;
     private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
-    private CarmenFeature home;
-    private CarmenFeature work;
+    private int flagLocation = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,24 +71,43 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
                 reff.push().setValue(new_package);
                 Toast.makeText(InviteDeliveryActivity.this, "Package registered successfully!", Toast.LENGTH_LONG).show();
                 break;
-            default:
-                Intent intent = new PlaceAutocomplete.IntentBuilder()
-                        .accessToken(Mapbox.getAccessToken() != null ? Mapbox.getAccessToken() : getString(R.string.access_token))
-                        .placeOptions(PlaceOptions.builder()
-                                .country("IL")
-                                .backgroundColor(Color.parseColor("#EEEEEE"))
-                                .limit(10)
-                                .build(PlaceOptions.MODE_CARDS))
-                        .build(InviteDeliveryActivity.this);
-                startActivityForResult(intent, REQUEST_CODE_AUTOCOMPLETE);
+            case R.id.edtxt_location:
+                flagLocation = 1;
+                placeAutoCoplete();
+                break;
+            case R.id.edtxt_destination:
+                flagLocation = 0;
+                placeAutoCoplete();
+                break;
         }
     }
+
+    public void placeAutoCoplete(){
+        Intent intent = new PlaceAutocomplete.IntentBuilder()
+            .accessToken(Mapbox.getAccessToken() != null ? Mapbox.getAccessToken() : getString(R.string.access_token))
+            .placeOptions(PlaceOptions.builder()
+                    .country("IL")
+                    .backgroundColor(Color.parseColor("#EEEEEE"))
+                    .limit(10)
+                    .build(PlaceOptions.MODE_CARDS))
+            .build(InviteDeliveryActivity.this);
+        startActivityForResult(intent, REQUEST_CODE_AUTOCOMPLETE);
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_AUTOCOMPLETE) {
             CarmenFeature feature = PlaceAutocomplete.getPlace(data);
+            if(flagLocation == 1){
+                new_package.setLocation(feature.text());
+                edtxtLocation.setText(feature.text());
+            }
+            else{
+                new_package.setDestination(feature.text());
+                edtxtDestination.setText(feature.text());
+            }
 
         }
     }
