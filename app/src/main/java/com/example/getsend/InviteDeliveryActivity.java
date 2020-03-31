@@ -5,22 +5,16 @@ import android.graphics.Color;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
-import com.mapbox.api.geocoding.v5.GeocodingCriteria;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
-import com.mapbox.geojson.Feature;
-import com.mapbox.geojson.FeatureCollection;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete;
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions;
-import com.mapbox.mapboxsdk.style.light.Position;
-import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
-import com.mapbox.services.android.ui.geocoder.GeocoderAutoCompleteView;
-import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
+
 
 
 public class InviteDeliveryActivity extends AppCompatActivity implements View.OnClickListener{
@@ -70,6 +64,10 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
                 //push package to DB
                 reff.push().setValue(new_package);
                 Toast.makeText(InviteDeliveryActivity.this, "Package registered successfully!", Toast.LENGTH_LONG).show();
+                edtxtWeight.setText("");
+                edtxtSize.setText("");
+                edtxtLocation.setText("");
+                edtxtDestination.setText("");
                 break;
             case R.id.edtxt_location:
                 flagLocation = 1;

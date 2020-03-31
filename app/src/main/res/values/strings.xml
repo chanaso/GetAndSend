@@ -8,8 +8,8 @@
     <string name="textviewwight">the package wight</string>
     <string name="order_delivery_view">Order delivery</string>
     <string name="view2">Complete the following information about your package:</string>
-    <string name="weight_view">Weight:</string>
-    <string name="size_view">Size:</string>
+    <string name="weight_view">Weight(gr):</string>
+    <string name="size_view">Size(sqm):</string>
     <string name="location_view">Location:</string>
     <string name="destination_view">Destination:</string>
     <string name="hint_view">current location or post office where the package is located</string>
