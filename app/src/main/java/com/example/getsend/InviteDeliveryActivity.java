@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.mapbox.api.geocoding.v5.MapboxGeocoding;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete;
@@ -99,6 +100,10 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_AUTOCOMPLETE) {
             CarmenFeature feature = PlaceAutocomplete.getPlace(data);
             if(flagLocation == 1){
+                MapboxGeocoding mapboxGeocoding = MapboxGeocoding.builder()
+                        .accessToken(String.valueOf(R.string.access_token))
+                        .query(feature.text())
+                        .build();
                 new_package.setLocation(feature.text());
                 edtxtLocation.setText(feature.text());
             }
