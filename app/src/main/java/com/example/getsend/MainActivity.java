@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onExplanationNeeded(List<String> permissionsToExplain) {
-        Toast.makeText(this, "user_location_permission_explanation", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, R.string.user_location_permission_explanation, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             });
         } else {
-            Toast.makeText(this, "user_location_permission_not_granted", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.user_location_permission_not_granted, Toast.LENGTH_LONG).show();
             finish();
         }
     }

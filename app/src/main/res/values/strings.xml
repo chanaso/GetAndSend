@@ -12,5 +12,12 @@
     <string name="size_view">Size(sqm):</string>
     <string name="location_view">Location:</string>
     <string name="destination_view">Destination:</string>
-    <string name="hint_view">current location or post office where the package is located</string>
+
+    <!--Location tracking activity permission toasts-->
+    <string name="user_location_permission_explanation">This app needs location permissions in order to show its functionality.</string>
+    <string name="user_location_permission_not_granted">You didn\'t grant location permissions.</string>
+
+    <!-- JoinAsDeliveryManActivity -->
+    <string name="capital">Capital: %1$s</string>
+    <string name="tap_on_marker_instruction">Tap on a marker</string>
 </resources>
