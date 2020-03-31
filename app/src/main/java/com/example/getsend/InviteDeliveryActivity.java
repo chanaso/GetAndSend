@@ -39,7 +39,8 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
     private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
     private int flagLocation = 0;
     private Point firstResultPoint;
-    MapboxGeocoding mapboxGeocoding;
+    private MapboxGeocoding mapboxGeocoding;
+    private String locationToGeo, locationPoint, destinationPoint;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +104,7 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
                         .build(PlaceOptions.MODE_CARDS))
                 .build(InviteDeliveryActivity.this);
         startActivityForResult(intent, REQUEST_CODE_AUTOCOMPLETE);
+        return;
     }
 
     @Override
@@ -110,16 +112,18 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_AUTOCOMPLETE) {
             CarmenFeature feature = PlaceAutocomplete.getPlace(data);
+            //location case
             if (flagLocation == 1) {
-                mapboxGeocoding = MapboxGeocoding.builder()
-                        .accessToken(getString(R.string.access_token))
-                        .query(feature.text())
-                        .build();
-                String s = mapboxGeocoding();
-                Toast.makeText(InviteDeliveryActivity.this, "ggggggg"+s, Toast.LENGTH_LONG).show();
+                locationToGeo = feature.text();
+                locationPoint = mapboxGeocoding(locationToGeo);
+                Toast.makeText(InviteDeliveryActivity.this, "ggggggg"+locationPoint, Toast.LENGTH_LONG).show();
                 new_package.setLocation(feature.text());
                 edtxtLocation.setText(feature.text());
+                //destination case
             } else {
+                locationToGeo = feature.text();
+                destinationPoint = mapboxGeocoding(locationToGeo);
+                Toast.makeText(InviteDeliveryActivity.this, "mmmmm"+locationPoint, Toast.LENGTH_LONG).show();
                 new_package.setDestination(feature.text());
                 edtxtDestination.setText(feature.text());
             }
@@ -127,7 +131,11 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
         }
     }
 
-    public String mapboxGeocoding() {
+    public String mapboxGeocoding(String locationToGeo) {
+        mapboxGeocoding = MapboxGeocoding.builder()
+                .accessToken(getString(R.string.access_token))
+                .query(locationToGeo)
+                .build();
         mapboxGeocoding.enqueueCall(new Callback<GeocodingResponse>() {
             @Override
             public void onResponse(Call<GeocodingResponse> call, Response<GeocodingResponse> response) {
