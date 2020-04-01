@@ -90,12 +90,9 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
                     return;
                 }
                 final String size = edtxtSize.getText().toString().trim();
-                //final String location = edtxtLocation.getText().toString().trim();
-                final String destination = edtxtDestination.getText().toString().trim();
                 final double weight = Double.parseDouble(edtxtWeight.getText().toString());
 
                 new_package.setSize(size);
-                new_package.setDestination(destination);
                 new_package.setWeight(weight);
 
                 //push package to DB
