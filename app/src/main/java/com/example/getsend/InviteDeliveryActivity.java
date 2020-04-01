@@ -129,22 +129,7 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
         startActivityForResult(intent, REQUEST_CODE_AUTOCOMPLETE);
         return;
     }
-    public Feature pointToFeature(PointXY p){
-        // Create geometry
-        PointXY point = new PointXY(38.889462878011365, -77.03525304794312);
 
-        // Create feature with geometry
-        feature = new Feature(point);
-
-        // Set optional feature identifier
-        feature.setIdentifier("MyIdentifier");
-
-        // Set optional feature properties
-        feature.setProperties(new JSONObject());
-
-        // Convert to formatted JSONObject
-        JSONObject geoJSON = feature.toJSON();
-    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -156,8 +141,7 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
                 locationPoint = mapboxGeocoding(locationToGeo);
                 //check if the address found on the map in geocode
                 if(locationPoint != null) {
-                    Toast.makeText(InviteDeliveryActivity.this, ""+locationPoint.coordinates(), Toast.LENGTH_LONG).show();
-                    new_package.setLocation(feature.text());
+                    new_package.setLocation(locationPoint.coordinates().toString());// set delivery location to package
                     edtxtLocation.setText(feature.text());
                 }else{
                     Toast.makeText(InviteDeliveryActivity.this, R.string.reEnter_location, Toast.LENGTH_LONG).show();
@@ -168,11 +152,8 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
                 destinationPoint = mapboxGeocoding(locationToGeo);
                 //check if the address found on the map in geocode
                 if(destinationPoint != null){
-                    Toast.makeText(InviteDeliveryActivity.this, ""+destinationPoint.coordinates(), Toast.LENGTH_LONG).show();
-                    new_package.setDestination(feature.text());
+                    new_package.setDestination(destinationPoint.coordinates().toString());// set delivery destination to package
                     edtxtDestination.setText(feature.text());
-                    PointXY p = new PointXY(destinationPoint.coordinates().get(0),destinationPoint.coordinates().get(1));
-                    pointToFeature(p);
                 }else{
                     Toast.makeText(InviteDeliveryActivity.this, R.string.reEnter_location, Toast.LENGTH_LONG).show();
                 }
@@ -180,8 +161,6 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
 
         }
     }
-
-
     // gets a string address as street name, city ect, and return geojson point
     public Point mapboxGeocoding(String locationToGeo) {
         mapboxGeocoding = MapboxGeocoding.builder()
