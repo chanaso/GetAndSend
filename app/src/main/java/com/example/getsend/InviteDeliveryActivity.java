@@ -15,11 +15,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.mapbox.api.geocoding.v5.MapboxGeocoding;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
+import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete;
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions;
 
+import org.json.JSONObject;
 import java.util.List;
 
 import retrofit2.Call;
@@ -38,9 +40,10 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
     private Package new_package;
     private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
     private int flagLocation = 0;
-    private Point firstResultPoint;
+    private Point firstResultPoint, locationPoint, destinationPoint;
     private MapboxGeocoding mapboxGeocoding;
-    private String locationToGeo, locationPoint, destinationPoint;
+    private String locationToGeo;
+    private Feature feature;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +69,26 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
         switch (view.getId()) {
             case R.id.btn_enter:
                 //create a new object of package
+                if(edtxtWeight.getText().toString().matches("")){
+                    this.edtxtWeight.setError("Weight required");
+                    this.edtxtWeight.requestFocus();
+                    return;
+                }
+                if(edtxtSize.getText().toString().matches("")){
+                    this.edtxtSize.setError("Size required");
+                    this.edtxtSize.requestFocus();
+                    return;
+                }
+                if(edtxtLocation.getText().toString().matches("")){
+                    this.edtxtLocation.setError("Location required");
+                    this.edtxtLocation.requestFocus();
+                    return;
+                }
+                if(edtxtDestination.getText().toString().matches("")){
+                    this.edtxtDestination.setError("Destination required");
+                    this.edtxtDestination.requestFocus();
+                    return;
+                }
                 final String size = edtxtSize.getText().toString().trim();
                 //final String location = edtxtLocation.getText().toString().trim();
                 final String destination = edtxtDestination.getText().toString().trim();
@@ -116,22 +139,36 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
             if (flagLocation == 1) {
                 locationToGeo = feature.text();
                 locationPoint = mapboxGeocoding(locationToGeo);
-                Toast.makeText(InviteDeliveryActivity.this, "ggggggg"+locationPoint, Toast.LENGTH_LONG).show();
-                new_package.setLocation(feature.text());
-                edtxtLocation.setText(feature.text());
+                //check if the address found on the map in geocode
+                if(locationPoint != null) {
+                    Toast.makeText(InviteDeliveryActivity.this, ""+locationPoint.coordinates(), Toast.LENGTH_LONG).show();
+                    new_package.setLocation(feature.text());
+                    edtxtLocation.setText(feature.text());
+                }else{
+                    Toast.makeText(InviteDeliveryActivity.this, R.string.reEnter_location, Toast.LENGTH_LONG).show();
+                }
                 //destination case
             } else {
                 locationToGeo = feature.text();
                 destinationPoint = mapboxGeocoding(locationToGeo);
-                Toast.makeText(InviteDeliveryActivity.this, "mmmmm"+locationPoint, Toast.LENGTH_LONG).show();
-                new_package.setDestination(feature.text());
-                edtxtDestination.setText(feature.text());
+                //check if the address found on the map in geocode
+                if(destinationPoint != null){
+                    Toast.makeText(InviteDeliveryActivity.this, ""+destinationPoint.coordinates(), Toast.LENGTH_LONG).show();
+                    new_package.setDestination(feature.text());
+                    edtxtDestination.setText(feature.text());
+                    PointXY p = new PointXY(destinationPoint.coordinates().get(0),destinationPoint.coordinates().get(1));
+                    pointToFeature(p);
+                }else{
+                    Toast.makeText(InviteDeliveryActivity.this, R.string.reEnter_location, Toast.LENGTH_LONG).show();
+                }
             }
 
         }
     }
 
-    public String mapboxGeocoding(String locationToGeo) {
+
+    // gets a string address as street name, city ect, and return geojson point
+    public Point mapboxGeocoding(String locationToGeo) {
         mapboxGeocoding = MapboxGeocoding.builder()
                 .accessToken(getString(R.string.access_token))
                 .query(locationToGeo)
@@ -139,20 +176,15 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
         mapboxGeocoding.enqueueCall(new Callback<GeocodingResponse>() {
             @Override
             public void onResponse(Call<GeocodingResponse> call, Response<GeocodingResponse> response) {
-
                 List<CarmenFeature> results = response.body().features();
 
                 if (results.size() > 0) {
-
                     // Log the first results Point.
                     firstResultPoint = results.get(0).center();
                     Log.d("s", "onResponse: " + firstResultPoint.toString());
-
                 } else {
-
                     // No result for your request were found.
                     Log.d("f", "onResponse: No result found");
-
                 }
             }
 
@@ -161,8 +193,9 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
                 throwable.printStackTrace();
             }
         });
-        return firstResultPoint+"";
+        return firstResultPoint;
     }
+
 
     public void onDestroy() {
 

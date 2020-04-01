@@ -19,4 +19,8 @@
     <!-- JoinAsDeliveryManActivity -->
     <string name="capital">Capital: %1$s</string>
     <string name="tap_on_marker_instruction">Tap on a marker</string>
+
+    <!-- JoinAsDeliveryManActivity -->
+    <string name="reEnter_location">Please enter a valid location</string>
+
 </resources>

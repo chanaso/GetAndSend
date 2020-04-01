@@ -18,7 +18,7 @@
             android:layout_margin="13dp"
             android:gravity="center"
             android:text="~Order delivery~"
-            android:textColor=".#000000"
+            android:textColor="#000000"
             android:textSize="30dp" />
 
         <TextView
@@ -47,9 +47,10 @@
                 android:id="@+id/edtxt_weight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:inputType="number"
                 android:layout_weight="1"
                 android:ems="10"
-                android:autofillHints="" />
+                />
 
         </LinearLayout>
 
@@ -72,6 +73,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ems="10"
+                android:inputType="number"
                 android:importantForAutofill="no" />
 
         </LinearLayout>
@@ -80,6 +82,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="5dp"
+            android:layout_marginLeft="5dp"
             android:text="@string/location_view"
             android:textColor="#000000" />
 
@@ -89,12 +92,13 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="Click twice to choose location"
-            android:textSize="12sp" />
+            android:textSize="18dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="10dp"
+            android:padding="1dp"
+            android:layout_marginLeft="5dp"
             android:text="@string/destination_view"
             android:textColor="#000000" />
 
@@ -105,7 +109,7 @@
             android:autofillHints=""
             android:ems="10"
             android:hint="Click twice to choose location"
-            android:textSize="12sp" />
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/btn_enter"
