@@ -129,7 +129,22 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
         startActivityForResult(intent, REQUEST_CODE_AUTOCOMPLETE);
         return;
     }
+    public Feature pointToFeature(PointXY p){
+        // Create geometry
+        PointXY point = new PointXY(38.889462878011365, -77.03525304794312);
 
+        // Create feature with geometry
+        feature = new Feature(point);
+
+        // Set optional feature identifier
+        feature.setIdentifier("MyIdentifier");
+
+        // Set optional feature properties
+        feature.setProperties(new JSONObject());
+
+        // Convert to formatted JSONObject
+        JSONObject geoJSON = feature.toJSON();
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
