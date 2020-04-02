@@ -16,7 +16,7 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        sharedPref = getSharedPreferences("userName", MODE_PRIVATE);
+        sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
 
         //getting the current username from the sp
         userName = sharedPref.getString("name", "");
@@ -46,6 +46,8 @@ public class ProfileActivity extends AppCompatActivity {
             case "5":
                 edtRate.setText("★★★★★");
                 break;
+            default:
+                edtRate.setText("☆☆☆☆☆");
         }
     }
 }

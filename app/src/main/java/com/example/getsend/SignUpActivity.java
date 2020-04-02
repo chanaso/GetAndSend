@@ -60,7 +60,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         btnSignUp.setOnClickListener(this);
         btnVerify.setOnClickListener(this);
 
-        sharedPref = getSharedPreferences("userName",MODE_PRIVATE);
+        sharedPref = getSharedPreferences("userDetails",MODE_PRIVATE);
 
     }
 
@@ -176,7 +176,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             return;
         }
         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(codeSend, code);
-        User user = new User(name, phone, pass, 4, -1);
+        User user = new User(name, phone, pass);
         signInWithPhoneAuthCredential(credential, user);
     }
      // sign up user and check if the input code is matched

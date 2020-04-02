@@ -3,6 +3,7 @@ package com.example.getsend;
 public class User {
     private String name, phone, pass;
     private int rate, type;
+    private String[] packages = new String[10];
     //type: 0- deliverman, 1- get delivery.
 
     public User(){
@@ -42,11 +43,12 @@ public class User {
         this.type = type;
     }
 
-    public User(String name, String phone, String pass, int rate, int type) {
+    public User(String name, String phone, String pass) {
         this.name = name;
         this.phone = phone;
         this.pass = pass;
-        this.rate = rate;
-        this.type = type;
+        this.rate = 0;
+        this.type = -1;
+        this.packages = new String[10];
     }
 }

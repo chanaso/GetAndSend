@@ -1,8 +1,12 @@
 package com.example.getsend;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.util.Log;
@@ -10,8 +14,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.firebase.FirebaseError;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.mapbox.api.geocoding.v5.MapboxGeocoding;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
@@ -31,19 +42,18 @@ import retrofit2.Response;
 
 public class InviteDeliveryActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private EditText edtxtWeight;
-    private EditText edtxtSize;
-    private EditText edtxtLocation;
-    private EditText edtxtDestination;
+    private EditText edtxtWeight, edtxtSize, edtxtLocation, edtxtDestination;
+
     private Button btnEnter;
-    private DatabaseReference reff;
+    private DatabaseReference refPackage, refUser;
     private Package new_package;
     private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
+    private static final int USER_TYPE_DELIVERY_GETTER = 1;
     private int flagLocation = 0;
     private Point firstResultPoint, locationPoint, destinationPoint;
     private MapboxGeocoding mapboxGeocoding;
-    private String locationToGeo;
-    private Feature feature;
+    private String locationToGeo, phone;
+    private SharedPreferences sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,9 +68,12 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
         findViewById(R.id.edtxt_destination).setOnClickListener(this);
         btnEnter = (Button) findViewById(R.id.btn_enter);
         //create a new DB table of package if not exist
-        reff = FirebaseDatabase.getInstance().getReference().child("Package");
+        refPackage = FirebaseDatabase.getInstance().getReference().child("Package");
+        refUser = FirebaseDatabase.getInstance().getReference().child("User");
         btnEnter.setOnClickListener(this);
         new_package = new Package();
+        sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
+
 
     }
 
@@ -68,40 +81,18 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_enter:
-                //create a new object of package
-                if(edtxtWeight.getText().toString().matches("")){
-                    this.edtxtWeight.setError("Weight required");
-                    this.edtxtWeight.requestFocus();
-                    return;
-                }
-                if(edtxtSize.getText().toString().matches("")){
-                    this.edtxtSize.setError("Size required");
-                    this.edtxtSize.requestFocus();
-                    return;
-                }
-                if(edtxtLocation.getText().toString().matches("")){
-                    this.edtxtLocation.setError("Location required");
-                    this.edtxtLocation.requestFocus();
-                    return;
-                }
-                if(edtxtDestination.getText().toString().matches("")){
-                    this.edtxtDestination.setError("Destination required");
-                    this.edtxtDestination.requestFocus();
-                    return;
-                }
+                //integrity check
+                checkAllInputs();
+
                 final String size = edtxtSize.getText().toString().trim();
                 final double weight = Double.parseDouble(edtxtWeight.getText().toString());
-
                 new_package.setSize(size);
                 new_package.setWeight(weight);
 
                 //push package to DB
-                reff.push().setValue(new_package);
+                refPackage.push().setValue(new_package);
                 Toast.makeText(InviteDeliveryActivity.this, "Package registered successfully!", Toast.LENGTH_LONG).show();
-                edtxtWeight.setText("");
-                edtxtSize.setText("");
-                edtxtLocation.setText("");
-                edtxtDestination.setText("");
+                userTypeUpdate();
                 break;
             case R.id.edtxt_location:
                 flagLocation = 1;
@@ -112,6 +103,71 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
                 placeAutoCoplete();
                 break;
         }
+    }
+
+    private void userTypeUpdate() {
+        phone = sharedPref.getString("phone", "");
+        // find user by his phone numder
+        Query query = refUser.orderByChild("phone").equalTo(phone);
+        query.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                //change this user type in the database
+                refUser.child(dataSnapshot.getKey()).child("type").setValue(USER_TYPE_DELIVERY_GETTER);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+
+        });
+        SharedPreferences.Editor prefEditor = sharedPref.edit();
+        prefEditor.putString("type", String.valueOf(USER_TYPE_DELIVERY_GETTER));
+    }
+
+
+    // check input correction anf if all edtxt filled
+    private void checkAllInputs() {
+        if(edtxtWeight.getText().toString().matches("")){
+            this.edtxtWeight.setError("Weight required");
+            this.edtxtWeight.requestFocus();
+            return;
+        }
+        if(edtxtSize.getText().toString().matches("")){
+            this.edtxtSize.setError("Size required");
+            this.edtxtSize.requestFocus();
+            return;
+        }
+        if(edtxtLocation.getText().toString().matches("")){
+            this.edtxtLocation.setError("Location required");
+            this.edtxtLocation.requestFocus();
+            return;
+        }
+        if(edtxtDestination.getText().toString().matches("")){
+            this.edtxtDestination.setError("Destination required");
+            this.edtxtDestination.requestFocus();
+            return;
+        }
+    }
+
+    private void cleanEdtTexts() {
+        cleanEdtTexts();
+        edtxtWeight.setText("");
+        edtxtSize.setText("");
+        edtxtLocation.setText("");
+        edtxtDestination.setText("");
     }
 
     public void placeAutoCoplete() {

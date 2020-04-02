@@ -42,7 +42,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         findViewById(R.id.btnLogInID).setOnClickListener(this);
         findViewById(R.id.txtCreateAccountID).setOnClickListener(this);
-        sharedPref = getSharedPreferences("userName",MODE_PRIVATE);
+        sharedPref = getSharedPreferences("userDetails",MODE_PRIVATE);
         ref = FirebaseDatabase.getInstance().getReference().child("User");
     }
 
@@ -52,7 +52,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         String pass = edtxtPassword.getText().toString().trim();
         integrityCheck();
 
-        //check if the user is regiter already and if the phine number exist in db
+        //check if the user is regiter already and if the phone number exist in db
         ref.orderByChild("phone").equalTo(phone).addListenerForSingleValueEvent(new ValueEventListener() {
             String value;
             @Override

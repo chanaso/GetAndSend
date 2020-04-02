@@ -91,7 +91,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="Click twice to choose location"
+            android:clickable="true"
+            android:focusable="false"
+            android:inputType="none"
+            android:hint="Click here to choose location"
             android:textSize="18dp" />
 
         <TextView
@@ -106,9 +109,11 @@
             android:id="@+id/edtxt_destination"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:autofillHints=""
             android:ems="10"
-            android:hint="Click twice to choose location"
+            android:clickable="true"
+            android:focusable="false"
+            android:inputType="none"
+            android:hint="Click here to choose location"
             android:textSize="18sp" />
 
         <Button

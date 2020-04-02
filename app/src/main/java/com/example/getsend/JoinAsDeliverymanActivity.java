@@ -19,9 +19,8 @@ import com.mapbox.mapboxsdk.maps.Style;
 
 import java.util.List;
 
-/**
- * Use the LocationComponent to easily add a device location "puck" to a Mapbox map.
- */
+ // Use the LocationComponent to easily add a device location "puck" to a Mapbox map.
+
 public class JoinAsDeliverymanActivity extends AppCompatActivity implements
         OnMapReadyCallback, PermissionsListener {
 
