@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,8 +46,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private DrawerLayout drawer;
     private String userName, phone, type, rate;
     private SharedPreferences sharedPref;
-    private Button btnInvite;
-    private Button btnJoin;
+    Button btnJoin, btnInvite;
 
     @Override
     protected void  onCreate(Bundle savedInstanceState) {
@@ -80,8 +81,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         rate = sharedPref.getString("rate", "");
         type = sharedPref.getString("type","");
 
-        checkType();
-
+//        checkType();
         NavigationView nav_view= (NavigationView)findViewById(R.id.nav_view);//this is navigation view from my main xml where i call another xml file
         View header = nav_view.getHeaderView(0);//set View header to nav_view first element (i guess)
         TextView txt = (TextView)header.findViewById(R.id.UserNameID);//now assign textview imeNaloga to header.id since we made View header.
@@ -89,8 +89,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         nav_view.setNavigationItemSelectedListener(this);
         nav_view.bringToFront();
 
-
-
+        btnJoin.setVisibility(View.GONE);
     }
 
     private void checkType() {
@@ -105,10 +104,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             btnJoin.setGravity(Gravity.CENTER);
             /////do somthinggggg
             //TODO
-        }else {
-            btnJoin.setVisibility(View.GONE);
-            btnInvite.setText("i want another delivery service");
-            btnInvite.setGravity(Gravity.CENTER);
         }
     }
 

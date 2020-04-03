@@ -135,6 +135,7 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
         });
         SharedPreferences.Editor prefEditor = sharedPref.edit();
         prefEditor.putString("type", String.valueOf(USER_TYPE_DELIVERY_GETTER));
+        prefEditor.commit();
     }
 
 
