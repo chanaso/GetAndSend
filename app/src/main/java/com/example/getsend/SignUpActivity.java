@@ -200,6 +200,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                                         SharedPreferences.Editor prefEditor = sharedPref.edit();
                                         prefEditor.putString("name", user.getName());
                                         prefEditor.putString("phone", user.getPhone());
+                                        prefEditor.putString("type", String.valueOf(user.getType()));
                                         prefEditor.putString("rate", user.getRate() + "");
                                         prefEditor.commit();
                                         startActivity(new Intent(SignUpActivity.this, MainActivity.class));

@@ -63,10 +63,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
-//        findViewById(R.id.btnInvite).setOnClickListener(this);
-//        findViewById(R.id.btnJoin).setOnClickListener(this);
+
         btnInvite = (Button) findViewById(R.id.btnInvite);
-        btnJoin = (Button) findViewById(R.id.btnInvite);
+        btnJoin = (Button) findViewById(R.id.btnJoin);
 
 
         Toolbar toolbar = findViewById(R.id.toolBar);

@@ -28,6 +28,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private DatabaseReference ref;
     private CountryCodePicker ccp;
     public static final String KEY_USER_NAME = "userName";
+    String userName = "", phoneNumber = "", rate = "", type ="";
+
 
 
     @Override
@@ -57,7 +59,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             String value;
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String userName = "", phoneNumber = "", rate = "";
 
                 if (dataSnapshot.getValue() != null){
                     //it means user already registered
@@ -65,6 +66,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         value=data.child("pass").getValue().toString();
                         userName = data.child("name").getValue().toString();
                         phoneNumber = data.child("phone").getValue().toString();
+                        type = data.child("type").getValue().toString();
                         rate = data.child("rate").getValue().toString();
 
                     }
@@ -75,6 +77,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         SharedPreferences.Editor prefEditor = sharedPref.edit();
                         prefEditor.putString("name",userName);
                         prefEditor.putString("phone", phoneNumber);
+                        prefEditor.putString("type", type);
                         prefEditor.putString("rate", rate);
                         prefEditor.commit();
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));

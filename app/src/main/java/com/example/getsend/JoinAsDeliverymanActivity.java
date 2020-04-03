@@ -1,12 +1,27 @@
 package com.example.getsend;
 
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.util.Log;
 import android.widget.Toast;
 
+import com.google.firebase.FirebaseError;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
+import com.mapbox.geojson.Feature;
+import com.mapbox.geojson.FeatureCollection;
+import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.location.LocationComponent;
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
@@ -16,10 +31,17 @@ import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
+import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
+import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
+import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 
+import java.util.ArrayList;
 import java.util.List;
 
- // Use the LocationComponent to easily add a device location "puck" to a Mapbox map.
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconAllowOverlap;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconOffset;
+
+// Use the LocationComponent to easily add a device location "puck" to a Mapbox map.
 
 public class JoinAsDeliverymanActivity extends AppCompatActivity implements
         OnMapReadyCallback, PermissionsListener {
@@ -27,6 +49,14 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
     private PermissionsManager permissionsManager;
     private MapboxMap mapboxMap;
     private MapView mapView;
+    private DatabaseReference refPackage;
+    private List<String> locationsList;
+    private String s;
+    private static final String SOURCE_ID = "SOURCE_ID";
+    private static final String ICON_ID = "ICON_ID";
+    private static final String LAYER_ID = "LAYER_ID";
+    private List<Feature> symbolLayerIconFeatureList;
+    private String flag = "0";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,12 +72,65 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
         mapView = findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
+        refPackage = FirebaseDatabase.getInstance().getReference().child("Package");
+        locationsList = new ArrayList<>();
+        showPackgeLocationOnMap();
+    }
+
+    public void showPackgeLocationOnMap() {
+        refPackage.addValueEventListener(new ValueEventListener()
+        {
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot locationSnapshot: dataSnapshot.getChildren())
+                {
+                    String location = locationSnapshot.child("location").getValue().toString();
+                    locationsList.add(location);
+                }
+                showPackage();
+            }
+
+        });
+    }
+
+    private void showPackage() {
+        Toast.makeText(JoinAsDeliverymanActivity.this,""+ String.valueOf(locationsList),Toast.LENGTH_LONG).show();
+        symbolLayerIconFeatureList = new ArrayList<>();
+        for (String loc:locationsList) {
+            String cleanString = loc.replaceAll("[\\[\\](){}]","");
+            String[] splitToLngLat = cleanString.split(",", 2);
+                    symbolLayerIconFeatureList.add(Feature.fromGeometry(
+                Point.fromLngLat(Double.valueOf(splitToLngLat[0]), Double.valueOf(splitToLngLat[1]))));
+        }
+        flag = "1";
     }
 
     @Override
     public void onMapReady(@NonNull final MapboxMap mapboxMap) {
         JoinAsDeliverymanActivity.this.mapboxMap = mapboxMap;
-        mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
+        mapboxMap.setStyle(new Style.Builder().fromUri("mapbox://styles/mapbox/streets-v11")
+        // Add the SymbolLayer icon image to the map style
+                        .withImage(ICON_ID, BitmapFactory.decodeResource(
+                                JoinAsDeliverymanActivity.this.getResources(), R.drawable.red_marker))
+                        // Adding a GeoJson source for the SymbolLayer icons.
+                        .withSource(new GeoJsonSource(SOURCE_ID,
+                                FeatureCollection.fromFeatures(symbolLayerIconFeatureList)))
+                        // Adding the actual SymbolLayer to the map style. An offset is added that the bottom of the red
+                        // marker icon gets fixed to the coordinate, rather than the middle of the icon being fixed to
+                        // the coordinate point. This is offset is not always needed and is dependent on the image
+                        // that you use for the SymbolLayer icon.
+                        .withLayer(new SymbolLayer(LAYER_ID, SOURCE_ID)
+                                .withProperties(PropertyFactory.iconImage(ICON_ID),
+                                        iconAllowOverlap(true),
+                                        iconOffset(new Float[] {0f, -9f}))
+                        )
+
+                , new Style.OnStyleLoaded() {
             @Override
             public void onStyleLoaded(@NonNull Style style) {
                 enableLocationComponent(style);
