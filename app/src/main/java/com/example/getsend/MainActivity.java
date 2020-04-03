@@ -63,8 +63,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
-        findViewById(R.id.btnInvite).setOnClickListener(this);
-        findViewById(R.id.btnJoin).setOnClickListener(this);
+//        findViewById(R.id.btnInvite).setOnClickListener(this);
+//        findViewById(R.id.btnJoin).setOnClickListener(this);
+        btnInvite = (Button) findViewById(R.id.btnInvite);
+        btnJoin = (Button) findViewById(R.id.btnInvite);
+
 
         Toolbar toolbar = findViewById(R.id.toolBar);
         setSupportActionBar(toolbar);
@@ -81,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         rate = sharedPref.getString("rate", "");
         type = sharedPref.getString("type","");
 
-//        checkType();
+        checkType();
         NavigationView nav_view= (NavigationView)findViewById(R.id.nav_view);//this is navigation view from my main xml where i call another xml file
         View header = nav_view.getHeaderView(0);//set View header to nav_view first element (i guess)
         TextView txt = (TextView)header.findViewById(R.id.UserNameID);//now assign textview imeNaloga to header.id since we made View header.
@@ -89,7 +92,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         nav_view.setNavigationItemSelectedListener(this);
         nav_view.bringToFront();
 
-        btnJoin.setVisibility(View.GONE);
+        btnInvite.setOnClickListener(this);
+        btnJoin.setOnClickListener(this);
+
     }
 
     private void checkType() {
