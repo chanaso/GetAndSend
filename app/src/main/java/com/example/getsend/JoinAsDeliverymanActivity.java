@@ -56,7 +56,6 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
     private static final String ICON_ID = "ICON_ID";
     private static final String LAYER_ID = "LAYER_ID";
     private List<Feature> symbolLayerIconFeatureList;
-    private String flag = "0";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,10 +73,22 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
         mapView.getMapAsync(this);
         refPackage = FirebaseDatabase.getInstance().getReference().child("Package");
         locationsList = new ArrayList<>();
-        showPackgeLocationOnMap();
     }
 
-    public void showPackgeLocationOnMap() {
+
+    private void showPackage() {
+//        Toast.makeText(JoinAsDeliverymanActivity.this,""+ String.valueOf(locationsList),Toast.LENGTH_LONG).show();
+        symbolLayerIconFeatureList = new ArrayList<>();
+        for (String loc:locationsList) {
+            String cleanString = loc.replaceAll("[\\[\\](){}]","");
+            String[] splitToLngLat = cleanString.split(",", 2);
+                    symbolLayerIconFeatureList.add(Feature.fromGeometry(
+                Point.fromLngLat(Double.valueOf(splitToLngLat[0]), Double.valueOf(splitToLngLat[1]))));
+        }
+    }
+
+    @Override
+    public void onMapReady(@NonNull final MapboxMap mapboxMap) {
         refPackage.addValueEventListener(new ValueEventListener()
         {
             @Override
@@ -93,49 +104,35 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
                     locationsList.add(location);
                 }
                 showPackage();
+                Toast.makeText(JoinAsDeliverymanActivity.this, String.valueOf(locationsList),Toast.LENGTH_LONG).show();
+                JoinAsDeliverymanActivity.this.mapboxMap = mapboxMap;
+                mapboxMap.setStyle(new Style.Builder().fromUri("mapbox://styles/mapbox/streets-v11")
+                                // Add the SymbolLayer icon image to the map style
+                                .withImage(ICON_ID, BitmapFactory.decodeResource(
+                                        JoinAsDeliverymanActivity.this.getResources(), R.drawable.red_marker))
+                                // Adding a GeoJson source for the SymbolLayer icons.
+                                .withSource(new GeoJsonSource(SOURCE_ID,
+                                        FeatureCollection.fromFeatures(symbolLayerIconFeatureList)))
+                                // Adding the actual SymbolLayer to the map style. An offset is added that the bottom of the red
+                                // marker icon gets fixed to the coordinate, rather than the middle of the icon being fixed to
+                                // the coordinate point. This is offset is not always needed and is dependent on the image
+                                // that you use for the SymbolLayer icon.
+                                .withLayer(new SymbolLayer(LAYER_ID, SOURCE_ID)
+                                        .withProperties(PropertyFactory.iconImage(ICON_ID),
+                                                iconAllowOverlap(true),
+                                                iconOffset(new Float[] {0f, -9f}))
+                                )
+
+                        , new Style.OnStyleLoaded() {
+                            @Override
+                            public void onStyleLoaded(@NonNull Style style) {
+                                enableLocationComponent(style);
+                            }
+                        });
             }
 
         });
-    }
 
-    private void showPackage() {
-        Toast.makeText(JoinAsDeliverymanActivity.this,""+ String.valueOf(locationsList),Toast.LENGTH_LONG).show();
-        symbolLayerIconFeatureList = new ArrayList<>();
-        for (String loc:locationsList) {
-            String cleanString = loc.replaceAll("[\\[\\](){}]","");
-            String[] splitToLngLat = cleanString.split(",", 2);
-                    symbolLayerIconFeatureList.add(Feature.fromGeometry(
-                Point.fromLngLat(Double.valueOf(splitToLngLat[0]), Double.valueOf(splitToLngLat[1]))));
-        }
-        flag = "1";
-    }
-
-    @Override
-    public void onMapReady(@NonNull final MapboxMap mapboxMap) {
-        JoinAsDeliverymanActivity.this.mapboxMap = mapboxMap;
-        mapboxMap.setStyle(new Style.Builder().fromUri("mapbox://styles/mapbox/streets-v11")
-        // Add the SymbolLayer icon image to the map style
-                        .withImage(ICON_ID, BitmapFactory.decodeResource(
-                                JoinAsDeliverymanActivity.this.getResources(), R.drawable.red_marker))
-                        // Adding a GeoJson source for the SymbolLayer icons.
-                        .withSource(new GeoJsonSource(SOURCE_ID,
-                                FeatureCollection.fromFeatures(symbolLayerIconFeatureList)))
-                        // Adding the actual SymbolLayer to the map style. An offset is added that the bottom of the red
-                        // marker icon gets fixed to the coordinate, rather than the middle of the icon being fixed to
-                        // the coordinate point. This is offset is not always needed and is dependent on the image
-                        // that you use for the SymbolLayer icon.
-                        .withLayer(new SymbolLayer(LAYER_ID, SOURCE_ID)
-                                .withProperties(PropertyFactory.iconImage(ICON_ID),
-                                        iconAllowOverlap(true),
-                                        iconOffset(new Float[] {0f, -9f}))
-                        )
-
-                , new Style.OnStyleLoaded() {
-            @Override
-            public void onStyleLoaded(@NonNull Style style) {
-                enableLocationComponent(style);
-            }
-        });
     }
 
     @SuppressWarnings( {"MissingPermission"})
