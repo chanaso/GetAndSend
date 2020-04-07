@@ -1,21 +1,17 @@
 package com.example.getsend;
 
+import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.graphics.PointF;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.util.Log;
 import android.widget.Toast;
-
-import com.google.firebase.FirebaseError;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
@@ -23,6 +19,7 @@ import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.FeatureCollection;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.location.LocationComponent;
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
 import com.mapbox.mapboxsdk.location.modes.CameraMode;
@@ -38,13 +35,14 @@ import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.media.midi.MidiDeviceInfo.PROPERTY_NAME;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconAllowOverlap;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconOffset;
 
 // Use the LocationComponent to easily add a device location "puck" to a Mapbox map.
 
 public class JoinAsDeliverymanActivity extends AppCompatActivity implements
-        OnMapReadyCallback, PermissionsListener {
+        OnMapReadyCallback, PermissionsListener,MapboxMap.OnMapClickListener {
 
     private PermissionsManager permissionsManager;
     private MapboxMap mapboxMap;
@@ -55,6 +53,8 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
     private static final String SOURCE_ID = "SOURCE_ID";
     private static final String ICON_ID = "ICON_ID";
     private static final String LAYER_ID = "LAYER_ID";
+    private static final String PROPERTY_NAME = "name";
+    private static final String MARKER_LAYER_ID = "MARKER_LAYER_ID";
     private List<Feature> symbolLayerIconFeatureList;
 
     @Override
@@ -76,12 +76,12 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
     }
 
 
-    private void showPackage() {
-//        Toast.makeText(JoinAsDeliverymanActivity.this,""+ String.valueOf(locationsList),Toast.LENGTH_LONG).show();
+    private void convertLoctionPointToFeatures() {
         symbolLayerIconFeatureList = new ArrayList<>();
         for (String loc:locationsList) {
             String cleanString = loc.replaceAll("[\\[\\](){}]","");
             String[] splitToLngLat = cleanString.split(",", 2);
+                    //  convert all locations points to features
                     symbolLayerIconFeatureList.add(Feature.fromGeometry(
                 Point.fromLngLat(Double.valueOf(splitToLngLat[0]), Double.valueOf(splitToLngLat[1]))));
         }
@@ -89,13 +89,13 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
 
     @Override
     public void onMapReady(@NonNull final MapboxMap mapboxMap) {
+        //  extract packages location from packages DB
         refPackage.addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot locationSnapshot: dataSnapshot.getChildren())
@@ -103,8 +103,8 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
                     String location = locationSnapshot.child("location").getValue().toString();
                     locationsList.add(location);
                 }
-                showPackage();
-                Toast.makeText(JoinAsDeliverymanActivity.this, String.valueOf(locationsList),Toast.LENGTH_LONG).show();
+                convertLoctionPointToFeatures();
+                // shows packages location on the map
                 JoinAsDeliverymanActivity.this.mapboxMap = mapboxMap;
                 mapboxMap.setStyle(new Style.Builder().fromUri("mapbox://styles/mapbox/streets-v11")
                                 // Add the SymbolLayer icon image to the map style
@@ -127,6 +127,7 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
                             @Override
                             public void onStyleLoaded(@NonNull Style style) {
                                 enableLocationComponent(style);
+                                mapboxMap.addOnMapClickListener(JoinAsDeliverymanActivity.this);
                             }
                         });
             }
@@ -228,4 +229,30 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
         super.onLowMemory();
         mapView.onLowMemory();
     }
+
+    @Override
+    public boolean onMapClick(@NonNull LatLng point) {
+        //check with of the packages clicked save package id and open in a new page
+        return handleClickIcon(mapboxMap.getProjection().toScreenLocation(point));
+    }
+    private boolean handleClickIcon(PointF screenPoint) {
+        //  check if the clicked point is a package mark
+        List<Feature> features = mapboxMap.queryRenderedFeatures(screenPoint, MARKER_LAYER_ID);
+        if (!features.isEmpty()) {
+            List<Feature> featureList = FeatureCollection.fromFeatures(symbolLayerIconFeatureList).features();
+            if (featureList != null) {
+                for (int i = 0; i < featureList.size(); i++) {
+                    if (featureList.get(i).geometry().equals(features.get(0).geometry())) {
+                        //TODO
+                        startActivity(new Intent(JoinAsDeliverymanActivity.this, MainActivity.class));
+
+                    } else {
+                    }
+                }
+            }
+            return true;
+        }else {
+            return false;
+        }    }
+
 }
