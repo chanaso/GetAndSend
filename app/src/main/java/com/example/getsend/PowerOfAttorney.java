@@ -1,7 +1,8 @@
 package com.example.getsend;
 
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class PowerOfAttorney extends AppCompatActivity {
 
