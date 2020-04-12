@@ -3,8 +3,11 @@ package com.example.getsend;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,20 +37,19 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener, PermissionsListener, NavigationView.OnNavigationItemSelectedListener
 {
-
+    private static final int USER_TYPE_DELIVERY_GETTER = 1;
+    private static final int USER_TYPE_DELIVERYMAN = 0;
     private PermissionsManager permissionsManager;
     private MapboxMap mapboxMap;
     private MapView mapView;
     private Button goBtn ;
     private DrawerLayout drawer;
-    private User user;
-    private String userName, phone, rate;
+    private String userName, phone, type, rate;
     private SharedPreferences sharedPref;
-    private Button btnInvite;
-    private Button btnJoin;
+    Button btnJoin, btnInvite;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void  onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Mapbox access token is configured here. This needs to be called either in your application
@@ -61,9 +63,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
-        user = new User();
-        findViewById(R.id.btnInvite).setOnClickListener(this);
-        findViewById(R.id.btnJoin).setOnClickListener(this);
+
+        btnInvite = (Button) findViewById(R.id.btnInvite);
+        btnJoin = (Button) findViewById(R.id.btnJoin);
+
 
         Toolbar toolbar = findViewById(R.id.toolBar);
         setSupportActionBar(toolbar);
@@ -74,14 +77,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         toggle.syncState();
 
         //getting the current username from the sp
-        sharedPref = getSharedPreferences("userName", MODE_PRIVATE);
+        sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
         userName = sharedPref.getString("name", "");
         phone = sharedPref.getString("phone", "");
         rate = sharedPref.getString("rate", "");
-        user.setName(userName);
-        user.setPhone(phone);
-        user.setRate(Integer.parseInt(rate));
+        type = sharedPref.getString("type","");
 
+        checkType();
         NavigationView nav_view= (NavigationView)findViewById(R.id.nav_view);//this is navigation view from my main xml where i call another xml file
         View header = nav_view.getHeaderView(0);//set View header to nav_view first element (i guess)
         TextView txt = (TextView)header.findViewById(R.id.UserNameID);//now assign textview imeNaloga to header.id since we made View header.
@@ -89,8 +91,24 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         nav_view.setNavigationItemSelectedListener(this);
         nav_view.bringToFront();
 
+        btnInvite.setOnClickListener(this);
+        btnJoin.setOnClickListener(this);
 
+    }
 
+    private void checkType() {
+        if(type.equals(String.valueOf(USER_TYPE_DELIVERY_GETTER))){
+            btnJoin.setVisibility(View.GONE);
+            btnInvite.setText("i want another delivery service");
+            btnInvite.setGravity(Gravity.CENTER);
+        }
+        if(type.equals(String.valueOf(USER_TYPE_DELIVERYMAN))){
+            btnInvite.setVisibility(View.GONE);
+            btnJoin.setText("i want to take another delivery");
+            btnJoin.setGravity(Gravity.CENTER);
+            /////do somthinggggg
+            //TODO
+        }
     }
 
     @Override
