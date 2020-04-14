@@ -47,6 +47,7 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
     private Button btnEnter;
     private DatabaseReference refPackage, refUser;
     private Package new_package;
+    private User user;
     private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
     private static final int USER_TYPE_DELIVERY_GETTER = 1;
     private int flagLocation = 0;
@@ -72,8 +73,8 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
         refUser = FirebaseDatabase.getInstance().getReference().child("User");
         btnEnter.setOnClickListener(this);
         new_package = new Package();
+        user = new User();
         sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
-
 
     }
 
@@ -93,6 +94,9 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
                 refPackage.push().setValue(new_package);
                 Toast.makeText(InviteDeliveryActivity.this, "Package registered successfully!", Toast.LENGTH_LONG).show();
                 userTypeUpdate();
+                user.setPhone(phone);
+                user.setName(sharedPref.getString("name", ""));
+                addPacakgeToCurrentUser();
                 break;
             case R.id.edtxt_location:
                 flagLocation = 1;
@@ -103,6 +107,55 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
                 placeAutoCoplete();
                 break;
         }
+    }
+
+    private void addPacakgeToCurrentUser() {
+        String packageKeyId = "";
+        refPackage.orderByKey().limitToFirst(2).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot dataSnap : dataSnapshot.getChildren()) {
+                    packageKeyId = dataSnap.getKey();
+                }
+                    //Do what you want with the key Node
+                    // find user by his phone numder
+                    Query query = refUser.orderByChild("phone").equalTo(phone);
+                    query.addChildEventListener(new ChildEventListener() {
+                        @Override
+                        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                            //change this user type in the database
+                            String packages = refUser.child(dataSnapshot.getKey()).child("packages").toString();
+                            refUser.child(dataSnapshot.getKey()).child("packages").setValue(packages + packageKeyId);
+                        }
+
+                        @Override
+                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        }
+
+                        @Override
+                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                        }
+
+                        @Override
+                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                        }
+
+                    });
+
+                }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+
+        });
+
     }
 
     private void userTypeUpdate() {
