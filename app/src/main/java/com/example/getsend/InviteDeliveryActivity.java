@@ -50,10 +50,11 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
     private User user;
     private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
     private static final int USER_TYPE_DELIVERY_GETTER = 1;
+    private static final String DELIMITER = " ";
     private int flagLocation = 0;
     private Point firstResultPoint, locationPoint, destinationPoint;
     private MapboxGeocoding mapboxGeocoding;
-    private String locationToGeo, phone;
+    private String locationToGeo, phone, lastPackageKey;
     private SharedPreferences sharedPref;
 
     @Override
@@ -91,12 +92,15 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
                 new_package.setWeight(weight);
 
                 //push package to DB
-                refPackage.push().setValue(new_package);
+                DatabaseReference newRefPackage = refPackage.push();
+                lastPackageKey = newRefPackage.getKey();
+                newRefPackage.setValue(new_package);
                 Toast.makeText(InviteDeliveryActivity.this, "Package registered successfully!", Toast.LENGTH_LONG).show();
                 userTypeUpdate();
                 user.setPhone(phone);
                 user.setName(sharedPref.getString("name", ""));
                 addPacakgeToCurrentUser();
+                cleanEdtTexts();
                 break;
             case R.id.edtxt_location:
                 flagLocation = 1;
@@ -110,53 +114,23 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
     }
 
     private void addPacakgeToCurrentUser() {
-        String packageKeyId = "";
-        refPackage.orderByKey().limitToFirst(2).addListenerForSingleValueEvent(new ValueEventListener() {
+        refUser.orderByChild("phone").equalTo(phone).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
-                for (DataSnapshot dataSnap : dataSnapshot.getChildren()) {
-                    packageKeyId = dataSnap.getKey();
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot datas : dataSnapshot.getChildren()) {
+                        String userPackages = datas.child("packages").getValue().toString();
+                        refUser.child(datas.getKey()).child("packages").setValue(userPackages + lastPackageKey + DELIMITER);
+                    }
                 }
-                    //Do what you want with the key Node
-                    // find user by his phone numder
-                    Query query = refUser.orderByChild("phone").equalTo(phone);
-                    query.addChildEventListener(new ChildEventListener() {
-                        @Override
-                        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                            //change this user type in the database
-                            String packages = refUser.child(dataSnapshot.getKey()).child("packages").toString();
-                            refUser.child(dataSnapshot.getKey()).child("packages").setValue(packages + packageKeyId);
-                        }
-
-                        @Override
-                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        }
-
-                        @Override
-                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                        }
-
-                        @Override
-                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                        }
-
-                    });
-
-                }
-
+            }
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            public void onCancelled(DatabaseError databaseError) {
 
             }
-
         });
-
     }
+
 
     private void userTypeUpdate() {
         phone = sharedPref.getString("phone", "");
@@ -217,7 +191,6 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
     }
 
     private void cleanEdtTexts() {
-        cleanEdtTexts();
         edtxtWeight.setText("");
         edtxtSize.setText("");
         edtxtLocation.setText("");
@@ -248,7 +221,8 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
                 locationPoint = mapboxGeocoding(locationToGeo);
                 //check if the address found on the map in geocode
                 if(locationPoint != null) {
-                    new_package.setLocation(locationPoint.coordinates().toString());// set delivery location to package
+                    new_package.setGeoLocation(locationPoint.coordinates().toString());// set delivery location to package
+                    new_package.setLocation(locationToGeo);
                     edtxtLocation.setText(feature.text());
                 }else{
                     Toast.makeText(InviteDeliveryActivity.this, R.string.reEnter_location, Toast.LENGTH_LONG).show();
@@ -259,7 +233,8 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
                 destinationPoint = mapboxGeocoding(locationToGeo);
                 //check if the address found on the map in geocode
                 if(destinationPoint != null){
-                    new_package.setDestination(destinationPoint.coordinates().toString());// set delivery destination to package
+                    new_package.setGeoDestination(destinationPoint.coordinates().toString());// set delivery destination to package
+                    new_package.setDestination(locationToGeo);
                     edtxtDestination.setText(feature.text());
                 }else{
                     Toast.makeText(InviteDeliveryActivity.this, R.string.reEnter_location, Toast.LENGTH_LONG).show();

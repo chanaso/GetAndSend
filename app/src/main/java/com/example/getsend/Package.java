@@ -1,7 +1,7 @@
 package com.example.getsend;
 
 public class Package {
-    private String size, location, destination;
+    private String size, location, destination, geoLocation, geoDestination;
     private double weight;
 
     public Package(){
@@ -34,9 +34,27 @@ public class Package {
 
     public double getWeight(){ return weight; }
 
-    public Package(String size, String location, String destination, double weight) {
+    public String getGeoLocation() {
+        return geoLocation;
+    }
+
+    public void setGeoLocation(String geoLocation) {
+        this.geoLocation = geoLocation;
+    }
+
+    public String getGeoDestination() {
+        return geoDestination;
+    }
+
+    public void setGeoDestination(String geoDestination) {
+        this.geoDestination = geoDestination;
+    }
+
+    public Package(String size, String location, String geoLocation, String geoDestination, String destination, double weight) {
         this.size = size;
         this.location = location;
+        this.geoLocation = geoLocation;
+        this.geoDestination = geoDestination;
         this.destination = destination;
         this.weight = weight;
     }
