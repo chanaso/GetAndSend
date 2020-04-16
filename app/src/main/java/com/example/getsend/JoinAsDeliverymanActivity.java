@@ -100,7 +100,7 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot locationSnapshot: dataSnapshot.getChildren())
                 {
-                    String location = locationSnapshot.child("location").getValue().toString();
+                    String location = locationSnapshot.child("geoLocation").getValue().toString();
                     locationsList.add(location);
                 }
                 convertLoctionPointToFeatures();
@@ -244,6 +244,7 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
                 for (int i = 0; i < featureList.size(); i++) {
                     if (featureList.get(i).geometry().equals(features.get(0).geometry())) {
                         //TODO
+                        Toast.makeText(this, "ppp\n"+featureList.get(i).geometry()+"\n"+features.get(0).geometry(), Toast.LENGTH_LONG).show();
                         startActivity(new Intent(JoinAsDeliverymanActivity.this, MainActivity.class));
 
                     } else {
