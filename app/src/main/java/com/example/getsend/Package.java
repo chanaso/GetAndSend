@@ -1,7 +1,7 @@
 package com.example.getsend;
 
 public class Package {
-    private String size, location, destination, geoLocation, geoDestination;
+    private String size, location, destination, geoLocation, geoDestination, packageOwnerId, deliveryman;
     private double weight;
 
     public Package(){
@@ -50,12 +50,30 @@ public class Package {
         this.geoDestination = geoDestination;
     }
 
-    public Package(String size, String location, String geoLocation, String geoDestination, String destination, double weight) {
+    public String getPackageOwnerId() {
+        return packageOwnerId;
+    }
+
+    public void setPackageOwnerId(String packageOwnerId) {
+        this.packageOwnerId = packageOwnerId;
+    }
+
+    public String getDeliveryman() {
+        return deliveryman;
+    }
+
+    public void setDeliveryman(String deliveryman) {
+        this.deliveryman = deliveryman;
+    }
+
+    public Package(String size, String location, String geoLocation, String geoDestination, String destination, double weight, String packageOwnerId) {
         this.size = size;
         this.location = location;
         this.geoLocation = geoLocation;
         this.geoDestination = geoDestination;
         this.destination = destination;
         this.weight = weight;
+        this.packageOwnerId = packageOwnerId;
+        this.deliveryman = "";
     }
 }

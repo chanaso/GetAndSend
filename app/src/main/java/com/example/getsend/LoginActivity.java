@@ -28,7 +28,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private DatabaseReference ref;
     private CountryCodePicker ccp;
     public static final String KEY_USER_NAME = "userName";
-    String userName = "", phoneNumber = "", rate = "", type ="";
+    private String userName, phoneNumber, rate, type, userKey;
 
 
 
@@ -68,6 +68,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         phoneNumber = data.child("phone").getValue().toString();
                         type = data.child("type").getValue().toString();
                         rate = data.child("rate").getValue().toString();
+                        userKey = data.getKey();
 
                     }
                     //check if the input password is correct
@@ -79,6 +80,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         prefEditor.putString("phone", phoneNumber);
                         prefEditor.putString("type", type);
                         prefEditor.putString("rate", rate);
+                        prefEditor.putString("userKey", userKey);
                         prefEditor.commit();
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
                     }

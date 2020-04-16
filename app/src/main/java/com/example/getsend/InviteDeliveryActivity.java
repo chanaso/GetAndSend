@@ -90,6 +90,7 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
                 final double weight = Double.parseDouble(edtxtWeight.getText().toString());
                 new_package.setSize(size);
                 new_package.setWeight(weight);
+                new_package.setPackageOwnerId(sharedPref.getString("userKey", ""));
 
                 //push package to DB
                 DatabaseReference newRefPackage = refPackage.push();
