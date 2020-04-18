@@ -6,9 +6,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class PowerOfAttorney extends AppCompatActivity {
 
+    Signature signature;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_power_of_attorney);
+        signature = new Signature(this, null);
+        setContentView(signature);
     }
 }
