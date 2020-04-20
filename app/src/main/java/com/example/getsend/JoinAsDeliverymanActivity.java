@@ -19,6 +19,7 @@ import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.FeatureCollection;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.location.LocationComponent;
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
@@ -73,6 +74,7 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
         mapView.getMapAsync(this);
         refPackage = FirebaseDatabase.getInstance().getReference().child("Package");
         locationsList = new ArrayList<>();
+
     }
 
 
@@ -115,8 +117,7 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
                                         FeatureCollection.fromFeatures(symbolLayerIconFeatureList)))
                                 // Adding the actual SymbolLayer to the map style. An offset is added that the bottom of the red
                                 // marker icon gets fixed to the coordinate, rather than the middle of the icon being fixed to
-                                // the coordinate point. This is offset is not always needed and is dependent on the image
-                                // that you use for the SymbolLayer icon.
+                                // the coordinate point.
                                 .withLayer(new SymbolLayer(LAYER_ID, SOURCE_ID)
                                         .withProperties(PropertyFactory.iconImage(ICON_ID),
                                                 iconAllowOverlap(true),
@@ -237,7 +238,8 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
     }
     private boolean handleClickIcon(PointF screenPoint) {
         //  check if the clicked point is a package mark
-        List<Feature> features = mapboxMap.queryRenderedFeatures(screenPoint, MARKER_LAYER_ID);
+        List<Feature> features =  mapboxMap.queryRenderedFeatures(screenPoint, MARKER_LAYER_ID);
+        Toast.makeText(this, "fgf"+features,Toast.LENGTH_LONG).show();
         if (!features.isEmpty()) {
             List<Feature> featureList = FeatureCollection.fromFeatures(symbolLayerIconFeatureList).features();
             if (featureList != null) {
@@ -255,5 +257,5 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
         }else {
             return false;
         }    }
-
+        
 }

@@ -1,7 +1,7 @@
 package com.example.getsend;
 
 public class Package {
-    private String size, location, destination, geoLocation, geoDestination, packageOwnerId, deliveryman;
+    private String size, location, destination, geoLocation, geoDestination, packageOwnerId, deliveryman, status;
     private double weight;
 
     public Package(){
@@ -66,6 +66,14 @@ public class Package {
         this.deliveryman = deliveryman;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public Package(String size, String location, String geoLocation, String geoDestination, String destination, double weight, String packageOwnerId) {
         this.size = size;
         this.location = location;
@@ -75,5 +83,6 @@ public class Package {
         this.weight = weight;
         this.packageOwnerId = packageOwnerId;
         this.deliveryman = "";
+        this.status = "waiting...";
     }
 }
