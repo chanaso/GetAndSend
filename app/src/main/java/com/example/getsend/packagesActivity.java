@@ -17,8 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
-
+import androidx.appcompat.widget.Toolbar;
 import com.google.firebase.FirebaseError;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -28,21 +27,21 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class packagesActivity extends AppCompatActivity {
-    private Toolbar toolbar;
     private ListView listView;
     private SharedPreferences sharedPref;
-    private String userName, phone, rate, userKey;
+    private String userName, phone, rate, userKey, flag = "0";
+    ArrayList<String> userPackagesList = new ArrayList<String>();
+
     DatabaseReference refUser, refPackage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_packages);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(getResources().getString(R.string.app_name));
         listView = (ListView) findViewById(R.id.listView);
         sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
         refUser = FirebaseDatabase.getInstance().getReference().child("User");
@@ -76,11 +75,42 @@ public class packagesActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    for (DataSnapshot datas : dataSnapshot.getChildren()) {
-                        String userPackages = datas.child("packages").getValue().toString();
-                        String[] userPackagesList = userPackages.split(" ");
-                        Toast.makeText(packagesActivity.this,"fvdc"+userPackagesList,Toast.LENGTH_LONG).show();
+                    User user  = dataSnapshot.getValue(User.class);
+                    if(user.getPackages().equals(""))
+                    {
+                        // theres no packsges for the current user
+                        ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(packagesActivity.this,
+                        android.R.layout.simple_list_item_1,
+                        new String[]{"No packages history"});
+                        listView.setAdapter(mAdapter);
+                    }else{
+                        String userPackages = user.getPackages();
+                        String[] userPackagesIdList = userPackages.split(" ");
+                        ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(packagesActivity.this,
+                                android.R.layout.simple_list_item_1,
+                                userPackagesList);
+                        listView.setAdapter(mAdapter);
+                        for (String i : userPackagesIdList) {
+                            refPackage.child(i).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshotP) {
+                                    if (dataSnapshotP.exists()) {
+                                        Package pack = dataSnapshotP.getValue(Package.class);
+                                        userPackagesList.add(pack.getLocation()+"\n"+pack.getStatus());
+                                        mAdapter.notifyDataSetChanged();
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
+
+
                     }
+
                 }
             }
             @Override

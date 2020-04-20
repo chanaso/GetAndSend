@@ -5,7 +5,8 @@ public class Package {
     private double weight;
 
     public Package(){
-
+        this.deliveryman = "";
+        this.status = "waiting...";
     }
 
     public String getSize() {
@@ -74,7 +75,8 @@ public class Package {
         this.status = status;
     }
 
-    public Package(String size, String location, String geoLocation, String geoDestination, String destination, double weight, String packageOwnerId) {
+    public Package(String size, String location, String geoLocation, String geoDestination,
+                   String destination, double weight, String packageOwnerId) {
         this.size = size;
         this.location = location;
         this.geoLocation = geoLocation;
