@@ -5,10 +5,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -270,7 +268,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 startActivity(new Intent(MainActivity.this, ProfileActivity.class));
                 break;
             case R.id.nav_packeges:
-                startActivity(new Intent(MainActivity.this, packagesActivity.class));
+                startActivity(new Intent(MainActivity.this, PackagesActivity.class));
                 break;
             case R.id.nav_sign_out:
                 signOut();
