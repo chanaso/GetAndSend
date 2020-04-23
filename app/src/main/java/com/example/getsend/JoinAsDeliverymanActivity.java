@@ -3,6 +3,7 @@ package com.example.getsend;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.PointF;
+import android.graphics.RectF;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,6 +33,8 @@ import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
 import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,7 +88,7 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
             String[] splitToLngLat = cleanString.split(",", 2);
                     //  convert all locations points to features
                     symbolLayerIconFeatureList.add(Feature.fromGeometry(
-                Point.fromLngLat(Double.valueOf(splitToLngLat[0]), Double.valueOf(splitToLngLat[1]))));
+                Point.fromLngLat(Double.parseDouble(splitToLngLat[0]), Double.parseDouble(splitToLngLat[1]))));
         }
     }
 
@@ -99,7 +102,7 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
 
             }
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot locationSnapshot: dataSnapshot.getChildren())
                 {
                     String location = locationSnapshot.child("geoLocation").getValue().toString();
@@ -124,12 +127,9 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
                                                 iconOffset(new Float[] {0f, -9f}))
                                 )
 
-                        , new Style.OnStyleLoaded() {
-                            @Override
-                            public void onStyleLoaded(@NonNull Style style) {
-                                enableLocationComponent(style);
-                                mapboxMap.addOnMapClickListener(JoinAsDeliverymanActivity.this);
-                            }
+                        , style -> {
+                            enableLocationComponent(style);
+                            mapboxMap.addOnMapClickListener(JoinAsDeliverymanActivity.this);
                         });
             }
 
@@ -176,12 +176,7 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
     @Override
     public void onPermissionResult(boolean granted) {
         if (granted) {
-            mapboxMap.getStyle(new Style.OnStyleLoaded() {
-                @Override
-                public void onStyleLoaded(@NonNull Style style) {
-                    enableLocationComponent(style);
-                }
-            });
+            mapboxMap.getStyle(this::enableLocationComponent);
         } else {
             Toast.makeText(this, "user_location_permission_not_granted", Toast.LENGTH_LONG).show();
             finish();
@@ -214,7 +209,7 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NotNull Bundle outState) {
         super.onSaveInstanceState(outState);
         mapView.onSaveInstanceState(outState);
     }
@@ -238,18 +233,26 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
     }
     private boolean handleClickIcon(PointF screenPoint) {
         //  check if the clicked point is a package mark
-        List<Feature> features =  mapboxMap.queryRenderedFeatures(screenPoint, MARKER_LAYER_ID);
-        Toast.makeText(this, "fgf"+features,Toast.LENGTH_LONG).show();
+        // get pointF of them
+//        RectF rectF = new RectF(screenPoint.x-10, screenPoint.y-10, screenPoint.x+10, screenPoint.y+10);
+
+        List<Feature> features = mapboxMap.queryRenderedFeatures(screenPoint);
+//        List<Feature> features =  mapboxMap.queryRenderedFeatures(screenPoint, MARKER_LAYER_ID);
         if (!features.isEmpty()) {
+            Feature feature = features.get(0);
+            Toast.makeText(this, "gggggg" + feature.geometry(), Toast.LENGTH_LONG).show();
             List<Feature> featureList = FeatureCollection.fromFeatures(symbolLayerIconFeatureList).features();
             if (featureList != null) {
                 for (int i = 0; i < featureList.size(); i++) {
-                    if (featureList.get(i).geometry().equals(features.get(0).geometry())) {
+                    if (featureList.get(i).geometry().equals(feature.geometry())) {
                         //TODO
-                        Toast.makeText(this, "ppp\n"+featureList.get(i).geometry()+"\n"+features.get(0).geometry(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, "mmmmmm" + feature.geometry(), Toast.LENGTH_LONG).show();
+
+//                        Toast.makeText(this, "ppp\n"+featureList.get(i).geometry()+"\n"+features.get(0).geometry(), Toast.LENGTH_LONG).show();
                         startActivity(new Intent(JoinAsDeliverymanActivity.this, MainActivity.class));
 
                     } else {
+                        //TODO
                     }
                 }
             }

@@ -6,8 +6,6 @@ import android.app.ListActivity;
 import android.os.Bundle;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,14 +26,13 @@ public class PackageActivity extends AppCompatActivity {
             // convert json to Package object
             Gson gson = new Gson();
             pack = gson.fromJson(packStr , Package.class);
-            Toast.makeText(PackageActivity.this, pack.getPackageOwnerId(), Toast.LENGTH_LONG).show();
         }
 
         edtSize = findViewById(R.id.edtSizeID);
         edtSize.setText(pack.getSize());
 
         edtWeight = findViewById(R.id.edtWeightID);
-        edtWeight.setText(pack.getWeight()+"");
+        edtWeight.setText(String.valueOf(pack.getWeight()));
 
         edtLocation = findViewById(R.id.edtLocationID);
         edtLocation.setText(pack.getLocation());
@@ -43,7 +40,7 @@ public class PackageActivity extends AppCompatActivity {
         edtDestination = findViewById(R.id.edtDestinationID);
         edtDestination.setText(pack.getDestination());
 
-        if(pack.getDeliveryman() == "") {
+        if(!pack.getDeliveryman().equals("")) {
             edtdelivery = findViewById(R.id.edtDeliveryID);
             edtdelivery.setVisibility(View.VISIBLE);
             edtdelivery.setText(pack.getDeliveryman());
