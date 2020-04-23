@@ -247,7 +247,7 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
 //        List<Feature> features =  mapboxMap.queryRenderedFeatures(screenPoint, MARKER_LAYER_ID);
         if (!features.isEmpty()) {
             Feature feature = features.get(0);
-            Toast.makeText(this, "gggggg" + feature.geometry(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "gggggg" + feature.properties(), Toast.LENGTH_LONG).show();
             List<Feature> featureList = FeatureCollection.fromFeatures(symbolLayerIconFeatureList).features();
             if (featureList != null) {
                 for (int i = 0; i < featureList.size(); i++) {

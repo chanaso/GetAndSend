@@ -12,7 +12,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 
 public class PackageActivity extends AppCompatActivity {
-    private TextView edtSize, edtWeight, edtLocation, edtDestination, edtdelivery, edtStatus;
+    private TextView edtSize, edtWeight, edtLocation, edtDestination, edtdelivery, edtStatus, edtPackageId;
     private Package pack;
 
     @Override
@@ -27,6 +27,9 @@ public class PackageActivity extends AppCompatActivity {
             Gson gson = new Gson();
             pack = gson.fromJson(packStr , Package.class);
         }
+
+        edtPackageId = findViewById(R.id.edtpackageID);
+        edtPackageId.setText(pack.getPackageId());
 
         edtSize = findViewById(R.id.edtSizeID);
         edtSize.setText(pack.getSize());

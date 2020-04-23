@@ -42,7 +42,7 @@ import retrofit2.Response;
 
 public class InviteDeliveryActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private EditText edtxtWeight, edtxtSize, edtxtLocation, edtxtDestination;
+    private EditText edtxtWeight, edtxtSize, edtxtLocation, edtxtDestination, edtxtPackageId;
 
     private Button btnEnter;
     private DatabaseReference refPackage, refUser;
@@ -65,6 +65,7 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
         edtxtWeight = (EditText) findViewById(R.id.edtxt_weight);
         edtxtSize = (EditText) findViewById(R.id.edtxt_size);
         edtxtLocation = (EditText) findViewById(R.id.edtxt_location);
+        edtxtPackageId = (EditText) findViewById(R.id.edtxt_packageId);
         findViewById(R.id.edtxt_location).setOnClickListener(this);
         edtxtDestination = (EditText) findViewById(R.id.edtxt_destination);
         findViewById(R.id.edtxt_destination).setOnClickListener(this);
@@ -86,8 +87,11 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
                 //integrity check
                 checkAllInputs();
 
-                final String size = edtxtSize.getText().toString().trim();
-                final double weight = Double.parseDouble(edtxtWeight.getText().toString());
+                String packageId = edtxtPackageId.getText().toString().trim();
+                String size = edtxtSize.getText().toString().trim();
+                double weight = Double.parseDouble(edtxtWeight.getText().toString());
+
+                new_package.setPackageId(packageId);
                 new_package.setSize(size);
                 new_package.setWeight(weight);
                 new_package.setPackageOwnerId(sharedPref.getString("userKey", ""));
@@ -174,6 +178,11 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
             this.edtxtWeight.requestFocus();
             return;
         }
+        if(edtxtPackageId.getText().toString().matches("")){
+            this.edtxtPackageId.setError("Package Id required");
+            this.edtxtPackageId.requestFocus();
+            return;
+        }
         if(edtxtSize.getText().toString().matches("")){
             this.edtxtSize.setError("Size required");
             this.edtxtSize.requestFocus();
@@ -192,6 +201,7 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
     }
 
     private void cleanEdtTexts() {
+        edtxtPackageId.setText("");
         edtxtWeight.setText("");
         edtxtSize.setText("");
         edtxtLocation.setText("");
