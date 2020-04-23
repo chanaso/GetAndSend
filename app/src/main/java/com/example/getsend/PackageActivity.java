@@ -32,7 +32,7 @@ public class PackageActivity extends AppCompatActivity {
         edtSize.setText(pack.getSize());
 
         edtWeight = findViewById(R.id.edtWeightID);
-        edtWeight.setText(String.valueOf(pack.getWeight()));
+        edtWeight.setText(pack.getWeight()+"");
 
         edtLocation = findViewById(R.id.edtLocationID);
         edtLocation.setText(pack.getLocation());

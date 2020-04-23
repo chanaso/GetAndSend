@@ -34,8 +34,6 @@ import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
 import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -102,10 +100,11 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
 
             }
             @Override
-            public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
+            public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot locationSnapshot: dataSnapshot.getChildren())
                 {
-                    String location = locationSnapshot.child("geoLocation").getValue().toString();
+                    String location;
+                    location = locationSnapshot.child("geoLocation").getValue().toString();
                     locationsList.add(location);
                 }
                 convertLoctionPointToFeatures();
@@ -127,9 +126,12 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
                                                 iconOffset(new Float[] {0f, -9f}))
                                 )
 
-                        , style -> {
-                            enableLocationComponent(style);
-                            mapboxMap.addOnMapClickListener(JoinAsDeliverymanActivity.this);
+                        , new Style.OnStyleLoaded() {
+                            @Override
+                            public void onStyleLoaded(@NonNull Style style) {
+                                enableLocationComponent(style);
+                                mapboxMap.addOnMapClickListener(JoinAsDeliverymanActivity.this);
+                            }
                         });
             }
 
@@ -176,7 +178,12 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
     @Override
     public void onPermissionResult(boolean granted) {
         if (granted) {
-            mapboxMap.getStyle(this::enableLocationComponent);
+            mapboxMap.getStyle(new Style.OnStyleLoaded() {
+                @Override
+                public void onStyleLoaded(@NonNull Style style) {
+                    enableLocationComponent(style);
+                }
+            });
         } else {
             Toast.makeText(this, "user_location_permission_not_granted", Toast.LENGTH_LONG).show();
             finish();
@@ -209,7 +216,7 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onSaveInstanceState(@NotNull Bundle outState) {
+    protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         mapView.onSaveInstanceState(outState);
     }
@@ -252,7 +259,6 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
                         startActivity(new Intent(JoinAsDeliverymanActivity.this, MainActivity.class));
 
                     } else {
-                        //TODO
                     }
                 }
             }
