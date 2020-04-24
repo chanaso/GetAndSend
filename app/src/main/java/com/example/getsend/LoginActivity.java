@@ -21,7 +21,7 @@ import com.hbb20.CountryCodePicker;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private EditText edtxtPhone, edtxtPassword;
+    private EditText edtxt_Phone, edtxt_Password;
     private FirebaseAuth mAuth;
     private SharedPreferences sharedPref;
     private DatabaseReference refUser;
@@ -34,12 +34,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
 
         ccp = findViewById(R.id.ccp);
-        edtxtPhone = findViewById(R.id.phoneID);
-        edtxtPassword = findViewById(R.id.passID);
+        edtxt_Phone = findViewById(R.id.edtxt_PhoneID);
+        edtxt_Password = findViewById(R.id.edtxt_PasswordID);
         mAuth = FirebaseAuth.getInstance();
 
-        findViewById(R.id.btnLogInID).setOnClickListener(this);
-        findViewById(R.id.txtCreateAccountID).setOnClickListener(this);
+        findViewById(R.id.btn_LogInID).setOnClickListener(this);
+        findViewById(R.id.txt_CreateAccountID).setOnClickListener(this);
 
         sharedPref = getSharedPreferences("userDetails",MODE_PRIVATE);
         refUser = FirebaseDatabase.getInstance().getReference().child("User");
@@ -47,8 +47,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     public void loginUser(){
         final String prePhone = ccp.getSelectedCountryCode();
-        final String phone = "+" + prePhone + edtxtPhone.getText().toString().trim();
-        password = edtxtPassword.getText().toString().trim();
+        final String phone = "+" + prePhone + edtxt_Phone.getText().toString().trim();
+        password = edtxt_Password.getText().toString().trim();
         integrityCheck();
 
         //check if the user is regiter already and if the phone number exist in db
@@ -82,8 +82,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     }
                     else{
                         //wrong password
-                        edtxtPassword.setError("Inncorrect password");
-                        edtxtPassword.requestFocus();
+                        edtxt_Password.setError("Inncorrect password");
+                        edtxt_Password.requestFocus();
                     }
                 }
                 else{
@@ -101,12 +101,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.btnLogInID:
+            case R.id.btn_LogInID:
             {
                loginUser();
                 break;
             }
-            case R.id.txtCreateAccountID:
+            case R.id.txt_CreateAccountID:
             {
                 Intent in = new Intent(this,SignUpActivity.class);
                 startActivity(in);
@@ -130,15 +130,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     //check inputs validation
     public void integrityCheck() {
-        String phone = edtxtPhone.getText().toString().trim();
+        String phone = edtxt_Phone.getText().toString().trim();
         if (phone.matches("")) {
-            edtxtPhone.setError("phone number required");
-            edtxtPhone.requestFocus();
+            edtxt_Phone.setError("phone number required");
+            edtxt_Phone.requestFocus();
             return;
         }
         if (password.matches("")) {
-            edtxtPassword.setError("password required");
-            edtxtPassword.requestFocus();
+            edtxt_Password.setError("password required");
+            edtxt_Password.requestFocus();
             return;
         }
     }
