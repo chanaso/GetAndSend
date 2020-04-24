@@ -106,15 +106,15 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
                 userTypeUpdate();
                 user.setName(sharedPref.getString("name", ""));
                 addPacakgeToCurrentUser();
-                cleanEdtTexts();
+                cleanEdtTxts();
                 break;
             case R.id.edtxt_LocationID:
                 flagLocation = 1;
-                placeAutoCoplete();
+                placeAutoComplete();
                 break;
             case R.id.edtxt_DestinationID:
                 flagLocation = 0;
-                placeAutoCoplete();
+                placeAutoComplete();
                 break;
         }
     }
@@ -205,7 +205,7 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
         }
     }
 
-    private void cleanEdtTexts() {
+    private void cleanEdtTxts() {
         edtxt_PackageId.setText("");
         edtxt_Weight.setText("");
         edtxt_Size.setText("");
@@ -213,7 +213,7 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
         edtxt_Destination.setText("");
     }
 
-    public void placeAutoCoplete() {
+    public void placeAutoComplete() {
         Intent intent = new PlaceAutocomplete.IntentBuilder()
                 .accessToken(Mapbox.getAccessToken() != null ? Mapbox.getAccessToken() : getString(R.string.access_token))
                 .placeOptions(PlaceOptions.builder()
@@ -234,64 +234,23 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
             //location case
             if (flagLocation == 1) {
                 locationToGeo = feature.text();
-                locationPoint = mapboxGeocoding(locationToGeo);
-                //check if the address found on the map in geocode
-                if(locationPoint != null) {
-                    new_package.setGeoLocation(locationPoint.coordinates().toString());// set delivery location to package
-                    new_package.setLocation(locationToGeo);
-                    edtxt_Location.setText(feature.text());
-                }else{
-                    Toast.makeText(InviteDeliveryActivity.this, R.string.reEnter_location, Toast.LENGTH_LONG).show();
-                }
-                //destination case
+                Point p = (Point) feature.geometry();
+                new_package.setGeoLocation(p.coordinates().toString());// set delivery location to package
+                new_package.setLocation(locationToGeo);
+                edtxt_Location.setText(feature.text());
             } else {
+                // destination case
                 locationToGeo = feature.text();
-                destinationPoint = mapboxGeocoding(locationToGeo);
-                //check if the address found on the map in geocode
-                if(destinationPoint != null){
-                    new_package.setGeoDestination(destinationPoint.coordinates().toString());// set delivery destination to package
-                    new_package.setDestination(locationToGeo);
-                    edtxt_Destination.setText(feature.text());
-                }else{
-                    Toast.makeText(InviteDeliveryActivity.this, R.string.reEnter_location, Toast.LENGTH_LONG).show();
-                }
+                Point p = (Point) feature.geometry();
+                new_package.setGeoDestination(p.coordinates().toString());// set delivery destination to package
+                new_package.setDestination(locationToGeo);
+                edtxt_Destination.setText(feature.text());
             }
 
         }
     }
-    // gets a string address as street name, city ect, and return geojson point
-    public Point mapboxGeocoding(String locationToGeo) {
-        mapboxGeocoding = MapboxGeocoding.builder()
-                .accessToken(getString(R.string.access_token))
-                .query(locationToGeo)
-                .build();
-        mapboxGeocoding.enqueueCall(new Callback<GeocodingResponse>() {
-            @Override
-            public void onResponse(Call<GeocodingResponse> call, Response<GeocodingResponse> response) {
-                List<CarmenFeature> results = response.body().features();
-
-                if (results.size() > 0) {
-                    // Log the first results Point.
-                    firstResultPoint = results.get(0).center();
-                    Log.d("s", "onResponse: " + firstResultPoint.toString());
-                } else {
-                    // No result for your request were found.
-                    Log.d("f", "onResponse: No result found");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<GeocodingResponse> call, Throwable throwable) {
-                throwable.printStackTrace();
-            }
-        });
-        return firstResultPoint;
-    }
-
 
     public void onDestroy() {
-
         super.onDestroy();
-        mapboxGeocoding.cancelCall();
     }
 }

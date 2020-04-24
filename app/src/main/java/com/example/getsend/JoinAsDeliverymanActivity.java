@@ -51,7 +51,6 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
     private MapView mapView;
     private DatabaseReference refPackage;
     private List<String> locationsList;
-    private String s;
     private static final String SOURCE_ID = "SOURCE_ID";
     private static final String ICON_ID = "ICON_ID";
     private static final String LAYER_ID = "LAYER_ID";
