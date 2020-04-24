@@ -32,7 +32,6 @@ import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete;
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions;
 
-import org.json.JSONObject;
 import java.util.List;
 
 import retrofit2.Call;
@@ -42,7 +41,7 @@ import retrofit2.Response;
 
 public class InviteDeliveryActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private EditText edtxtWeight, edtxtSize, edtxtLocation, edtxtDestination, edtxtPackageId;
+    private EditText edtxt_Weight, edtxt_Size, edtxt_Location, edtxt_Destination, edtxt_PackageId;
 
     private Button btnEnter;
     private DatabaseReference refPackage, refUser;
@@ -61,36 +60,38 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invite_delivery);
+
         Mapbox.getInstance(this, getString(R.string.access_token));
-        edtxtWeight = (EditText) findViewById(R.id.edtxt_weight);
-        edtxtSize = (EditText) findViewById(R.id.edtxt_size);
-        edtxtLocation = (EditText) findViewById(R.id.edtxt_location);
-        edtxtPackageId = (EditText) findViewById(R.id.edtxt_packageId);
-        findViewById(R.id.edtxt_location).setOnClickListener(this);
-        edtxtDestination = (EditText) findViewById(R.id.edtxt_destination);
-        findViewById(R.id.edtxt_destination).setOnClickListener(this);
-        btnEnter = (Button) findViewById(R.id.btn_enter);
-        //create a new DB table of package if not exist
+        edtxt_Weight = findViewById(R.id.edtxt_WeightID);
+        edtxt_Size = findViewById(R.id.edtxt_SizeID);
+        edtxt_Location = findViewById(R.id.edtxt_LocationID);
+        edtxt_PackageId = findViewById(R.id.edtxt_PackageIdID);
+        edtxt_Destination = findViewById(R.id.edtxt_DestinationID);
+
+        findViewById(R.id.btnEnterID).setOnClickListener(this);
+        findViewById(R.id.edtxt_LocationID).setOnClickListener(this);
+        findViewById(R.id.edtxt_DestinationID).setOnClickListener(this);
+
+        //create a new DB table of package, User if not exist
         refPackage = FirebaseDatabase.getInstance().getReference().child("Package");
         refUser = FirebaseDatabase.getInstance().getReference().child("User");
-        btnEnter.setOnClickListener(this);
         new_package = new Package();
         user = new User();
         sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
-
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btn_enter:
+            case R.id.btnEnterID:
                 //integrity check
                 checkAllInputs();
 
-                String packageId = edtxtPackageId.getText().toString().trim();
-                String size = edtxtSize.getText().toString().trim();
-                double weight = Double.parseDouble(edtxtWeight.getText().toString());
+                String packageId = edtxt_PackageId.getText().toString().trim();
+                String size = edtxt_Size.getText().toString().trim();
+                double weight = Double.parseDouble(edtxt_Weight.getText().toString());
 
+                //setting the new package by rhe inputs
                 new_package.setPackageId(packageId);
                 new_package.setSize(size);
                 new_package.setWeight(weight);
@@ -101,23 +102,24 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
                 lastPackageKey = newRefPackage.getKey();
                 newRefPackage.setValue(new_package);
                 Toast.makeText(InviteDeliveryActivity.this, "Package registered successfully!", Toast.LENGTH_LONG).show();
+
                 userTypeUpdate();
-                user.setPhone(phone);
                 user.setName(sharedPref.getString("name", ""));
                 addPacakgeToCurrentUser();
                 cleanEdtTexts();
                 break;
-            case R.id.edtxt_location:
+            case R.id.edtxt_LocationID:
                 flagLocation = 1;
                 placeAutoCoplete();
                 break;
-            case R.id.edtxt_destination:
+            case R.id.edtxt_DestinationID:
                 flagLocation = 0;
                 placeAutoCoplete();
                 break;
         }
     }
 
+    //add the package key that added to the current user list of keys packages
     private void addPacakgeToCurrentUser() {
         refUser.orderByChild("phone").equalTo(phone).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -125,6 +127,7 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot datas : dataSnapshot.getChildren()) {
                         String userPackages = datas.child("packages").getValue().toString();
+                        //set the previous keys + the new package key
                         refUser.child(datas.getKey()).child("packages").setValue(userPackages + lastPackageKey + DELIMITER);
                     }
                 }
@@ -136,9 +139,10 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
         });
     }
 
-
+    // update user type to be 1- user as a delivery getter
     private void userTypeUpdate() {
         phone = sharedPref.getString("phone", "");
+        user.setPhone(phone);
         // find user by his phone numder
         Query query = refUser.orderByChild("phone").equalTo(phone);
         query.addChildEventListener(new ChildEventListener() {
@@ -165,47 +169,48 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
             }
 
         });
+        //saved in the local memeory
         SharedPreferences.Editor prefEditor = sharedPref.edit();
         prefEditor.putString("type", String.valueOf(USER_TYPE_DELIVERY_GETTER));
         prefEditor.commit();
     }
 
 
-    // check input correction anf if all edtxt filled
+    // check input correction and if all edtxt_ filled
     private void checkAllInputs() {
-        if(edtxtWeight.getText().toString().matches("")){
-            this.edtxtWeight.setError("Weight required");
-            this.edtxtWeight.requestFocus();
+        if(edtxt_Weight.getText().toString().matches("")){
+            this.edtxt_Weight.setError("Weight required");
+            this.edtxt_Weight.requestFocus();
             return;
         }
-        if(edtxtPackageId.getText().toString().matches("")){
-            this.edtxtPackageId.setError("Package Id required");
-            this.edtxtPackageId.requestFocus();
+        if(edtxt_PackageId.getText().toString().matches("")){
+            this.edtxt_PackageId.setError("Package Id required");
+            this.edtxt_PackageId.requestFocus();
             return;
         }
-        if(edtxtSize.getText().toString().matches("")){
-            this.edtxtSize.setError("Size required");
-            this.edtxtSize.requestFocus();
+        if(edtxt_Size.getText().toString().matches("")){
+            this.edtxt_Size.setError("Size required");
+            this.edtxt_Size.requestFocus();
             return;
         }
-        if(edtxtLocation.getText().toString().matches("")){
-            this.edtxtLocation.setError("Location required");
-            this.edtxtLocation.requestFocus();
+        if(edtxt_Location.getText().toString().matches("")){
+            this.edtxt_Location.setError("Location required");
+            this.edtxt_Location.requestFocus();
             return;
         }
-        if(edtxtDestination.getText().toString().matches("")){
-            this.edtxtDestination.setError("Destination required");
-            this.edtxtDestination.requestFocus();
+        if(edtxt_Destination.getText().toString().matches("")){
+            this.edtxt_Destination.setError("Destination required");
+            this.edtxt_Destination.requestFocus();
             return;
         }
     }
 
     private void cleanEdtTexts() {
-        edtxtPackageId.setText("");
-        edtxtWeight.setText("");
-        edtxtSize.setText("");
-        edtxtLocation.setText("");
-        edtxtDestination.setText("");
+        edtxt_PackageId.setText("");
+        edtxt_Weight.setText("");
+        edtxt_Size.setText("");
+        edtxt_Location.setText("");
+        edtxt_Destination.setText("");
     }
 
     public void placeAutoCoplete() {
@@ -234,7 +239,7 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
                 if(locationPoint != null) {
                     new_package.setGeoLocation(locationPoint.coordinates().toString());// set delivery location to package
                     new_package.setLocation(locationToGeo);
-                    edtxtLocation.setText(feature.text());
+                    edtxt_Location.setText(feature.text());
                 }else{
                     Toast.makeText(InviteDeliveryActivity.this, R.string.reEnter_location, Toast.LENGTH_LONG).show();
                 }
@@ -246,7 +251,7 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
                 if(destinationPoint != null){
                     new_package.setGeoDestination(destinationPoint.coordinates().toString());// set delivery destination to package
                     new_package.setDestination(locationToGeo);
-                    edtxtDestination.setText(feature.text());
+                    edtxt_Destination.setText(feature.text());
                 }else{
                     Toast.makeText(InviteDeliveryActivity.this, R.string.reEnter_location, Toast.LENGTH_LONG).show();
                 }

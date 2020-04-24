@@ -66,7 +66,7 @@
                 android:id="@+id/textViewSizeID"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/size_view"
+                android:text="@string/size"
                 android:textColor="#000000"
                 android:textSize="25dp" />
 
@@ -92,7 +92,7 @@
                 android:id="@+id/textViewWeightID"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/weight_view"
+                android:text="@string/weight"
                 android:textColor="#000000"
                 android:textSize="25dp" />
 

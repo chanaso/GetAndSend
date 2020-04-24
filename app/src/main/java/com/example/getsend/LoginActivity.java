@@ -21,41 +21,38 @@ import com.hbb20.CountryCodePicker;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private EditText edtxtPhone;
-    private EditText edtxtPassword;
+    private EditText edtxtPhone, edtxtPassword;
     private FirebaseAuth mAuth;
     private SharedPreferences sharedPref;
-    private DatabaseReference ref;
+    private DatabaseReference refUser;
     private CountryCodePicker ccp;
-    public static final String KEY_USER_NAME = "userName";
-    private String userName, phoneNumber, rate, type, userKey;
-
-
+    private String userName, phoneNumber, rate, type, userKey, password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        ccp = (CountryCodePicker) findViewById(R.id.ccp);
+        ccp = findViewById(R.id.ccp);
         edtxtPhone = findViewById(R.id.phoneID);
         edtxtPassword = findViewById(R.id.passID);
         mAuth = FirebaseAuth.getInstance();
 
         findViewById(R.id.btnLogInID).setOnClickListener(this);
         findViewById(R.id.txtCreateAccountID).setOnClickListener(this);
+
         sharedPref = getSharedPreferences("userDetails",MODE_PRIVATE);
-        ref = FirebaseDatabase.getInstance().getReference().child("User");
+        refUser = FirebaseDatabase.getInstance().getReference().child("User");
     }
 
     public void loginUser(){
         final String prePhone = ccp.getSelectedCountryCode();
         final String phone = "+" + prePhone + edtxtPhone.getText().toString().trim();
-        String pass = edtxtPassword.getText().toString().trim();
+        password = edtxtPassword.getText().toString().trim();
         integrityCheck();
 
         //check if the user is regiter already and if the phone number exist in db
-        ref.orderByChild("phone").equalTo(phone).addListenerForSingleValueEvent(new ValueEventListener() {
+        refUser.orderByChild("phone").equalTo(phone).addListenerForSingleValueEvent(new ValueEventListener() {
             String value;
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -69,12 +66,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         type = data.child("type").getValue().toString();
                         rate = data.child("rate").getValue().toString();
                         userKey = data.getKey();
-
                     }
                     //check if the input password is correct
-                    if(value.equals(pass)){
+                    if(value.equals(password)){
                         //register user phone & password correct
-                        // save the registered user and lead to the main activity
+                        // save the registered user to a local memory
                         SharedPreferences.Editor prefEditor = sharedPref.edit();
                         prefEditor.putString("name",userName);
                         prefEditor.putString("phone", phoneNumber);
@@ -86,7 +82,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     }
                     else{
                         //wrong password
-                        Toast.makeText(LoginActivity.this, "Inncorrect password", Toast.LENGTH_LONG).show();
+                        edtxtPassword.setError("Inncorrect password");
+                        edtxtPassword.requestFocus();
                     }
                 }
                 else{
@@ -111,7 +108,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
             case R.id.txtCreateAccountID:
             {
-                Intent in=new Intent(this,SignUpActivity.class);
+                Intent in = new Intent(this,SignUpActivity.class);
                 startActivity(in);
                 break;
             }
@@ -131,9 +128,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         FirebaseAuth.getInstance().signOut(); // sign out user
     }
 
+    //check inputs validation
     public void integrityCheck() {
         String phone = edtxtPhone.getText().toString().trim();
-        String password = edtxtPassword.getText().toString().trim();
         if (phone.matches("")) {
             edtxtPhone.setError("phone number required");
             edtxtPhone.requestFocus();
