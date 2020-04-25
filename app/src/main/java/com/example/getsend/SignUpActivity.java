@@ -34,11 +34,12 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
     private EditText userName, phoneNumber, pass, passCon, verifiCode;
     private Button btnSignUp, btnVerify;
-    private String codeSend;
+    private String codeSend, userKey;
     private FirebaseAuth mAuth;
     private DatabaseReference ref;
     private CountryCodePicker ccp;
-    SharedPreferences sharedPref;
+    private SharedPreferences sharedPref;
+
 
 
     @Override
@@ -194,14 +195,18 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                                         Toast.makeText(SignUpActivity.this, "This " + user.getPhone() + " phone number already exist!", Toast.LENGTH_LONG).show();
                                     } else {
                                         //matched input code and push user details to db
-                                        ref.push().setValue(user);
-                                        Toast.makeText(SignUpActivity.this, user+"User registered successfully!", Toast.LENGTH_LONG).show();
+                                        //get user id
+                                        DatabaseReference refUser = ref.push();
+                                        userKey = refUser.getKey();
+                                        refUser.setValue(user);
+                                        Toast.makeText(SignUpActivity.this, "User registered successfully!", Toast.LENGTH_LONG).show();
                                         // saving the username that registered.
                                         SharedPreferences.Editor prefEditor = sharedPref.edit();
                                         prefEditor.putString("name", user.getName());
                                         prefEditor.putString("phone", user.getPhone());
                                         prefEditor.putString("type", String.valueOf(user.getType()));
                                         prefEditor.putString("rate", user.getRate() + "");
+                                        prefEditor.putString("userKey", userKey);
                                         prefEditor.commit();
                                         startActivity(new Intent(SignUpActivity.this, MainActivity.class));
                                     }

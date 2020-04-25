@@ -16,8 +16,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".PowerOfAttorneyView"></activity>
+        <activity android:name=".PackageActivity"></activity>
         <activity android:name=".JoinAsDeliverymanActivity" />
-        <activity android:name=".packagesActivity" />
+        <activity android:name=".PackagesActivity" />
         <activity android:name=".InviteDeliveryActivity" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".LoginActivity" />

@@ -50,7 +50,7 @@
             app:ccp_textSize="18sp" />
 
         <EditText
-            android:id="@+id/phoneID"
+            android:id="@+id/edtxt_PhoneID"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -60,7 +60,7 @@
     </LinearLayout>
 
     <EditText
-        android:id="@+id/passID"
+        android:id="@+id/edtxt_PasswordID"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -70,7 +70,7 @@
         android:inputType="numberPassword" />
 
     <Button
-        android:id="@+id/btnLogInID"
+        android:id="@+id/btn_LogInID"
         android:layout_width="130dp"
         android:layout_height="50dp"
         android:layout_gravity="center"
@@ -83,7 +83,7 @@
         android:textSize="20sp" />
 
     <TextView
-        android:id="@+id/txtCreateAccountID"
+        android:id="@+id/txt_CreateAccountID"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"

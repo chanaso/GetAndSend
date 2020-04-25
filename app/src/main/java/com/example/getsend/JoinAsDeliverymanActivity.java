@@ -3,6 +3,7 @@ package com.example.getsend;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.PointF;
+import android.graphics.RectF;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +20,7 @@ import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.FeatureCollection;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.location.LocationComponent;
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
@@ -73,6 +75,7 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
         mapView.getMapAsync(this);
         refPackage = FirebaseDatabase.getInstance().getReference().child("Package");
         locationsList = new ArrayList<>();
+
     }
 
 
@@ -83,7 +86,7 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
             String[] splitToLngLat = cleanString.split(",", 2);
                     //  convert all locations points to features
                     symbolLayerIconFeatureList.add(Feature.fromGeometry(
-                Point.fromLngLat(Double.valueOf(splitToLngLat[0]), Double.valueOf(splitToLngLat[1]))));
+                Point.fromLngLat(Double.parseDouble(splitToLngLat[0]), Double.parseDouble(splitToLngLat[1]))));
         }
     }
 
@@ -100,7 +103,8 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot locationSnapshot: dataSnapshot.getChildren())
                 {
-                    String location = locationSnapshot.child("location").getValue().toString();
+                    String location;
+                    location = locationSnapshot.child("geoLocation").getValue().toString();
                     locationsList.add(location);
                 }
                 convertLoctionPointToFeatures();
@@ -115,8 +119,7 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
                                         FeatureCollection.fromFeatures(symbolLayerIconFeatureList)))
                                 // Adding the actual SymbolLayer to the map style. An offset is added that the bottom of the red
                                 // marker icon gets fixed to the coordinate, rather than the middle of the icon being fixed to
-                                // the coordinate point. This is offset is not always needed and is dependent on the image
-                                // that you use for the SymbolLayer icon.
+                                // the coordinate point.
                                 .withLayer(new SymbolLayer(LAYER_ID, SOURCE_ID)
                                         .withProperties(PropertyFactory.iconImage(ICON_ID),
                                                 iconAllowOverlap(true),
@@ -237,13 +240,22 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
     }
     private boolean handleClickIcon(PointF screenPoint) {
         //  check if the clicked point is a package mark
-        List<Feature> features = mapboxMap.queryRenderedFeatures(screenPoint, MARKER_LAYER_ID);
+        // get pointF of them
+//        RectF rectF = new RectF(screenPoint.x-10, screenPoint.y-10, screenPoint.x+10, screenPoint.y+10);
+
+        List<Feature> features = mapboxMap.queryRenderedFeatures(screenPoint);
+//        List<Feature> features =  mapboxMap.queryRenderedFeatures(screenPoint, MARKER_LAYER_ID);
         if (!features.isEmpty()) {
+            Feature feature = features.get(0);
+            Toast.makeText(this, "gggggg" + feature.geometry(), Toast.LENGTH_LONG).show();
             List<Feature> featureList = FeatureCollection.fromFeatures(symbolLayerIconFeatureList).features();
             if (featureList != null) {
                 for (int i = 0; i < featureList.size(); i++) {
-                    if (featureList.get(i).geometry().equals(features.get(0).geometry())) {
+                    if (featureList.get(i).geometry().equals(feature.geometry())) {
                         //TODO
+                        Toast.makeText(this, "mmmmmm" + feature.geometry(), Toast.LENGTH_LONG).show();
+
+//                        Toast.makeText(this, "ppp\n"+featureList.get(i).geometry()+"\n"+features.get(0).geometry(), Toast.LENGTH_LONG).show();
                         startActivity(new Intent(JoinAsDeliverymanActivity.this, MainActivity.class));
 
                     } else {
@@ -254,5 +266,5 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
         }else {
             return false;
         }    }
-
+        
 }

@@ -1,16 +1,16 @@
-<resources>
-    <string name="app_name">GetSend</string>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name" tools:ignore="PrivateResource">GetSend</string>
     <string name="title_activity_login">loginActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="access_token">sk.eyJ1IjoiYW5hZWx6IiwiYSI6ImNrOTZiaWp6djBkMngzZ3BjMmE2d2FkM3UifQ.J7imtyBcJKi2D7HF6uj2sQ</string>
     <string name="textview">hello</string>
     <string name="textviewwight">the package wight</string>
-    <string name="order_delivery_view">Order delivery</string>
-    <string name="weight_view">Weight(gr):</string>
-    <string name="size_view">Size(sqm):</string>
-    <string name="location_view">Location:</string>
-    <string name="destination_view">Destination:</string>
+
+    <string name="under_line_Profile"><u>Profile</u></string>
+    <string name="under_line_packages"><u>Packages List</u></string>
+    <string name="under_line_package"><u>Packages Details</u></string>
+
 
     <!--Location tracking activity permission toasts-->
     <string name="user_location_permission_explanation">This app needs location permissions in order to show its functionality.</string>
@@ -19,10 +19,21 @@
     <!-- JoinAsDeliveryManActivity -->
     <string name="capital">Capital: %1$s</string>
     <string name="tap_on_marker_instruction">Tap on a marker</string>
-
-    <!-- JoinAsDeliveryManActivity -->
     <string name="reEnter_location">Please enter a valid location</string>
 
+    <!-- InviteDeliveryActivity -->
+    <!-- xml-->
+    <string name="under_line_order_delivery"><u>~Order delivery~</u></string>
+    <string name="complete_the_following">Complete the following information\n about your package:</string>
+    <string name="package_id">package id:</string>
+    <string name="weight">Weight(gr):</string>
+    <string name="size">Size(sqm):</string>
+    <string name="location">Location:</string>
+    <string name="destination">Destination:</string>
+    <string name="click_here_to_choose_location">Click here to choose location</string>
+    <string name="upload_my_package">upload my package</string>
+
+    <!--    Signature Activity-->
     <string name="signature_title">Digital Signature</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>

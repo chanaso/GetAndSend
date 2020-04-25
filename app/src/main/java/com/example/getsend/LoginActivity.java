@@ -21,41 +21,38 @@ import com.hbb20.CountryCodePicker;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private EditText edtxtPhone;
-    private EditText edtxtPassword;
+    private EditText edtxt_Phone, edtxt_Password;
     private FirebaseAuth mAuth;
     private SharedPreferences sharedPref;
-    private DatabaseReference ref;
+    private DatabaseReference refUser;
     private CountryCodePicker ccp;
-    public static final String KEY_USER_NAME = "userName";
-    String userName = "", phoneNumber = "", rate = "", type ="";
-
-
+    private String userName, phoneNumber, rate, type, userKey, password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        ccp = (CountryCodePicker) findViewById(R.id.ccp);
-        edtxtPhone = findViewById(R.id.phoneID);
-        edtxtPassword = findViewById(R.id.passID);
+        ccp = findViewById(R.id.ccp);
+        edtxt_Phone = findViewById(R.id.edtxt_PhoneID);
+        edtxt_Password = findViewById(R.id.edtxt_PasswordID);
         mAuth = FirebaseAuth.getInstance();
 
-        findViewById(R.id.btnLogInID).setOnClickListener(this);
-        findViewById(R.id.txtCreateAccountID).setOnClickListener(this);
+        findViewById(R.id.btn_LogInID).setOnClickListener(this);
+        findViewById(R.id.txt_CreateAccountID).setOnClickListener(this);
+
         sharedPref = getSharedPreferences("userDetails",MODE_PRIVATE);
-        ref = FirebaseDatabase.getInstance().getReference().child("User");
+        refUser = FirebaseDatabase.getInstance().getReference().child("User");
     }
 
     public void loginUser(){
         final String prePhone = ccp.getSelectedCountryCode();
-        final String phone = "+" + prePhone + edtxtPhone.getText().toString().trim();
-        String pass = edtxtPassword.getText().toString().trim();
+        final String phone = "+" + prePhone + edtxt_Phone.getText().toString().trim();
+        password = edtxt_Password.getText().toString().trim();
         integrityCheck();
 
         //check if the user is regiter already and if the phone number exist in db
-        ref.orderByChild("phone").equalTo(phone).addListenerForSingleValueEvent(new ValueEventListener() {
+        refUser.orderByChild("phone").equalTo(phone).addListenerForSingleValueEvent(new ValueEventListener() {
             String value;
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -68,23 +65,25 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         phoneNumber = data.child("phone").getValue().toString();
                         type = data.child("type").getValue().toString();
                         rate = data.child("rate").getValue().toString();
-
+                        userKey = data.getKey();
                     }
                     //check if the input password is correct
-                    if(value.equals(pass)){
+                    if(value.equals(password)){
                         //register user phone & password correct
-                        // save the registered user and lead to the main activity
+                        // save the registered user to a local memory
                         SharedPreferences.Editor prefEditor = sharedPref.edit();
                         prefEditor.putString("name",userName);
                         prefEditor.putString("phone", phoneNumber);
                         prefEditor.putString("type", type);
                         prefEditor.putString("rate", rate);
+                        prefEditor.putString("userKey", userKey);
                         prefEditor.commit();
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
                     }
                     else{
                         //wrong password
-                        Toast.makeText(LoginActivity.this, "Inncorrect password", Toast.LENGTH_LONG).show();
+                        edtxt_Password.setError("Inncorrect password");
+                        edtxt_Password.requestFocus();
                     }
                 }
                 else{
@@ -102,14 +101,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.btnLogInID:
+            case R.id.btn_LogInID:
             {
                loginUser();
                 break;
             }
-            case R.id.txtCreateAccountID:
+            case R.id.txt_CreateAccountID:
             {
-                Intent in=new Intent(this,SignUpActivity.class);
+                Intent in = new Intent(this,SignUpActivity.class);
                 startActivity(in);
                 break;
             }
@@ -129,17 +128,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         FirebaseAuth.getInstance().signOut(); // sign out user
     }
 
+    //check inputs validation
     public void integrityCheck() {
-        String phone = edtxtPhone.getText().toString().trim();
-        String password = edtxtPassword.getText().toString().trim();
+        String phone = edtxt_Phone.getText().toString().trim();
         if (phone.matches("")) {
-            edtxtPhone.setError("phone number required");
-            edtxtPhone.requestFocus();
+            edtxt_Phone.setError("phone number required");
+            edtxt_Phone.requestFocus();
             return;
         }
         if (password.matches("")) {
-            edtxtPassword.setError("password required");
-            edtxtPassword.requestFocus();
+            edtxt_Password.setError("password required");
+            edtxt_Password.requestFocus();
             return;
         }
     }

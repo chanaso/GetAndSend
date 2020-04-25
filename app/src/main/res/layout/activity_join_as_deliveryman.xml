@@ -8,7 +8,7 @@ android:orientation="vertical">
 <com.mapbox.mapboxsdk.maps.MapView
     android:id="@+id/mapView"
     android:layout_width="match_parent"
-    mapbox:mapbox_cameraZoom="12"
+    mapbox:mapbox_cameraZoom="16"
     android:layout_height="match_parent" />
 
 </FrameLayout>

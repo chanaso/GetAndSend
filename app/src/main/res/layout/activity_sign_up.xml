@@ -68,18 +68,20 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="verification code"
-        android:inputType="textPersonName" />
+        android:inputType="number" />
 
     <EditText
         android:id="@+id/passID"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:inputType="numberPassword"
         android:hint="Password" />
 
     <EditText
         android:id="@+id/passConID"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:inputType="numberPassword"
         android:hint="Confirm Password" />
 
     <Button

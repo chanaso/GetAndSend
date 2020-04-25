@@ -1,9 +1,8 @@
 package com.example.getsend;
 
 public class User {
-    private String name, phone, pass;
+    private String name, phone, pass, packages;
     private int rate, type;
-    private String[] packages = new String[10];
     //type: 0- deliverman, 1- get delivery.
 
     public User(){
@@ -43,12 +42,20 @@ public class User {
         this.type = type;
     }
 
+    public String getPackages() {
+        return packages;
+    }
+
+    public void setPackages(String packages) {
+        this.packages = packages;
+    }
+
     public User(String name, String phone, String pass) {
         this.name = name;
         this.phone = phone;
         this.pass = pass;
         this.rate = 0;
         this.type = -1;
-        this.packages = new String[10];
+        this.packages = "";
     }
 }
