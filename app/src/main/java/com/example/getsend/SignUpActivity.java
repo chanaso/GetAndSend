@@ -3,7 +3,6 @@ package com.example.getsend;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,12 +31,12 @@ import java.util.concurrent.TimeUnit;
 
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private EditText userName, phoneNumber, pass, passCon, verifiCode;
-    private Button btnSignUp, btnVerify;
+    private EditText edtxt_userName, edtxt_phoneNumber, edtxt_pass, edtxt_passCon, edtxt_verifiCode;
+    private Button btn_SignUp, btn_Verify;
     private String codeSend, userKey;
     private FirebaseAuth mAuth;
-    private DatabaseReference ref;
-    private CountryCodePicker ccp;
+    private DatabaseReference refUser;
+    private CountryCodePicker edtxt_ccp;
     private SharedPreferences sharedPref;
 
 
@@ -47,57 +46,57 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
-        btnSignUp = findViewById(R.id.btnSignUpID);
-        btnVerify = findViewById(R.id.btnVerifyID);
-        userName = (EditText)findViewById(R.id.userID);
-        ccp = (CountryCodePicker) findViewById(R.id.ccp);
-        phoneNumber = (EditText)findViewById(R.id.phoneNumberID);
-        verifiCode = (EditText)findViewById(R.id.verificationCodeID);
-        pass = (EditText)findViewById(R.id.passID);
-        passCon = (EditText)findViewById(R.id.passConID);
-        ref = FirebaseDatabase.getInstance().getReference().child("User");
+        btn_SignUp = findViewById(R.id.btn_SignUpID);
+        btn_Verify = findViewById(R.id.btn_VerifyID);
+        edtxt_userName = findViewById(R.id.edtxt_userID);
+        edtxt_ccp = findViewById(R.id.ccp);
+        edtxt_phoneNumber = findViewById(R.id.edtxt_phoneNumberID);
+        edtxt_verifiCode = findViewById(R.id.edtxt_verificationCodeID);
+        edtxt_pass = findViewById(R.id.edtxt_passID);
+        edtxt_passCon = findViewById(R.id.edtxt_passConID);
+        refUser = FirebaseDatabase.getInstance().getReference().child("User");
         mAuth = FirebaseAuth.getInstance();
 
-        btnSignUp.setOnClickListener(this);
-        btnVerify.setOnClickListener(this);
+        btn_SignUp.setOnClickListener(this);
+        btn_Verify.setOnClickListener(this);
 
         sharedPref = getSharedPreferences("userDetails",MODE_PRIVATE);
 
     }
 
     private void sendVerificationCode() {
-        final String name = userName.getText().toString().trim();
-        final String prePhone = ccp.getSelectedCountryCode();
-        final String phone = "+" + prePhone + phoneNumber.getText().toString().trim();
+        final String name = edtxt_userName.getText().toString().trim();
+        final String prePhone = edtxt_ccp.getSelectedCountryCode();
+        final String phone = "+" + prePhone + edtxt_phoneNumber.getText().toString().trim();
 
         // validation check
         if(name.isEmpty()){
-            userName.setError("user name required");
-            userName.requestFocus();
+            edtxt_userName.setError("user name required");
+            edtxt_userName.requestFocus();
             return;
         }
 
         if(phone.isEmpty()){
-            phoneNumber.setError("phone number required");
-            phoneNumber.requestFocus();
+            edtxt_phoneNumber.setError("phone number required");
+            edtxt_phoneNumber.requestFocus();
             return;
         }
 
         if(phone.length() != 13){
-            phoneNumber.setError("please enter a valid phone number");
-            phoneNumber.requestFocus();
+            edtxt_phoneNumber.setError("please enter a valid phone number");
+            edtxt_phoneNumber.requestFocus();
             return;
         }
 
         //  check if the user exist in the db
-        ref.orderByChild("Phone").equalTo(phone).addListenerForSingleValueEvent(new ValueEventListener() {
+        refUser.orderByChild("Phone").equalTo(phone).addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             if (dataSnapshot.getValue() != null){
                 //it means user already registered
                 Toast.makeText(SignUpActivity.this, "User exist already", Toast.LENGTH_LONG).show();
-                phoneNumber.requestFocus();
+                edtxt_phoneNumber.requestFocus();
                 return;
             }
             else{
@@ -144,36 +143,36 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
 
     private void registerUser(){
-        final String name = userName.getText().toString().trim();
-        final String prePhone = ccp.getSelectedCountryCode();
-        final String phone = "+" + prePhone + phoneNumber.getText().toString().trim();
-        final String code = verifiCode.getText().toString().trim();
-        final String pass = this.pass.getText().toString().trim();
-        final String passCon = this.passCon.getText().toString().trim();
+        final String name = edtxt_userName.getText().toString().trim();
+        final String prePhone = edtxt_ccp.getSelectedCountryCode();
+        final String phone = "+" + prePhone + edtxt_phoneNumber.getText().toString().trim();
+        final String code = edtxt_verifiCode.getText().toString().trim();
+        final String pass = this.edtxt_pass.getText().toString().trim();
+        final String passCon = this.edtxt_passCon.getText().toString().trim();
 
         // integrity input check
         if(pass.length() < 6){
-            this.pass.setError("password should be at least 6 numbers");
-            this.pass.requestFocus();
+            this.edtxt_pass.setError("password should be at least 6 numbers");
+            this.edtxt_pass.requestFocus();
             return;
         }
 
         if(pass.matches("")){
-            this.pass.setError("password required");
-            this.pass.requestFocus();
+            this.edtxt_pass.setError("password required");
+            this.edtxt_pass.requestFocus();
             return;
         }
 
         if(code.matches("")){
-            this.pass.setError("verification code required");
-            this.pass.requestFocus();
+            this.edtxt_verifiCode.setError("verification code required");
+            this.edtxt_verifiCode.requestFocus();
             return;
         }
 
         if(!pass.equals(passCon))
         {
-            this.pass.setError("passwords not the same");
-            this.pass.requestFocus();
+            this.edtxt_pass.setError("passwords not the same");
+            this.edtxt_pass.requestFocus();
             return;
         }
         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(codeSend, code);
@@ -187,7 +186,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            ref.orderByChild("phone").equalTo(user.getPhone()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            refUser.orderByChild("phone").equalTo(user.getPhone()).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     if (dataSnapshot.getValue() != null) {
@@ -196,9 +195,9 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                                     } else {
                                         //matched input code and push user details to db
                                         //get user id
-                                        DatabaseReference refUser = ref.push();
-                                        userKey = refUser.getKey();
-                                        refUser.setValue(user);
+                                        DatabaseReference ref = refUser.push();
+                                        userKey = ref.getKey();
+                                        ref.setValue(user);
                                         Toast.makeText(SignUpActivity.this, "User registered successfully!", Toast.LENGTH_LONG).show();
                                         // saving the username that registered.
                                         SharedPreferences.Editor prefEditor = sharedPref.edit();
@@ -231,10 +230,10 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onClick(android.view.View v) {
         switch (v.getId()){
-            case R.id.btnSignUpID:
+            case R.id.btn_SignUpID:
                 registerUser();
                 break;
-            case R.id.btnVerifyID:
+            case R.id.btn_VerifyID:
                 sendVerificationCode();
         }
     }

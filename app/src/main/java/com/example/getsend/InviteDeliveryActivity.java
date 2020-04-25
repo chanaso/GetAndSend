@@ -102,7 +102,6 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
                 userTypeUpdate();
                 addPackageToCurrentUser();
                 cleanEdtTxts();
-                finish();
                 break;
             case R.id.edtxt_LocationID:
                 flagLocation = 1;

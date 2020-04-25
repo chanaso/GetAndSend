@@ -19,7 +19,7 @@
             android:padding="10dp">
 
             <TextView
-                android:id="@+id/edtpackageDetailsID"
+                android:id="@+id/edtxt_packageDetailsID"
                 android:layout_width="452dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -46,7 +46,7 @@
                 android:textSize="25dp" />
 
             <TextView
-                android:id="@+id/edtpackageID"
+                android:id="@+id/edtxt_packageID"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -63,7 +63,6 @@
             android:padding="10dp">
 
             <TextView
-                android:id="@+id/textViewSizeID"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/size"
@@ -71,7 +70,7 @@
                 android:textSize="25dp" />
 
             <TextView
-                android:id="@+id/edtSizeID"
+                android:id="@+id/edtxt_SizeID"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -89,7 +88,6 @@
             android:padding="10dp">
 
             <TextView
-                android:id="@+id/textViewWeightID"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/weight"
@@ -97,7 +95,7 @@
                 android:textSize="25dp" />
 
             <TextView
-                android:id="@+id/edtWeightID"
+                android:id="@+id/edtxt_WeightID"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -115,7 +113,6 @@
             android:padding="10dp">
 
             <TextView
-                android:id="@+id/textViewLocationID"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="Location:"
@@ -123,7 +120,7 @@
                 android:textSize="25dp" />
 
             <TextView
-                android:id="@+id/edtLocationID"
+                android:id="@+id/edtxt_LocationID"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -141,7 +138,6 @@
             android:padding="10dp">
 
             <TextView
-                android:id="@+id/textViewDestinationID"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="Destination:"
@@ -149,7 +145,7 @@
                 android:textSize="25dp" />
 
             <TextView
-                android:id="@+id/edtDestinationID"
+                android:id="@+id/edtxt_DestinationID"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -168,7 +164,6 @@
             android:padding="10dp">
 
             <TextView
-                android:id="@+id/textViewDeliveryID"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="Deliveryman:"
@@ -176,7 +171,7 @@
                 android:textSize="25dp" />
 
             <TextView
-                android:id="@+id/edtDeliveryID"
+                android:id="@+id/edtxt_DeliveryID"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -202,7 +197,7 @@
                 android:textSize="25dp" />
 
             <TextView
-                android:id="@+id/edtStatusID"
+                android:id="@+id/edtxt_StatusID"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
