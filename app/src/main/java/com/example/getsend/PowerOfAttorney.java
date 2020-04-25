@@ -27,9 +27,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
+
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -52,9 +50,6 @@ public class PowerOfAttorney extends AppCompatActivity {
 
     private String pic_name = "hello";
     private String StoredPath = "signature" + pic_name + ".JPEG";
-    // Create a storage reference from app
-    private StorageReference storageRef = FirebaseStorage.getInstance().getReference("Signatures");
-    private UploadTask uploadTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,7 +147,6 @@ public class PowerOfAttorney extends AppCompatActivity {
 
         @SuppressLint("WrongThread")
         public void save(View v, String StoredPath){
-            StorageReference signaturesRef = storageRef.child(StoredPath);
             bitmap = Bitmap.createBitmap(mContent.getWidth(), mContent.getHeight(), Bitmap.Config.RGB_565);
 
             Canvas canvas = new Canvas(bitmap);
