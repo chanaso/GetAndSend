@@ -3,7 +3,7 @@ package com.example.getsend;
 public class User {
     private String name, phone, pass, packages;
     private int rate, type;
-    //type: 0- deliverman, 1- get delivery.
+    //type: 0- deliverman, 1- get delivery. 3- deliveryman picked package.
 
     public User(){
 
@@ -18,6 +18,7 @@ public class User {
     }
 
     public String getPhone() { return phone; }
+
 
     public void setPhone(String phone) {
         this.phone = phone;

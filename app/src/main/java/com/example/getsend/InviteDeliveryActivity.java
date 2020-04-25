@@ -46,13 +46,10 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
     private Button btnEnter;
     private DatabaseReference refPackage, refUser;
     private Package new_package;
-    private User user;
     private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
     private static final int USER_TYPE_DELIVERY_GETTER = 1;
     private static final String DELIMITER = " ";
     private int flagLocation = 0;
-    private Point firstResultPoint, locationPoint, destinationPoint;
-    private MapboxGeocoding mapboxGeocoding;
     private String locationToGeo, phone, lastPackageKey;
     private SharedPreferences sharedPref;
 
@@ -68,7 +65,7 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
         edtxt_PackageId = findViewById(R.id.edtxt_PackageIdID);
         edtxt_Destination = findViewById(R.id.edtxt_DestinationID);
 
-        findViewById(R.id.btnEnterID).setOnClickListener(this);
+        findViewById(R.id.btn_EnterID).setOnClickListener(this);
         findViewById(R.id.edtxt_LocationID).setOnClickListener(this);
         findViewById(R.id.edtxt_DestinationID).setOnClickListener(this);
 
@@ -76,14 +73,13 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
         refPackage = FirebaseDatabase.getInstance().getReference().child("Package");
         refUser = FirebaseDatabase.getInstance().getReference().child("User");
         new_package = new Package();
-        user = new User();
         sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btnEnterID:
+            case R.id.btn_EnterID:
                 //integrity check
                 checkAllInputs();
 
@@ -104,23 +100,22 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
                 Toast.makeText(InviteDeliveryActivity.this, "Package registered successfully!", Toast.LENGTH_LONG).show();
 
                 userTypeUpdate();
-                user.setName(sharedPref.getString("name", ""));
-                addPacakgeToCurrentUser();
-                cleanEdtTexts();
+                addPackageToCurrentUser();
+                cleanEdtTxts();
                 break;
             case R.id.edtxt_LocationID:
                 flagLocation = 1;
-                placeAutoCoplete();
+                placeAutoComplete();
                 break;
             case R.id.edtxt_DestinationID:
                 flagLocation = 0;
-                placeAutoCoplete();
+                placeAutoComplete();
                 break;
         }
     }
 
     //add the package key that added to the current user list of keys packages
-    private void addPacakgeToCurrentUser() {
+    private void addPackageToCurrentUser() {
         refUser.orderByChild("phone").equalTo(phone).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -142,7 +137,6 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
     // update user type to be 1- user as a delivery getter
     private void userTypeUpdate() {
         phone = sharedPref.getString("phone", "");
-        user.setPhone(phone);
         // find user by his phone numder
         Query query = refUser.orderByChild("phone").equalTo(phone);
         query.addChildEventListener(new ChildEventListener() {
@@ -205,7 +199,7 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
         }
     }
 
-    private void cleanEdtTexts() {
+    private void cleanEdtTxts() {
         edtxt_PackageId.setText("");
         edtxt_Weight.setText("");
         edtxt_Size.setText("");
@@ -213,7 +207,7 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
         edtxt_Destination.setText("");
     }
 
-    public void placeAutoCoplete() {
+    public void placeAutoComplete() {
         Intent intent = new PlaceAutocomplete.IntentBuilder()
                 .accessToken(Mapbox.getAccessToken() != null ? Mapbox.getAccessToken() : getString(R.string.access_token))
                 .placeOptions(PlaceOptions.builder()
@@ -234,64 +228,23 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
             //location case
             if (flagLocation == 1) {
                 locationToGeo = feature.text();
-                locationPoint = mapboxGeocoding(locationToGeo);
-                //check if the address found on the map in geocode
-                if(locationPoint != null) {
-                    new_package.setGeoLocation(locationPoint.coordinates().toString());// set delivery location to package
-                    new_package.setLocation(locationToGeo);
-                    edtxt_Location.setText(feature.text());
-                }else{
-                    Toast.makeText(InviteDeliveryActivity.this, R.string.reEnter_location, Toast.LENGTH_LONG).show();
-                }
-                //destination case
+                Point p = (Point) feature.geometry();
+                new_package.setGeoLocation(p.coordinates().toString());// set delivery location to package
+                new_package.setLocation(locationToGeo);
+                edtxt_Location.setText(feature.text());
             } else {
+                // destination case
                 locationToGeo = feature.text();
-                destinationPoint = mapboxGeocoding(locationToGeo);
-                //check if the address found on the map in geocode
-                if(destinationPoint != null){
-                    new_package.setGeoDestination(destinationPoint.coordinates().toString());// set delivery destination to package
-                    new_package.setDestination(locationToGeo);
-                    edtxt_Destination.setText(feature.text());
-                }else{
-                    Toast.makeText(InviteDeliveryActivity.this, R.string.reEnter_location, Toast.LENGTH_LONG).show();
-                }
+                Point p = (Point) feature.geometry();
+                new_package.setGeoDestination(p.coordinates().toString());// set delivery destination to package
+                new_package.setDestination(locationToGeo);
+                edtxt_Destination.setText(feature.text());
             }
 
         }
     }
-    // gets a string address as street name, city ect, and return geojson point
-    public Point mapboxGeocoding(String locationToGeo) {
-        mapboxGeocoding = MapboxGeocoding.builder()
-                .accessToken(getString(R.string.access_token))
-                .query(locationToGeo)
-                .build();
-        mapboxGeocoding.enqueueCall(new Callback<GeocodingResponse>() {
-            @Override
-            public void onResponse(Call<GeocodingResponse> call, Response<GeocodingResponse> response) {
-                List<CarmenFeature> results = response.body().features();
-
-                if (results.size() > 0) {
-                    // Log the first results Point.
-                    firstResultPoint = results.get(0).center();
-                    Log.d("s", "onResponse: " + firstResultPoint.toString());
-                } else {
-                    // No result for your request were found.
-                    Log.d("f", "onResponse: No result found");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<GeocodingResponse> call, Throwable throwable) {
-                throwable.printStackTrace();
-            }
-        });
-        return firstResultPoint;
-    }
-
 
     public void onDestroy() {
-
         super.onDestroy();
-        mapboxGeocoding.cancelCall();
     }
 }

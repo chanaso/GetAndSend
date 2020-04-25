@@ -146,7 +146,7 @@
             android:importantForAutofill="no" />
 
         <Button
-            android:id="@+id/btnEnterID"
+            android:id="@+id/btn_EnterID"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="15dp"

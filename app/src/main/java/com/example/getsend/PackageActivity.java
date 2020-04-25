@@ -12,7 +12,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 
 public class PackageActivity extends AppCompatActivity {
-    private TextView edtSize, edtWeight, edtLocation, edtDestination, edtdelivery, edtStatus, edtPackageId;
+    private TextView edtxt_Size, edtxt_Weight, edtxt_Location, edtxt_Destination, edtxt_delivery, edtxt_Status, edtxt_PackageId;
     private Package pack;
 
     @Override
@@ -23,34 +23,36 @@ public class PackageActivity extends AppCompatActivity {
         Bundle mBundle = getIntent().getExtras();
         if (mBundle != null) {
             String packStr = mBundle.getString("package");
+            getIntent().removeExtra("showMessage");
+
             // convert json to Package object
             Gson gson = new Gson();
             pack = gson.fromJson(packStr , Package.class);
         }
 
-        edtPackageId = findViewById(R.id.edtpackageID);
-        edtPackageId.setText(pack.getPackageId());
+        edtxt_PackageId = findViewById(R.id.edtxt_packageID);
+        edtxt_PackageId.setText(pack.getPackageId());
 
-        edtSize = findViewById(R.id.edtSizeID);
-        edtSize.setText(pack.getSize());
+        edtxt_Size = findViewById(R.id.edtxt_SizeID);
+        edtxt_Size.setText(pack.getSize());
 
-        edtWeight = findViewById(R.id.edtWeightID);
-        edtWeight.setText(pack.getWeight()+"");
+        edtxt_Weight = findViewById(R.id.edtxt_WeightID);
+        edtxt_Weight.setText(pack.getWeight()+"");
 
-        edtLocation = findViewById(R.id.edtLocationID);
-        edtLocation.setText(pack.getLocation());
+        edtxt_Location = findViewById(R.id.edtxt_LocationID);
+        edtxt_Location.setText(pack.getLocation());
 
-        edtDestination = findViewById(R.id.edtDestinationID);
-        edtDestination.setText(pack.getDestination());
+        edtxt_Destination = findViewById(R.id.edtxt_DestinationID);
+        edtxt_Destination.setText(pack.getDestination());
 
         if(!pack.getDeliveryman().equals("")) {
-            edtdelivery = findViewById(R.id.edtDeliveryID);
-            edtdelivery.setVisibility(View.VISIBLE);
-            edtdelivery.setText(pack.getDeliveryman());
+            edtxt_delivery = findViewById(R.id.edtxt_DeliveryID);
+            edtxt_delivery.setVisibility(View.VISIBLE);
+            edtxt_delivery.setText(pack.getDeliveryman());
         }
 
-        edtStatus = findViewById(R.id.edtStatusID);
-        edtStatus.setText(pack.getStatus());
+        edtxt_Status = findViewById(R.id.edtxt_StatusID);
+        edtxt_Status.setText(pack.getStatus());
 
 
     }

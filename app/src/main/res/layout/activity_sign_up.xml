@@ -10,7 +10,7 @@
     tools:context=".SignUpActivity">
 
     <EditText
-        android:id="@+id/userID"
+        android:id="@+id/edtxt_userID"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -47,7 +47,7 @@
             app:ccp_textSize="18sp" />
 
         <EditText
-            android:id="@+id/phoneNumberID"
+            android:id="@+id/edtxt_phoneNumberID"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -57,13 +57,13 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/btnVerifyID"
+        android:id="@+id/btn_VerifyID"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Get verification code" />
 
     <EditText
-        android:id="@+id/verificationCodeID"
+        android:id="@+id/edtxt_verificationCodeID"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -71,21 +71,21 @@
         android:inputType="number" />
 
     <EditText
-        android:id="@+id/passID"
+        android:id="@+id/edtxt_passID"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="numberPassword"
         android:hint="Password" />
 
     <EditText
-        android:id="@+id/passConID"
+        android:id="@+id/edtxt_passConID"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="numberPassword"
         android:hint="Confirm Password" />
 
     <Button
-        android:id="@+id/btnSignUpID"
+        android:id="@+id/btn_SignUpID"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
