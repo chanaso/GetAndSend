@@ -3,7 +3,7 @@
     <string name="title_activity_login">loginActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="access_token">sk.eyJ1IjoiYW5hZWx6IiwiYSI6ImNrM2c2YnVtbDBiZ2QzaXAwcjM1ZjF3NWUifQ.8sjrOysub87S9Ic-ENb7qg</string>
+    <string name="access_token">sk.eyJ1IjoiYW5hZWx6IiwiYSI6ImNrOTZiaWp6djBkMngzZ3BjMmE2d2FkM3UifQ.J7imtyBcJKi2D7HF6uj2sQ</string>
     <string name="textview">hello</string>
     <string name="textviewwight">the package wight</string>
     <string name="order_delivery_view">Order delivery</string>
@@ -22,5 +22,14 @@
 
     <!-- JoinAsDeliveryManActivity -->
     <string name="reEnter_location">Please enter a valid location</string>
+
+    <string name="signature_title">Digital Signature</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="hint_sign">Get Signature</string>
+    <string name="dialog_title">SIGN HERE</string>
+    <string name="hint_cancel">Cancel</string>
+    <string name="hint_clear">Clear</string>
+    <string name="hint_save">Save</string>
 
 </resources>

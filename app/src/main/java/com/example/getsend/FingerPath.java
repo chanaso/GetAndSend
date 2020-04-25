@@ -1,7 +1,7 @@
 package com.example.getsend;
 
 import android.graphics.Path;
-
+//to delete
 public class FingerPath {
 
     public int color;
