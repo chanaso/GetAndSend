@@ -68,7 +68,7 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
         edtxt_PackageId = findViewById(R.id.edtxt_PackageIdID);
         edtxt_Destination = findViewById(R.id.edtxt_DestinationID);
 
-        findViewById(R.id.btnEnterID).setOnClickListener(this);
+        findViewById(R.id.btn_EnterID).setOnClickListener(this);
         findViewById(R.id.edtxt_LocationID).setOnClickListener(this);
         findViewById(R.id.edtxt_DestinationID).setOnClickListener(this);
 
@@ -83,7 +83,7 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btnEnterID:
+            case R.id.btn_EnterID:
                 //integrity check
                 checkAllInputs();
 
@@ -107,6 +107,7 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
                 user.setName(sharedPref.getString("name", ""));
                 addPacakgeToCurrentUser();
                 cleanEdtTxts();
+                finish();
                 break;
             case R.id.edtxt_LocationID:
                 flagLocation = 1;

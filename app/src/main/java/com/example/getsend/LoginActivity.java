@@ -79,6 +79,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         prefEditor.putString("userKey", userKey);
                         prefEditor.commit();
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                        finish();
                     }
                     else{
                         //wrong password
@@ -104,12 +105,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             case R.id.btn_LogInID:
             {
                loginUser();
-                break;
+               break;
             }
             case R.id.txt_CreateAccountID:
             {
-                Intent in = new Intent(this,SignUpActivity.class);
-                startActivity(in);
+                startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
+                finish();
                 break;
             }
         }

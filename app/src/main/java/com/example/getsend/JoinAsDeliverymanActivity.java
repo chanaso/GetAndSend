@@ -19,6 +19,7 @@ import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.FeatureCollection;
 import com.mapbox.geojson.Point;
+import com.mapbox.geojson.Polygon;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -34,6 +35,7 @@ import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
 import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -232,38 +234,93 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
         mapView.onLowMemory();
     }
 
+
+
+
     @Override
     public boolean onMapClick(@NonNull LatLng point) {
         //check with of the packages clicked save package id and open in a new page
-        return handleClickIcon(mapboxMap.getProjection().toScreenLocation(point));
+//        return handleClickIcon(mapboxMap.getProjection().toScreenLocation(point));
+        return handleClickIcon(point.getLongitude(), point.getLatitude());
     }
-    private boolean handleClickIcon(PointF screenPoint) {
-        //  check if the clicked point is a package mark
-        // get pointF of them
-//        RectF rectF = new RectF(screenPoint.x-10, screenPoint.y-10, screenPoint.x+10, screenPoint.y+10);
 
-        List<Feature> features = mapboxMap.queryRenderedFeatures(screenPoint);
-//        List<Feature> features =  mapboxMap.queryRenderedFeatures(screenPoint, MARKER_LAYER_ID);
-        if (!features.isEmpty()) {
-            Feature feature = features.get(0);
-            Toast.makeText(this, "gggggg" + feature.geometry(), Toast.LENGTH_LONG).show();
-            List<Feature> featureList = FeatureCollection.fromFeatures(symbolLayerIconFeatureList).features();
-            if (featureList != null) {
-                for (int i = 0; i < featureList.size(); i++) {
-                    if (featureList.get(i).geometry().equals(feature.geometry())) {
-                        //TODO
-                        Toast.makeText(this, "mmmmmm" + feature.geometry(), Toast.LENGTH_LONG).show();
+    //  check if the clicked point is a package mark
+    private boolean handleClickIcon(double longitude, double latitude) {
+        DecimalFormat three = new DecimalFormat("#0.000"); // will round and display the number to four decimal places. No more, no less.
+        // the four zeros after the decimal point above specify how many decimal places to be accurate to.
+        // the zero to the left of the decimal place above makes it so that numbers that start with "0." will display "0.____" vs just ".____" If you don't want the "0.", replace that 0 to the left of the decimal point with "#"
+        List<Feature> featureList = FeatureCollection.fromFeatures(symbolLayerIconFeatureList).features();
+        if (featureList != null) {
+            for (int i = 0; i < featureList.size(); i++) {
+                Point p = (Point) featureList.get(i).geometry();
+                double longitudeF = p.longitude(), latitudeF =p.latitude();
+                if (three.format(longitudeF).equals(three.format(longitude)) &&  three.format(latitudeF).equals(three.format(latitude))) {
+                    Toast.makeText(this, "workkkkkkk"+three.format(longitudeF)+"\n"+ three.format(longitude), Toast.LENGTH_LONG).show();
+                    startActivity(new Intent(JoinAsDeliverymanActivity.this, MainActivity.class));
 
-//                        Toast.makeText(this, "ppp\n"+featureList.get(i).geometry()+"\n"+features.get(0).geometry(), Toast.LENGTH_LONG).show();
-                        startActivity(new Intent(JoinAsDeliverymanActivity.this, MainActivity.class));
+                } else {
+//                    Toast.makeText(this, three.format(longitudeF)+"111"+ three.format(longitude)+"\n"+three.format(latitudeF)+"111"+three.format(latitude), Toast.LENGTH_LONG).show();
 
-                    } else {
-                    }
                 }
             }
-            return true;
-        }else {
-            return false;
-        }    }
-        
+        }
+        return true;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+//    @Override
+//    public boolean onMapClick(@NonNull LatLng point) {
+//        //check with of the packages clicked save package id and open in a new page
+////        return handleClickIcon(mapboxMap.getProjection().toScreenLocation(point));
+//        Toast.makeText(this, point.getLatitude()+"ggg"+point.getLongitude()+"", Toast.LENGTH_LONG).show();
+//        return handleClickIcon(mapboxMap.getProjection().toScreenLocation(point));
+//    }
+//    private boolean handleClickIcon(PointF screenPoint) {
+//        //  check if the clicked point is a package mark
+//        // get pointF of them
+////        RectF rectF = new RectF(screenPoint.x-10, screenPoint.y-10, screenPoint.x+10, screenPoint.y+10);
+//
+//        List<Feature> features = mapboxMap.queryRenderedFeatures(screenPoint);
+////        List<Feature> features =  mapboxMap.queryRenderedFeatures(screenPoint, MARKER_LAYER_ID);
+//        if (!features.isEmpty()) {
+//            Point p = null;
+//            if(features.get(0).geometry() instanceof Point){
+//                p = (Point) features.get(0).geometry();
+//            }
+////            if(features.get(0).geometry() instanceof Polygon){
+////                p = features.get(0).geometry().coordinates().get(0);
+////
+////            }
+//            Feature feature = features.get(0);
+////            Toast.makeText(this, p+"", Toast.LENGTH_LONG).show();
+//            List<Feature> featureList = FeatureCollection.fromFeatures(symbolLayerIconFeatureList).features();
+//            if (featureList != null) {
+//                for (int i = 0; i < featureList.size(); i++) {
+//                    if (featureList.get(i).geometry().equals(feature.geometry())) {
+//                        //TODO
+//                        Toast.makeText(this, "mmmmmm" + feature.geometry(), Toast.LENGTH_LONG).show();
+//
+////                        Toast.makeText(this, "ppp\n"+featureList.get(i).geometry()+"\n"+features.get(0).geometry(), Toast.LENGTH_LONG).show();
+//                        startActivity(new Intent(JoinAsDeliverymanActivity.this, MainActivity.class));
+//
+//                    } else {
+//                    }
+//                }
+//            }
+//            return true;
+//        }else {
+//            return false;
+//        }    }
+
 }

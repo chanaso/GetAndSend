@@ -209,6 +209,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                                         prefEditor.putString("userKey", userKey);
                                         prefEditor.commit();
                                         startActivity(new Intent(SignUpActivity.this, MainActivity.class));
+                                        finish();
                                     }
                                 }
 
