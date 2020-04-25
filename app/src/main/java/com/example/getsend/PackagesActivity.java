@@ -54,7 +54,6 @@ public class PackagesActivity extends AppCompatActivity {
                 Intent intent = new Intent(PackagesActivity.this, PackageActivity.class);
                 // transfer the selected package as json to packageActivity which will dispaly that package
                 Gson gson = new Gson();
-                Toast.makeText(PackagesActivity.this,listView.getItemAtPosition(i).toString().split("\n")[0], Toast.LENGTH_LONG ).show();
                 String jsonPackage = gson.toJson(packagesOfCurrUser.stream().
                         filter(p -> p.getLocation().equals(listView.getItemAtPosition(i).toString().split("\n")[0])).
                         findAny().orElse(null));

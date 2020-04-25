@@ -23,6 +23,8 @@ public class PackageActivity extends AppCompatActivity {
         Bundle mBundle = getIntent().getExtras();
         if (mBundle != null) {
             String packStr = mBundle.getString("package");
+            getIntent().removeExtra("showMessage");
+
             // convert json to Package object
             Gson gson = new Gson();
             pack = gson.fromJson(packStr , Package.class);

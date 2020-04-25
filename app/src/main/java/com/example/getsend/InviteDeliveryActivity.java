@@ -46,13 +46,10 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
     private Button btnEnter;
     private DatabaseReference refPackage, refUser;
     private Package new_package;
-    private User user;
     private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
     private static final int USER_TYPE_DELIVERY_GETTER = 1;
     private static final String DELIMITER = " ";
     private int flagLocation = 0;
-    private Point firstResultPoint, locationPoint, destinationPoint;
-    private MapboxGeocoding mapboxGeocoding;
     private String locationToGeo, phone, lastPackageKey;
     private SharedPreferences sharedPref;
 
@@ -76,7 +73,6 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
         refPackage = FirebaseDatabase.getInstance().getReference().child("Package");
         refUser = FirebaseDatabase.getInstance().getReference().child("User");
         new_package = new Package();
-        user = new User();
         sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
     }
 
@@ -104,8 +100,7 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
                 Toast.makeText(InviteDeliveryActivity.this, "Package registered successfully!", Toast.LENGTH_LONG).show();
 
                 userTypeUpdate();
-                user.setName(sharedPref.getString("name", ""));
-                addPacakgeToCurrentUser();
+                addPackageToCurrentUser();
                 cleanEdtTxts();
                 finish();
                 break;
@@ -121,7 +116,7 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
     }
 
     //add the package key that added to the current user list of keys packages
-    private void addPacakgeToCurrentUser() {
+    private void addPackageToCurrentUser() {
         refUser.orderByChild("phone").equalTo(phone).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -143,7 +138,6 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
     // update user type to be 1- user as a delivery getter
     private void userTypeUpdate() {
         phone = sharedPref.getString("phone", "");
-        user.setPhone(phone);
         // find user by his phone numder
         Query query = refUser.orderByChild("phone").equalTo(phone);
         query.addChildEventListener(new ChildEventListener() {

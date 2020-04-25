@@ -1,27 +1,29 @@
 package com.example.getsend;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
-import android.graphics.PointF;
-import android.graphics.RectF;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.widget.Toast;
+
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.FeatureCollection;
 import com.mapbox.geojson.Point;
-import com.mapbox.geojson.Polygon;
 import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.location.LocationComponent;
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
@@ -39,7 +41,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.media.midi.MidiDeviceInfo.PROPERTY_NAME;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconAllowOverlap;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconOffset;
 
@@ -56,9 +57,14 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
     private static final String SOURCE_ID = "SOURCE_ID";
     private static final String ICON_ID = "ICON_ID";
     private static final String LAYER_ID = "LAYER_ID";
-    private static final String PROPERTY_NAME = "name";
-    private static final String MARKER_LAYER_ID = "MARKER_LAYER_ID";
+    private static final int USER_TYPE_DELIVERYMAN = 0;
+
+
     private List<Feature> symbolLayerIconFeatureList;
+    private SharedPreferences sharedPref;
+    private String phone;
+    DatabaseReference refUser;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +81,10 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
         refPackage = FirebaseDatabase.getInstance().getReference().child("Package");
+        refUser = FirebaseDatabase.getInstance().getReference().child("User");
         locationsList = new ArrayList<>();
+
+        sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
 
     }
 
@@ -234,7 +243,40 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
         mapView.onLowMemory();
     }
 
+    // update user type to be 1- user as a delivery getter
+    private void userTypeUpdate() {
+        phone = sharedPref.getString("phone", "");
+        // find user by his phone numder
+        Query query = refUser.orderByChild("phone").equalTo(phone);
+        query.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                //change this user type in the database
+                refUser.child(dataSnapshot.getKey()).child("type").setValue(USER_TYPE_DELIVERYMAN);
+            }
 
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+
+        });
+        //saved in the local memeory
+        SharedPreferences.Editor prefEditor = sharedPref.edit();
+        prefEditor.putString("type", String.valueOf(USER_TYPE_DELIVERYMAN));
+        prefEditor.commit();
+    }
 
 
     @Override
@@ -243,6 +285,7 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
 //        return handleClickIcon(mapboxMap.getProjection().toScreenLocation(point));
         return handleClickIcon(point.getLongitude(), point.getLatitude());
     }
+
 
     //  check if the clicked point is a package mark
     private boolean handleClickIcon(double longitude, double latitude) {
@@ -255,72 +298,23 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
                 Point p = (Point) featureList.get(i).geometry();
                 double longitudeF = p.longitude(), latitudeF =p.latitude();
                 if (three.format(longitudeF).equals(three.format(longitude)) &&  three.format(latitudeF).equals(three.format(latitude))) {
-                    Toast.makeText(this, "workkkkkkk"+three.format(longitudeF)+"\n"+ three.format(longitude), Toast.LENGTH_LONG).show();
-                    startActivity(new Intent(JoinAsDeliverymanActivity.this, MainActivity.class));
-
+                    userTypeUpdate();
+                    Intent intent = new Intent(JoinAsDeliverymanActivity.this, PickedPackageActivity.class);
+                    // transfer the selected packagelocation as json to PackagePickedActivity
+                    Gson gson = new Gson();
+                    String jsonPackage = gson.toJson(p.coordinates());
+                    intent.putExtra("packageLocation", jsonPackage);
+                    startActivity(intent);
                 } else {
-//                    Toast.makeText(this, three.format(longitudeF)+"111"+ three.format(longitude)+"\n"+three.format(latitudeF)+"111"+three.format(latitude), Toast.LENGTH_LONG).show();
+                    DecimalFormat two = new DecimalFormat("#0.00");
+                    if (two.format(longitudeF).equals(two.format(longitude)) &&  two.format(latitudeF).equals(two.format(latitude))) {
+                        Toast.makeText(JoinAsDeliverymanActivity.this, "Please zoom in the map\nto pick the package!",Toast.LENGTH_LONG).show();
+                    }
 
                 }
             }
         }
         return true;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-//    @Override
-//    public boolean onMapClick(@NonNull LatLng point) {
-//        //check with of the packages clicked save package id and open in a new page
-////        return handleClickIcon(mapboxMap.getProjection().toScreenLocation(point));
-//        Toast.makeText(this, point.getLatitude()+"ggg"+point.getLongitude()+"", Toast.LENGTH_LONG).show();
-//        return handleClickIcon(mapboxMap.getProjection().toScreenLocation(point));
-//    }
-//    private boolean handleClickIcon(PointF screenPoint) {
-//        //  check if the clicked point is a package mark
-//        // get pointF of them
-////        RectF rectF = new RectF(screenPoint.x-10, screenPoint.y-10, screenPoint.x+10, screenPoint.y+10);
-//
-//        List<Feature> features = mapboxMap.queryRenderedFeatures(screenPoint);
-////        List<Feature> features =  mapboxMap.queryRenderedFeatures(screenPoint, MARKER_LAYER_ID);
-//        if (!features.isEmpty()) {
-//            Point p = null;
-//            if(features.get(0).geometry() instanceof Point){
-//                p = (Point) features.get(0).geometry();
-//            }
-////            if(features.get(0).geometry() instanceof Polygon){
-////                p = features.get(0).geometry().coordinates().get(0);
-////
-////            }
-//            Feature feature = features.get(0);
-////            Toast.makeText(this, p+"", Toast.LENGTH_LONG).show();
-//            List<Feature> featureList = FeatureCollection.fromFeatures(symbolLayerIconFeatureList).features();
-//            if (featureList != null) {
-//                for (int i = 0; i < featureList.size(); i++) {
-//                    if (featureList.get(i).geometry().equals(feature.geometry())) {
-//                        //TODO
-//                        Toast.makeText(this, "mmmmmm" + feature.geometry(), Toast.LENGTH_LONG).show();
-//
-////                        Toast.makeText(this, "ppp\n"+featureList.get(i).geometry()+"\n"+features.get(0).geometry(), Toast.LENGTH_LONG).show();
-//                        startActivity(new Intent(JoinAsDeliverymanActivity.this, MainActivity.class));
-//
-//                    } else {
-//                    }
-//                }
-//            }
-//            return true;
-//        }else {
-//            return false;
-//        }    }
 
 }
