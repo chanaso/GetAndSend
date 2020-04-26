@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.IntentCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -41,8 +42,10 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener, PermissionsListener, NavigationView.OnNavigationItemSelectedListener
 {
-    private static final int USER_TYPE_DELIVERY_GETTER = 1;
     private static final int USER_TYPE_DELIVERYMAN = 0;
+    private static final int USER_TYPE_DELIVERY_GETTER = 1;
+    private static final int USER_TYPE_IN_PROCCESS = 2;
+
     private PermissionsManager permissionsManager;
     private MapboxMap mapboxMap;
     private MapView mapView;
@@ -137,6 +140,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             /////do somthinggggg
             //TODO
         }
+        if(type.equals(String.valueOf(USER_TYPE_IN_PROCCESS))){
+            btnInvite.setVisibility(View.GONE);
+            btnJoin.setText("Waiting for confirmation...");
+            btnJoin.setEnabled(false);
+            btnJoin.setGravity(Gravity.CENTER);
+            /////do somthinggggg
+            //TODO
+        }
+
     }
 
     @Override
@@ -285,6 +297,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         prefEditor.putString("name","");
         prefEditor.commit();
         startActivity(new Intent(MainActivity.this, LoginActivity.class));
-
+        finish();
     }
 }

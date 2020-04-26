@@ -299,11 +299,9 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
                 double longitudeF = p.longitude(), latitudeF =p.latitude();
                 if (three.format(longitudeF).equals(three.format(longitude)) &&  three.format(latitudeF).equals(three.format(latitude))) {
                     userTypeUpdate();
-                    Intent intent = new Intent(JoinAsDeliverymanActivity.this, PickedPackageActivity.class);
+                    Intent intent = new Intent(JoinAsDeliverymanActivity.this, PickedPackagesListActivity.class);
                     // transfer the selected packagelocation as json to PackagePickedActivity
-                    Gson gson = new Gson();
-                    String jsonPackage = gson.toJson(p.coordinates());
-                    intent.putExtra("packageLocation", jsonPackage);
+                    intent.putExtra("packageLocation", p.coordinates().toString());
                     startActivity(intent);
                 } else {
                     DecimalFormat two = new DecimalFormat("#0.00");

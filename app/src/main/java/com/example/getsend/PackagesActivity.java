@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PackagesActivity extends AppCompatActivity {
-    private ListView listView;
+    private ListView listView_packages;
     private SharedPreferences sharedPref;
-    private String userName, phone, rate, userKey, flag = "0";
+    private String userKey;
     private ArrayList<String> userPackagesList = new ArrayList<String>();
     private List<Package> packagesOfCurrUser =  new ArrayList<Package>();
 
@@ -37,29 +37,24 @@ public class PackagesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_packages);
-        listView = (ListView) findViewById(R.id.listView);
+        listView_packages = findViewById(R.id.listView_packagesID);
         sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
         refUser = FirebaseDatabase.getInstance().getReference().child("User");
         refPackage = FirebaseDatabase.getInstance().getReference().child("Package");
 
         //getting the current username from the sp
-        userName = sharedPref.getString("name", "");
-        phone = sharedPref.getString("phone", "");
-        rate = sharedPref.getString("rate", "");
         userKey = sharedPref.getString("userKey", "");
         extractUserPackages(userKey);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(PackagesActivity.this, PackageActivity.class);
-                // transfer the selected package as json to packageActivity which will dispaly that package
-                Gson gson = new Gson();
-                String jsonPackage = gson.toJson(packagesOfCurrUser.stream().
-                        filter(p -> p.getLocation().equals(listView.getItemAtPosition(i).toString().split("\n")[0])).
-                        findAny().orElse(null));
-                intent.putExtra("package", jsonPackage);
-                startActivity(intent);
-            }
+        listView_packages.setOnItemClickListener((adapterView, view, i, l) -> {
+            Intent intent = new Intent(PackagesActivity.this, PackageActivity.class);
+            // transfer the selected package as json to packageActivity which will dispaly that package
+            Gson gson = new Gson();
+            // checking what the location of the selected package and transfer all the package details
+            String jsonPackage = gson.toJson(packagesOfCurrUser.stream().
+                    filter(p -> (p.getPackageId()+" "+p.getLocation()).equals(listView_packages.getItemAtPosition(i).toString().split("\n")[0])).
+                    findAny().orElse(null));
+            intent.putExtra("package", jsonPackage);
+            startActivity(intent);
         });
     }
 
@@ -76,7 +71,7 @@ public class PackagesActivity extends AppCompatActivity {
                         ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(PackagesActivity.this,
                         android.R.layout.simple_list_item_1,
                         new String[]{"No packages history"});
-                        listView.setAdapter(mAdapter);
+                        listView_packages.setAdapter(mAdapter);
                     }else{
 
                         String userPackages = user.getPackages();
@@ -84,15 +79,15 @@ public class PackagesActivity extends AppCompatActivity {
                         ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(PackagesActivity.this,
                                 android.R.layout.simple_list_item_1,
                                 userPackagesList);
-                        listView.setAdapter(mAdapter);
-                        for (String i : userPackagesIdList) {
-                            refPackage.child(i).addListenerForSingleValueEvent(new ValueEventListener() {
+                        listView_packages.setAdapter(mAdapter);
+                        for (String index : userPackagesIdList) {
+                            refPackage.child(index).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshotP) {
                                     if (dataSnapshotP.exists()) {
                                         Package pack = dataSnapshotP.getValue(Package.class);
                                         packagesOfCurrUser.add(pack);
-                                        userPackagesList.add(pack.getLocation()+"\n"+pack.getStatus());
+                                        userPackagesList.add(pack.getPackageId()+" "+pack.getLocation()+"\n"+pack.getStatus());
                                         mAdapter.notifyDataSetChanged();
                                     }
                                 }
