@@ -30,6 +30,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Random;
+import java.net.*;
+import java.io.*;
 
 
 public class PickedPackageActivity extends AppCompatActivity implements View.OnClickListener {
@@ -128,32 +130,36 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
     }
 
     public void sendSms() {
-        try {
-            // Construct data
-            String apiKey = "apikey=" + "vEekLCIK804-7sRZlq9p2WNodqXbWdNlYIEHE5ypYz";
-            String message = "&message=" + "Hi,\n"+ userName +"Deliveryman wants to take your package:"+ packageId+"\nplease confirm the delivery!";
-            String sender = "&sender=" + "GetSend";
-            String numbers = "&numbers=" + packageOwnerPhone;
-
-            // Send data
-            HttpURLConnection conn = (HttpURLConnection) new URL("https://api.txtlocal.com/send/?").openConnection();
-            String data = apiKey + numbers + message + sender;
-            conn.setDoOutput(true);
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Length", Integer.toString(data.length()));
-            conn.getOutputStream().write(data.getBytes("UTF-8"));
-            final BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            final StringBuffer stringBuffer = new StringBuffer();
-            String line;
-            while ((line = rd.readLine()) != null) {
-                Toast.makeText(PickedPackageActivity.this, "the message is "+line, Toast.LENGTH_LONG).show();
+        String request = "https://sendpk.com/api/sms.php?username=972533917843&password=2JFUWsbE5Tbu@H&mobile=972549448461&sender=GetAndSend&message="+"Hi,\n"+ userName +" Deliveryman wants to take your package:"+ packageId+"\nplease confirm the delivery!";
+        try
+        {
+            URL url = new URL(request);
+            URLConnection urlConnection = url.openConnection();
+            HttpURLConnection connection = null;
+            if(urlConnection instanceof HttpURLConnection)
+            {
+                connection = (HttpURLConnection) urlConnection;
             }
-            rd.close();
+            else
+            {
+                Toast.makeText(PickedPackageActivity.this, "Please enter an HTTP URL.", Toast.LENGTH_LONG).show();
 
-        } catch (Exception e) {
-            Toast.makeText(PickedPackageActivity.this, "the error message is"+e, Toast.LENGTH_LONG).show();
+            }
+            final BufferedReader rd = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String urlString = "";
+            String current;
+
+            while((current = rd.readLine()) != null)
+            {
+                urlString += current;
+            }
+            Toast.makeText(PickedPackageActivity.this, urlString, Toast.LENGTH_LONG).show();
+        }catch(IOException e)
+        {
+            Toast.makeText(PickedPackageActivity.this, "SMS NOT WORKING" + e, Toast.LENGTH_LONG).show();
         }
     }
+
     @Override
     public void onClick(View view) {
         //update package status
@@ -168,10 +174,10 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
         prefEditor.commit();
 
     // send sms too package owner that theres a deliverman
-    Toast.makeText(PickedPackageActivity.this, packageOwnerPhone, Toast.LENGTH_LONG).show();
-    sendSms();
-    startActivity(new Intent(PickedPackageActivity.this, MainActivity .class));
-    finish();
-    }
+        Toast.makeText(PickedPackageActivity.this, packageOwnerPhone, Toast.LENGTH_LONG).show();
+        sendSms();
+        startActivity(new Intent(PickedPackageActivity.this, MainActivity .class));
+        finish();
+        }
     }
 
