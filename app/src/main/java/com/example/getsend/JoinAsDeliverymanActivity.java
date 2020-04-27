@@ -111,12 +111,15 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
             }
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot locationSnapshot: dataSnapshot.getChildren())
-                {
-                    String location;
-                    location = locationSnapshot.child("geoLocation").getValue().toString();
-                    locationsList.add(location);
-                }
+                    if (dataSnapshot.exists()) {
+                        for (DataSnapshot datas : dataSnapshot.getChildren()) {
+                            Package pack = datas.getValue(Package.class);
+                            if(pack.getDeliveryman().isEmpty()) {
+                                String location = pack.getGeoLocation();
+                                locationsList.add(location);
+                            }
+                        }
+                    }
                 convertLoctionPointToFeatures();
                 // shows packages location on the map
                 JoinAsDeliverymanActivity.this.mapboxMap = mapboxMap;

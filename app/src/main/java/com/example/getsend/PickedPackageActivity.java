@@ -6,20 +6,30 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.twilio.Twilio;
-import com.twilio.rest.api.v2010.account.Message;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Random;
 
 
 public class PickedPackageActivity extends AppCompatActivity implements View.OnClickListener {
@@ -70,6 +80,8 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
 
         setTxtViews();
         btn_confirmDelivery.setOnClickListener(this);
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
 
     }
 
@@ -115,6 +127,33 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
         });
     }
 
+    public void sendSms() {
+        try {
+            // Construct data
+            String apiKey = "apikey=" + "vEekLCIK804-7sRZlq9p2WNodqXbWdNlYIEHE5ypYz";
+            String message = "&message=" + "Hi,\n"+ userName +"Deliveryman wants to take your package:"+ packageId+"\nplease confirm the delivery!";
+            String sender = "&sender=" + "GetSend";
+            String numbers = "&numbers=" + packageOwnerPhone;
+
+            // Send data
+            HttpURLConnection conn = (HttpURLConnection) new URL("https://api.txtlocal.com/send/?").openConnection();
+            String data = apiKey + numbers + message + sender;
+            conn.setDoOutput(true);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Length", Integer.toString(data.length()));
+            conn.getOutputStream().write(data.getBytes("UTF-8"));
+            final BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            final StringBuffer stringBuffer = new StringBuffer();
+            String line;
+            while ((line = rd.readLine()) != null) {
+                Toast.makeText(PickedPackageActivity.this, "the message is "+line, Toast.LENGTH_LONG).show();
+            }
+            rd.close();
+
+        } catch (Exception e) {
+            Toast.makeText(PickedPackageActivity.this, "the error message is"+e, Toast.LENGTH_LONG).show();
+        }
+    }
     @Override
     public void onClick(View view) {
         //update package status
@@ -129,17 +168,9 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
         prefEditor.commit();
 
     // send sms too package owner that theres a deliverman
-    // Install the Java helper library from twilio.com/docs/java/install
-
-    Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
-    Message message = Message.creator(
-            new com.twilio.type.PhoneNumber(packageOwnerPhone),
-            new com.twilio.type.PhoneNumber(userPhone),
-            userName+" deliveryman wants to take your package"+"\n delivery message:")
-            .create();
-//
+    Toast.makeText(PickedPackageActivity.this, packageOwnerPhone, Toast.LENGTH_LONG).show();
+    sendSms();
     startActivity(new Intent(PickedPackageActivity.this, MainActivity .class));
-
     finish();
     }
     }
