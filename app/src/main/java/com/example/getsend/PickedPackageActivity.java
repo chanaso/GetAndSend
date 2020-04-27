@@ -12,35 +12,25 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.amazonaws.http.HttpClient;
-import com.amazonaws.http.HttpResponse;
-import com.google.firebase.FirebaseError;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.twilio.Twilio;
+import com.twilio.rest.api.v2010.account.Message;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.twilio.example.Example.ACCOUNT_SID;
-import static com.twilio.example.Example.AUTH_TOKEN;
 
 public class PickedPackageActivity extends AppCompatActivity implements View.OnClickListener {
-    private String location, packageId, userKey, packKey;
+    private String location, packageId, userKey, userName, userPhone, packKey, packageOwnerPhone;
     private static final String PACKAGE_STATUS_IN_PROCCESS = "In proccess!";
     private static final int USER_TYPE_IN_PROCCESS = 2;
+    // Find your Account Sid and Token at twilio.com/console
+    // DANGER! This is insecure. See http://twil.io/secure
+    public static final String ACCOUNT_SID = "AC7459f27f90947fc0b469094a4992f6e4";
+    public static final String AUTH_TOKEN = "8681e4f34758edc493e7a9202a731953";
+
 
     private TextView edtxt_Size, edtxt_Weight, edtxt_Location, edtxt_Destination, edtxt_PackageId, edtxt_packageOwner;
     private Button btn_confirmDelivery;
@@ -72,6 +62,8 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
 
         sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
         userKey = sharedPref.getString("userKey", "");
+        userName = sharedPref.getString("name", "");
+        userPhone = sharedPref.getString("phone", "");
 
         refUser = FirebaseDatabase.getInstance().getReference().child("User");
         refPackage = FirebaseDatabase.getInstance().getReference().child("Package");
@@ -100,6 +92,7 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     if (dataSnapshot.exists()) {
                                         User user = dataSnapshot.getValue(User.class);
+                                        packageOwnerPhone = user.getPhone();
                                         edtxt_packageOwner.setText(user.getName());
                                     }
                                 }
@@ -135,44 +128,16 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
         prefEditor.putString("type", String.valueOf(USER_TYPE_IN_PROCCESS));
         prefEditor.commit();
 
-        // send sms too package owner that theres a deliverman
-//        HttpClient httpclient = new DefaultHttpClient();
-//
-//        HttpPost httppost = new HttpPost(
-//                "https://api.twilio.com/2010-04-01/Accounts/{AC7459f27f90947fc0b469094a4992f6e4}/SMS/Messages");
-//        String base64EncodedCredentials = "Basic "
-//                + Base64.encodeToString(
-//                (ACCOUNT_SID + ":" + AUTH_TOKEN).getBytes(),
-//                Base64.NO_WRAP);
-//
-//        httppost.setHeader("Authorization",
-//                base64EncodedCredentials);
-//        try {
-//
-//            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-//            nameValuePairs.add(new BasicNameValuePair("From",
-//                    "+123424353534"));
-//            nameValuePairs.add(new BasicNameValuePair("To",
-//                    "+914342423434"));
-//            nameValuePairs.add(new BasicNameValuePair("Body",
-//                    "Welcome to Twilio"));
-//
-//            httppost.setEntity(new UrlEncodedFormEntity(
-//                    nameValuePairs));
-//
-//            // Execute HTTP Post Request
-//            HttpResponse response = httpclient.execute(httppost);
-//            HttpEntity entity = response.getEntity();
-//            System.out.println("Entity post is: "
-//                    + EntityUtils.toString(entity));
-//
-//
-//        } catch (ClientProtocolException e) {
-//
-//        } catch (IOException e) {
-//
-//        }
+    // send sms too package owner that theres a deliverman
+    // Install the Java helper library from twilio.com/docs/java/install
 
+    Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
+    Message message = Message.creator(
+            new com.twilio.type.PhoneNumber(packageOwnerPhone),
+            new com.twilio.type.PhoneNumber(userPhone),
+            userName+" deliveryman wants to take your package"+"\n delivery message:")
+            .create();
+//
     startActivity(new Intent(PickedPackageActivity.this, MainActivity .class));
 
     finish();
