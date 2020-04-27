@@ -6,17 +6,36 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amazonaws.http.HttpClient;
+import com.amazonaws.http.HttpResponse;
 import com.google.firebase.FirebaseError;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.twilio.example.Example.ACCOUNT_SID;
+import static com.twilio.example.Example.AUTH_TOKEN;
 
 public class PickedPackageActivity extends AppCompatActivity implements View.OnClickListener {
     private String location, packageId, userKey, packKey;
@@ -52,7 +71,7 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
         edtxt_packageOwner = findViewById(R.id.edtxt_packageOwnerID);
 
         sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
-        userKey = sharedPref.getString("userKey","");
+        userKey = sharedPref.getString("userKey", "");
 
         refUser = FirebaseDatabase.getInstance().getReference().child("User");
         refPackage = FirebaseDatabase.getInstance().getReference().child("Package");
@@ -66,12 +85,12 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
         refPackage.orderByChild("packageId").equalTo(packageId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()){
+                if (dataSnapshot.exists()) {
                     for (DataSnapshot datas : dataSnapshot.getChildren()) {
                         Package pack = datas.getValue(Package.class);
                         // the package that clicked on the list
-                        if(pack.getLocation().equals(location)){
-                            edtxt_Weight.setText(pack.getWeight()+"");
+                        if (pack.getLocation().equals(location)) {
+                            edtxt_Weight.setText(pack.getWeight() + "");
                             edtxt_Size.setText(pack.getSize());
                             edtxt_Destination.setText(pack.getDestination());
                             packKey = datas.getKey();
@@ -115,8 +134,48 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
         SharedPreferences.Editor prefEditor = sharedPref.edit();
         prefEditor.putString("type", String.valueOf(USER_TYPE_IN_PROCCESS));
         prefEditor.commit();
-        startActivity(new Intent(PickedPackageActivity.this, MainActivity.class));
-        finish();
 
+        // send sms too package owner that theres a deliverman
+//        HttpClient httpclient = new DefaultHttpClient();
+//
+//        HttpPost httppost = new HttpPost(
+//                "https://api.twilio.com/2010-04-01/Accounts/{AC7459f27f90947fc0b469094a4992f6e4}/SMS/Messages");
+//        String base64EncodedCredentials = "Basic "
+//                + Base64.encodeToString(
+//                (ACCOUNT_SID + ":" + AUTH_TOKEN).getBytes(),
+//                Base64.NO_WRAP);
+//
+//        httppost.setHeader("Authorization",
+//                base64EncodedCredentials);
+//        try {
+//
+//            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+//            nameValuePairs.add(new BasicNameValuePair("From",
+//                    "+123424353534"));
+//            nameValuePairs.add(new BasicNameValuePair("To",
+//                    "+914342423434"));
+//            nameValuePairs.add(new BasicNameValuePair("Body",
+//                    "Welcome to Twilio"));
+//
+//            httppost.setEntity(new UrlEncodedFormEntity(
+//                    nameValuePairs));
+//
+//            // Execute HTTP Post Request
+//            HttpResponse response = httpclient.execute(httppost);
+//            HttpEntity entity = response.getEntity();
+//            System.out.println("Entity post is: "
+//                    + EntityUtils.toString(entity));
+//
+//
+//        } catch (ClientProtocolException e) {
+//
+//        } catch (IOException e) {
+//
+//        }
+
+    startActivity(new Intent(PickedPackageActivity.this, MainActivity .class));
+
+    finish();
     }
-}
+    }
+
