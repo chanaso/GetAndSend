@@ -65,6 +65,7 @@ public class PickedPackagesListActivity extends AppCompatActivity {
                 Toast.makeText(PickedPackagesListActivity.this, pickedPackage, Toast.LENGTH_LONG).show();
                 intent.putExtra("pickedPackage", pickedPackage);
                 startActivity(intent);
+                finish();
             }
         });
     }

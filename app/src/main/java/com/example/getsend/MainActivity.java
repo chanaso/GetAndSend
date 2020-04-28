@@ -267,6 +267,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             case R.id.btnJoin:
             {
                 startActivity(new Intent(MainActivity.this, JoinAsDeliverymanActivity.class));
+                finish();
                 break;
             }
 

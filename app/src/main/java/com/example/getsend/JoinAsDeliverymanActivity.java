@@ -306,6 +306,8 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
                     // transfer the selected packagelocation as json to PackagePickedActivity
                     intent.putExtra("packageLocation", p.coordinates().toString());
                     startActivity(intent);
+                    finish();
+                    break;
                 } else {
                     DecimalFormat two = new DecimalFormat("#0.00");
                     if (two.format(longitudeF).equals(two.format(longitude)) &&  two.format(latitudeF).equals(two.format(latitude))) {
