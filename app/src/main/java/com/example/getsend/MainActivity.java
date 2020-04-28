@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.IntentCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -43,8 +44,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 {
     private static final int USER_TYPE_DELIVERYMAN = 0;
     private static final int USER_TYPE_DELIVERY_GETTER = 1;
-    private static final int USER_TYPE_DELIVERYMAN_IN_PROCCESS = 2;
-    private static final int USER_TYPE_DELIVERY_GETTER_IN_PROCCESS = 3;
+    private static final int USER_TYPE_IN_PROCCESS = 2;
 
     private PermissionsManager permissionsManager;
     private MapboxMap mapboxMap;
@@ -140,17 +140,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             /////do somthinggggg
             //TODO
         }
-        if(type.equals(String.valueOf(USER_TYPE_DELIVERYMAN_IN_PROCCESS))){
+        if(type.equals(String.valueOf(USER_TYPE_IN_PROCCESS))){
             btnInvite.setVisibility(View.GONE);
             btnJoin.setText("Waiting for confirmation...");
-            btnJoin.setEnabled(false);
-            btnJoin.setGravity(Gravity.CENTER);
-            /////do somthinggggg
-            //TODO
-        }
-        if(type.equals(String.valueOf(USER_TYPE_DELIVERY_GETTER_IN_PROCCESS))){
-            btnInvite.setVisibility(View.GONE);
-            btnJoin.setText("we found a deliveryman for your package!");
             btnJoin.setEnabled(false);
             btnJoin.setGravity(Gravity.CENTER);
             /////do somthinggggg
