@@ -25,9 +25,11 @@
         <activity android:name=".InviteDeliveryActivity" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".LoginActivity" />
-        <activity android:name=".PowerOfAttorney" />
+<!--        <activity android:name=".PowerOfAttorney" />-->
         <activity android:name=".SignUpActivity" />
-        <activity android:name=".SplashActivity">
+        <activity android:name=".SplashActivity"/>
+
+        <activity android:name=".PowerOfAttorney">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
