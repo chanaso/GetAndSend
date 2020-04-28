@@ -73,8 +73,8 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
                             edtxt_Size.setText(pack.getSize());
                             edtxt_Destination.setText(pack.getDestination());
                             packKey = datas.getKey();
-
-                            refUser.child(pack.getPackageOwnerId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            packageOwnerId = pack.getPackageOwnerId();
+                            refUser.child(packageOwnerId).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     if (dataSnapshot.exists()) {
@@ -110,20 +110,6 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
         //update deliveryman type
         refUser.child(userKey).child("type").setValue(USER_TYPE_DELIVERYMAN_IN_PROCCESS);
         //update owner type
-        refPackage.child(packKey).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    User user = dataSnapshot.getValue(User.class);
-                    packageOwnerId = user.getName();
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-
-        });
         refUser.child(packageOwnerId).child("type").setValue(USER_TYPE_DELIVERY_GETTER_IN_PROCCESS);
         //saved in the local memeory
         SharedPreferences.Editor prefEditor = sharedPref.edit();
