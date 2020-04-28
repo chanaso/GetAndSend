@@ -1,6 +1,5 @@
 package com.example.getsend;
 
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -49,7 +48,6 @@ public class PowerOfAttorney extends AppCompatActivity {
     private DatabaseReference refUser;
     private SharedPreferences sharedPref;
     private String content;
-    // Create a storage reference from our app
     private StorageReference signaturesRef;
     private String pic_name = "hello";
     private String StoredPath = "signature" + pic_name + ".JPEG";
@@ -58,6 +56,7 @@ public class PowerOfAttorney extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_power_of_attorney);
+        // Create a storage reference
         signaturesRef = FirebaseStorage.getInstance().getReference("Signatures");
         // Setting ToolBar as ActionBar
         title = (TextView) findViewById(R.id.textView);
@@ -65,7 +64,6 @@ public class PowerOfAttorney extends AppCompatActivity {
 
         // Button to open signature panel
         btn_get_sign = (Button) findViewById(R.id.signature);
-
 
         // Dialog Function
         dialog = new Dialog(PowerOfAttorney.this);
@@ -100,7 +98,6 @@ public class PowerOfAttorney extends AppCompatActivity {
 
         mClear.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Log.v("tag", "Panel Cleared");
                 mSignature.clear();
                 mGetSign.setEnabled(false);
             }
@@ -108,9 +105,6 @@ public class PowerOfAttorney extends AppCompatActivity {
         mGetSign.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-
-                Log.v("tag", "Panel Saved");
-
                 mSignature.save(view, StoredPath);
                 dialog.dismiss();
                 Toast.makeText(getApplicationContext(), "Successfully Saved", Toast.LENGTH_SHORT).show();
@@ -120,7 +114,6 @@ public class PowerOfAttorney extends AppCompatActivity {
         });
         mCancel.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Log.v("tag", "Panel Cancelled");
                 dialog.dismiss();
                 // Calling the same class
                 recreate();
@@ -145,6 +138,7 @@ public class PowerOfAttorney extends AppCompatActivity {
         return bitmap;
     }
 
+    // signature class contains method to catch the signature view and upload to storage
     public class signature extends View {
         private static final float STROKE_WIDTH = 5f;
         private static final float HALF_STROKE_WIDTH = STROKE_WIDTH / 2;
@@ -164,43 +158,15 @@ public class PowerOfAttorney extends AppCompatActivity {
             paint.setStrokeWidth(STROKE_WIDTH);
         }
 
-        @SuppressLint("WrongThread")
         public void save(View v, String StoredPath){
-            Bitmap bitmap = getBitmapFromView(v);
+            bitmap = getBitmapFromView(v);
             Bitmap bitmapColored = getBitmapFromView(v,Color.WHITE);
-//            bitmap = Bitmap.createBitmap(mContent.getWidth(), mContent.getHeight(), Bitmap.Config.RGB_565);
+            // create a storage path
             StorageReference currSignRef = signaturesRef.child(StoredPath);
-//            Canvas canvas = new Canvas(bitmap);
-//            v.draw(canvas);
-//            Toast.makeText(PowerOfAttorney.this,"Uploaded1..." , Toast.LENGTH_SHORT);
-//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-//            byte[] data = baos.toByteArray();
-//            String imageB64 = Base64.encodeToString(data, Base64.URL_SAFE);
-//            Toast.makeText(PowerOfAttorney.this,"Uploaded2..." , Toast.LENGTH_SHORT);
-//            refUser.push().setValue(imageB64);
-//            uploadTask = currSignRef.putBytes(imageB64);
-//            uploadTask.addOnFailureListener(new OnFailureListener() {
-//                @Override
-//                public void onFailure(@NonNull Exception exception) {
-//                    // Handle unsuccessful uploads
-//                    Toast.makeText(PowerOfAttorney.this,"Not Uploaded..." , Toast.LENGTH_SHORT);
-//                }
-//            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                @Override
-//                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-//                    Toast.makeText(PowerOfAttorney.this,"Uploaded..." , Toast.LENGTH_SHORT);
-//                }
-//            });
-//            // Get the data from an ImageView as bytes
-//            imageView.setDrawingCacheEnabled(true);
-//            imageView.buildDrawingCache();
-//            Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bitmapColored.compress(Bitmap.CompressFormat.JPEG, 100, baos);
             byte[] data = baos.toByteArray();
-
+            // upload to firebase storage
             UploadTask uploadTask = currSignRef.putBytes(data);
             uploadTask.addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -212,7 +178,6 @@ public class PowerOfAttorney extends AppCompatActivity {
             }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
                     Toast.makeText(PowerOfAttorney.this,"Uploaded..." , Toast.LENGTH_SHORT);
                 }
             });
