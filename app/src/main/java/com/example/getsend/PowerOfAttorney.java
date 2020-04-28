@@ -1,5 +1,6 @@
 package com.example.getsend;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -9,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -17,15 +19,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -39,7 +39,7 @@ public class PowerOfAttorney extends AppCompatActivity {
     private Button btn_get_sign, mClear, mGetSign, mCancel;
     private File file;
     private Dialog dialog;
-    private LinearLayout mContent;
+    private LinearLayout mContent, canvas;
     private View view;
     private signature mSignature;
     private Bitmap bitmap;
@@ -47,11 +47,15 @@ public class PowerOfAttorney extends AppCompatActivity {
     private StorageReference signaturesRef;
     private String userKey,StoredPath;
     private SharedPreferences sharedPref;
+    private Uri downloadUri;
+    private ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_power_of_attorney);
+//        canvas = (LinearLayout)findViewById(R.id.canvas);
+        imageView = (ImageView) findViewById(R.id.imageView);
         // Create a storage reference
         signaturesRef = FirebaseStorage.getInstance().getReference("Signatures");
         // Setting ToolBar as ActionBar
@@ -96,6 +100,7 @@ public class PowerOfAttorney extends AppCompatActivity {
         mCancel = (Button) dialog.findViewById(R.id.cancel);
         view = mContent;
 
+
         mClear.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 mSignature.clear();
@@ -109,6 +114,8 @@ public class PowerOfAttorney extends AppCompatActivity {
                 dialog.dismiss();
                 Toast.makeText(getApplicationContext(), "Successfully Saved", Toast.LENGTH_SHORT).show();
                 // Calling the same class
+//                Picasso.with(PowerOfAttorney.this).load(downloadUri).into(imageView);
+                imageView.setImageBitmap(bitmap);
                 recreate();
             }
         });
@@ -158,6 +165,7 @@ public class PowerOfAttorney extends AppCompatActivity {
             paint.setStrokeWidth(STROKE_WIDTH);
         }
 
+        @SuppressLint("WrongThread")
         public void save(View v, String StoredPath){
             bitmap = getBitmapFromView(v);
             Bitmap bitmapColored = getBitmapFromView(v,Color.WHITE);
@@ -168,19 +176,43 @@ public class PowerOfAttorney extends AppCompatActivity {
             byte[] data = baos.toByteArray();
             // upload to firebase storage
             UploadTask uploadTask = currSignRef.putBytes(data);
-            uploadTask.addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle unsuccessful uploads
-                    Toast.makeText(PowerOfAttorney.this,"Not Uploaded..." , Toast.LENGTH_SHORT);
 
-                }
-            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Toast.makeText(PowerOfAttorney.this,"Uploaded..." , Toast.LENGTH_SHORT);
-                }
-            });
+
+//            Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+//                @Override
+//                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+//                    if (!task.isSuccessful()) {
+//                        throw task.getException();
+//                    }
+//
+//                    // Continue with the task to get the download URL
+//                    return currSignRef.getDownloadUrl();
+//                }
+//            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+//                @Override
+//                public void onComplete(@NonNull Task<Uri> task) {
+//                    if (task.isSuccessful()) {
+//                        downloadUri = task.getResult();
+//                        Toast.makeText(getApplicationContext(), downloadUri.toString(), Toast.LENGTH_SHORT).show();
+//                    } else {
+//                        Toast.makeText(getApplicationContext(), "Get image Uri failed...", Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//            });
+
+//            uploadTask.addOnFailureListener(new OnFailureListener() {
+//                @Override
+//                public void onFailure(@NonNull Exception exception) {
+//                    // Handle unsuccessful uploads
+//                    Toast.makeText(PowerOfAttorney.this,"Not Uploaded..." , Toast.LENGTH_SHORT);
+//
+//                }
+//            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                @Override
+//                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                    Toast.makeText(PowerOfAttorney.this,"Uploaded..." , Toast.LENGTH_SHORT);
+//                }
+//            });
 
 
         }
