@@ -80,6 +80,12 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
         btn_confirmDelivery = findViewById(R.id.btn_confirmDeliveryID);
         edtxt_packageOwner = findViewById(R.id.edtxt_packageOwnerID);
         edtxt_deliverymanNote = findViewById(R.id.edtxt_deliveryNoteID);
+        // integrity input check
+        if(edtxt_deliverymanNote.length() < 6){
+            this.edtxt_deliverymanNote.setError("password should be less than 160 letters");
+            this.edtxt_deliverymanNote.requestFocus();
+            return;
+        }
 
         sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
         userKey = sharedPref.getString("userKey", "");
@@ -143,9 +149,8 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
     public void sendSms() {
         if(checkPermission(Manifest.permission.SEND_SMS)){
             SmsManager smsManager = SmsManager.getDefault();
-            smsManager.sendTextMessage(packageOwnerPhone, null,"Hi,\n"+ userName+" deliveryman wants to take your package number: "+ packageId,null , null);
+            smsManager.sendTextMessage(packageOwnerPhone, null,"Hi,\n"+ userName+" deliveryman wants to take your package number: "+ packageId+"\nplease enter GetAndSend app and confirm the delivery!",null , null);
             smsManager.sendTextMessage(packageOwnerPhone, null, "Deliveryman Note: "+edtxt_deliverymanNote.getText().toString(),null , null);
-//            smsManager.sendTextMessage("+972546590505", null,"Hi,\n"+ userName +" deliveryman wants to take your package:"+ packageId+"\nplease enter GetAndSend app and confirm the delivery!\nDeliveryman Note:"+edtxt_deliverymanNote.getText(), null, null);
             Toast.makeText(PickedPackageActivity.this, "SMS send successfully", Toast.LENGTH_LONG).show();
         }else {
             Toast.makeText(PickedPackageActivity.this, "SMS failed", Toast.LENGTH_LONG).show();

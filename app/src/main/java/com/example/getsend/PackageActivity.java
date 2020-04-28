@@ -45,7 +45,7 @@ public class PackageActivity extends AppCompatActivity {
         edtxt_Destination = findViewById(R.id.edtxt_DestinationID);
         edtxt_Destination.setText(pack.getDestination());
 
-        if(!pack.getDeliveryman().equals("")) {
+        if(!pack.getDeliveryman().isEmpty()) {
             edtxt_delivery = findViewById(R.id.edtxt_DeliveryID);
             edtxt_delivery.setVisibility(View.VISIBLE);
             edtxt_delivery.setText(pack.getDeliveryman());
