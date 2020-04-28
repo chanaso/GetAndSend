@@ -6,17 +6,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
-import android.app.Activity;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.telephony.SmsManager;
@@ -26,18 +18,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import android.widget.Toast;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -51,11 +33,10 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
     private static final String PACKAGE_STATUS_IN_PROCCESS = "In proccess!";
     private static final int USER_TYPE_DELIVERYMAN_IN_PROCCESS = 2, USER_TYPE_DELIVERY_GETTER_IN_PROCCESS = 3;
     private static final int SEND_SMS_PERMISSION_REQUEST_CODE = 1;
-    private static final int PERMISSION_REQUEST_CODE = 1;
 
 
     private TextView edtxt_Size, edtxt_Weight, edtxt_Location, edtxt_Destination, edtxt_PackageId, edtxt_packageOwner;
-    private EditText edtxt_deliverymanNote;
+    private EditText edtxt_deliverymanNote, edtxt_deliverymanId;
     private Button btn_confirmDelivery;
     private SharedPreferences sharedPref;
     private DatabaseReference refUser, refPackage;
@@ -83,12 +64,7 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
         btn_confirmDelivery = findViewById(R.id.btn_confirmDeliveryID);
         edtxt_packageOwner = findViewById(R.id.edtxt_packageOwnerID);
         edtxt_deliverymanNote = findViewById(R.id.edtxt_deliveryNoteID);
-        // integrity input check
-        if(edtxt_deliverymanNote.length() < 6){
-            this.edtxt_deliverymanNote.setError("password should be less than 160 letters");
-            this.edtxt_deliverymanNote.requestFocus();
-            return;
-        }
+        edtxt_deliverymanId = findViewById(R.id.edtxt_deliverymanIdID);
 
         sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
         userKey = sharedPref.getString("userKey", "");
@@ -105,6 +81,7 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
         StrictMode.setThreadPolicy(policy);
 
     }
+
 
     private void setTxtViews() {
         refPackage.orderByChild("packageId").equalTo(packageId).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -167,19 +144,31 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
 
     @Override
     public void onClick(View view) {
-        //update package status
-        refPackage.child(packKey).child("deliveryman").setValue(userKey);
-        refPackage.child(packKey).child("status").setValue(PACKAGE_STATUS_IN_PROCCESS);
+        // integrity input check
+        if(edtxt_deliverymanId.getText().length() !=9){
+            this.edtxt_deliverymanId.setError("An Israeli ID must contain 9 numbers:");
+            this.edtxt_deliverymanId.requestFocus();
+            return;
+        }
+        if(edtxt_deliverymanNote.getText().length() > 100){
+            this.edtxt_deliverymanNote.setError("Note should be less than 160 letters");
+            this.edtxt_deliverymanNote.requestFocus();
+            return;
+        }
 
-        //update deliveryman type
-        refUser.child(userKey).child("type").setValue(USER_TYPE_DELIVERYMAN_IN_PROCCESS);
-        //update owner type
-        refUser.child(packageOwnerId).child("type").setValue(USER_TYPE_DELIVERY_GETTER_IN_PROCCESS);
-        //saved in the local memory
-        SharedPreferences.Editor prefEditor = sharedPref.edit();
-        prefEditor.putString("type", String.valueOf(USER_TYPE_DELIVERYMAN_IN_PROCCESS));
-
-        prefEditor.commit();
+//        //update package status
+//        refPackage.child(packKey).child("deliveryman").setValue(userKey);
+//        refPackage.child(packKey).child("status").setValue(PACKAGE_STATUS_IN_PROCCESS);
+//
+//        //update deliveryman type
+//        refUser.child(userKey).child("type").setValue(USER_TYPE_DELIVERYMAN_IN_PROCCESS);
+//        //update owner type
+//        refUser.child(packageOwnerId).child("type").setValue(USER_TYPE_DELIVERY_GETTER_IN_PROCCESS);
+//        //saved in the local memory
+//        SharedPreferences.Editor prefEditor = sharedPref.edit();
+//        prefEditor.putString("type", String.valueOf(USER_TYPE_DELIVERYMAN_IN_PROCCESS));
+//
+//        prefEditor.commit();
 
     // send sms too package owner that theres a deliverman
         Toast.makeText(PickedPackageActivity.this, packageOwnerPhone, Toast.LENGTH_LONG).show();

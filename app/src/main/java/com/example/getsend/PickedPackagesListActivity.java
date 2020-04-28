@@ -77,11 +77,13 @@ public class PickedPackagesListActivity extends AppCompatActivity {
                 if (dataSnapshot.exists()){
                     for (DataSnapshot datas : dataSnapshot.getChildren()) {
                         Package pack = datas.getValue(Package.class);
-                        if(userPickedPackagesList.isEmpty()){
-                            userPickedPackagesList.add("~"+pack.getLocation()+"~");
+                        if (userPickedPackagesList.isEmpty()) {
+                            userPickedPackagesList.add("~" + pack.getLocation() + "~");
                         }
-                        userPickedPackagesList.add(pack.getPackageId());
-                        mAdapter.notifyDataSetChanged();
+                        if(pack.getDeliveryman().isEmpty()) {
+                            userPickedPackagesList.add(pack.getPackageId());
+                            mAdapter.notifyDataSetChanged();
+                        }
                     }
                 }
             }
