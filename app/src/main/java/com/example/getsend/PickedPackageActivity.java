@@ -26,6 +26,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import android.widget.Toast;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -43,12 +46,12 @@ import com.google.firebase.database.ValueEventListener;
 
 
 public class PickedPackageActivity extends AppCompatActivity implements View.OnClickListener {
-    private String location, packageId, userKey, userName, userPhone, packKey, packageOwnerPhone;
+
+    private String location, packageId, userKey, userName, userPhone, packKey, packageOwnerPhone, packageOwnerId;
     private static final String PACKAGE_STATUS_IN_PROCCESS = "In proccess!";
-    private static final int USER_TYPE_IN_PROCCESS = 2;
+    private static final int USER_TYPE_DELIVERYMAN_IN_PROCCESS = 2, USER_TYPE_DELIVERY_GETTER_IN_PROCCESS = 3;
     private static final int SEND_SMS_PERMISSION_REQUEST_CODE = 1;
     private static final int PERMISSION_REQUEST_CODE = 1;
-
 
 
     private TextView edtxt_Size, edtxt_Weight, edtxt_Location, edtxt_Destination, edtxt_PackageId, edtxt_packageOwner;
@@ -116,8 +119,8 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
                             edtxt_Size.setText(pack.getSize());
                             edtxt_Destination.setText(pack.getDestination());
                             packKey = datas.getKey();
-
-                            refUser.child(pack.getPackageOwnerId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            packageOwnerId = pack.getPackageOwnerId();
+                            refUser.child(packageOwnerId).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     if (dataSnapshot.exists()) {
@@ -145,7 +148,6 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
         });
     }
 
-
     public void sendSms() {
         if(checkPermission(Manifest.permission.SEND_SMS)){
             SmsManager smsManager = SmsManager.getDefault();
@@ -166,19 +168,22 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
     @Override
     public void onClick(View view) {
         //update package status
-//        refPackage.child(packKey).child("deliveryman").setValue(userKey);
-//        refPackage.child(packKey).child("status").setValue(PACKAGE_STATUS_IN_PROCCESS);
-//
-//        //update deliveryman type
-//        refUser.child(userKey).child("type").setValue(USER_TYPE_IN_PROCCESS);
-//        //saved in the local memeory
-//        SharedPreferences.Editor prefEditor = sharedPref.edit();
-//        prefEditor.putString("type", String.valueOf(USER_TYPE_IN_PROCCESS));
-//        prefEditor.commit();
+        refPackage.child(packKey).child("deliveryman").setValue(userKey);
+        refPackage.child(packKey).child("status").setValue(PACKAGE_STATUS_IN_PROCCESS);
+
+        //update deliveryman type
+        refUser.child(userKey).child("type").setValue(USER_TYPE_DELIVERYMAN_IN_PROCCESS);
+        //update owner type
+        refUser.child(packageOwnerId).child("type").setValue(USER_TYPE_DELIVERY_GETTER_IN_PROCCESS);
+        //saved in the local memory
+        SharedPreferences.Editor prefEditor = sharedPref.edit();
+        prefEditor.putString("type", String.valueOf(USER_TYPE_DELIVERYMAN_IN_PROCCESS));
+
+        prefEditor.commit();
 
     // send sms too package owner that theres a deliverman
         Toast.makeText(PickedPackageActivity.this, packageOwnerPhone, Toast.LENGTH_LONG).show();
-        sendSms();      //        sendSMS(packageOwnerPhone, "Hi,\n"+ userName +" deliveryman wants to take your package:"+ packageId+"\nplease enter GetAndSend app and confirm the delivery!\nDeliveryman Note:"+edtxt_deliverymanNote.getText());
+        sendSms();
         startActivity(new Intent(PickedPackageActivity.this, MainActivity .class));
         finish();
         }
