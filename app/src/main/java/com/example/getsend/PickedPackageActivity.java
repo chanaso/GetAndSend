@@ -2,14 +2,20 @@ package com.example.getsend;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.telephony.SmsManager;
 import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.io.BufferedReader;
@@ -25,26 +31,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Random;
-import java.net.*;
-import java.io.*;
-
 
 public class PickedPackageActivity extends AppCompatActivity implements View.OnClickListener {
     private String location, packageId, userKey, userName, userPhone, packKey, packageOwnerPhone;
     private static final String PACKAGE_STATUS_IN_PROCCESS = "In proccess!";
     private static final int USER_TYPE_IN_PROCCESS = 2;
-    // Find your Account Sid and Token at twilio.com/console
-    // DANGER! This is insecure. See http://twil.io/secure
-    public static final String ACCOUNT_SID = "AC7459f27f90947fc0b469094a4992f6e4";
-    public static final String AUTH_TOKEN = "8681e4f34758edc493e7a9202a731953";
+    private static final int SEND_SMS_PERMISSION_REQUEST_CODE = 1;
 
 
     private TextView edtxt_Size, edtxt_Weight, edtxt_Location, edtxt_Destination, edtxt_PackageId, edtxt_packageOwner;
+    private EditText edtxt_deliverymanNote;
     private Button btn_confirmDelivery;
     private SharedPreferences sharedPref;
     private DatabaseReference refUser, refPackage;
@@ -71,6 +67,7 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
         edtxt_Destination = findViewById(R.id.edtxt_DestinationID);
         btn_confirmDelivery = findViewById(R.id.btn_confirmDeliveryID);
         edtxt_packageOwner = findViewById(R.id.edtxt_packageOwnerID);
+        edtxt_deliverymanNote = findViewById(R.id.edtxt_deliveryNoteID);
 
         sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
         userKey = sharedPref.getString("userKey", "");
@@ -130,34 +127,19 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
     }
 
     public void sendSms() {
-        String request = "https://sendpk.com/api/sms.php?username=972533917843&password=2JFUWsbE5Tbu@H&mobile=972549448461&sender=GetAndSend&message="+"Hi,\n"+ userName +" Deliveryman wants to take your package:"+ packageId+"\nplease confirm the delivery!";
-        try
-        {
-            URL url = new URL(request);
-            URLConnection urlConnection = url.openConnection();
-            HttpURLConnection connection = null;
-            if(urlConnection instanceof HttpURLConnection)
-            {
-                connection = (HttpURLConnection) urlConnection;
-            }
-            else
-            {
-                Toast.makeText(PickedPackageActivity.this, "Please enter an HTTP URL.", Toast.LENGTH_LONG).show();
-
-            }
-            final BufferedReader rd = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String urlString = "";
-            String current;
-
-            while((current = rd.readLine()) != null)
-            {
-                urlString += current;
-            }
-            Toast.makeText(PickedPackageActivity.this, urlString, Toast.LENGTH_LONG).show();
-        }catch(IOException e)
-        {
-            Toast.makeText(PickedPackageActivity.this, "SMS NOT WORKING" + e, Toast.LENGTH_LONG).show();
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, SEND_SMS_PERMISSION_REQUEST_CODE);
+        if(checkPermission(Manifest.permission.SEND_SMS)){
+            SmsManager smsManager = SmsManager.getDefault();
+            smsManager.sendTextMessage(packageOwnerPhone, null,"Hi,\n"+ userName +" deliveryman wants to take your package:"+ packageId+"\nplease enter GetAndSend app and confirm the delivery!\nDeliveryman Note:"+edtxt_deliverymanNote.getText(), null, null);
+            Toast.makeText(PickedPackageActivity.this, "SMS send successfully", Toast.LENGTH_LONG).show();
+        }else {
+            Toast.makeText(PickedPackageActivity.this, "SMS failed", Toast.LENGTH_LONG).show();
         }
+    }
+
+    public boolean checkPermission(String permission){
+        int check = ContextCompat.checkSelfPermission(this, permission);
+        return (check == PackageManager.PERMISSION_GRANTED);
     }
 
     @Override

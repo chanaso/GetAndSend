@@ -2,7 +2,7 @@ package com.example.getsend;
 
 public class User {
     private String name, phone, pass, packages;
-    private int rate, type;
+    private int rate, type, id, sign;
     //type: 0- deliverman, 1- get delivery. 3- deliveryman picked package.
 
     public User(){
