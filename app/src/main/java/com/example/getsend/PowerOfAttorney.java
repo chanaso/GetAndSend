@@ -26,8 +26,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -45,12 +43,10 @@ public class PowerOfAttorney extends AppCompatActivity {
     private View view;
     private signature mSignature;
     private Bitmap bitmap;
-    private DatabaseReference refUser;
-    private SharedPreferences sharedPref;
     private String content;
     private StorageReference signaturesRef;
-    private String pic_name = "hello";
-    private String StoredPath = "signature" + pic_name + ".JPEG";
+    private String userKey,StoredPath;
+    private SharedPreferences sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +67,11 @@ public class PowerOfAttorney extends AppCompatActivity {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_signature);
         dialog.setCancelable(true);
-        refUser = FirebaseDatabase.getInstance().getReference().child("User");
+
+        // find id of current user
+        sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
+        userKey = sharedPref.getString("userKey", "");
+        StoredPath = userKey + ".JPEG";
 
         btn_get_sign.setOnClickListener(new View.OnClickListener() {
             @Override
