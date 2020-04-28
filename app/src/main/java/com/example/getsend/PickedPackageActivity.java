@@ -6,9 +6,16 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.telephony.SmsManager;
@@ -126,38 +133,103 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
         });
     }
 
-    public void sendSms() {
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, SEND_SMS_PERMISSION_REQUEST_CODE);
-        if(checkPermission(Manifest.permission.SEND_SMS)){
-            SmsManager smsManager = SmsManager.getDefault();
-            smsManager.sendTextMessage(packageOwnerPhone, null,"Hi,\n"+ userName +" deliveryman wants to take your package:"+ packageId+"\nplease enter GetAndSend app and confirm the delivery!\nDeliveryman Note:"+edtxt_deliverymanNote.getText(), null, null);
-            Toast.makeText(PickedPackageActivity.this, "SMS send successfully", Toast.LENGTH_LONG).show();
-        }else {
-            Toast.makeText(PickedPackageActivity.this, "SMS failed", Toast.LENGTH_LONG).show();
-        }
+    private void sendSMS(String phoneNumber, String message) {
+        String SENT = "SMS_SENT";
+        String DELIVERED = "SMS_DELIVERED";
+
+        PendingIntent sentPI = PendingIntent.getBroadcast(this, 0, new Intent(
+                SENT), 0);
+
+        PendingIntent deliveredPI = PendingIntent.getBroadcast(this, 0,
+                new Intent(DELIVERED), 0);
+
+        // ---when the SMS has been sent---
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context arg0, Intent arg1) {
+                switch (getResultCode()) {
+                    case Activity.RESULT_OK:
+                        ContentValues values = new ContentValues();
+                        values.put("address", phoneNumber);
+                        values.put("body", message);
+                        getContentResolver().insert(
+                                Uri.parse("content://sms/sent"), values);
+                        Toast.makeText(getBaseContext(), "SMS sent",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+                        Toast.makeText(getBaseContext(), "Generic failure",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NO_SERVICE:
+                        Toast.makeText(getBaseContext(), "No service",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NULL_PDU:
+                        Toast.makeText(getBaseContext(), "Null PDU",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_RADIO_OFF:
+                        Toast.makeText(getBaseContext(), "Radio off",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        }, new IntentFilter(SENT));
+
+        // ---when the SMS has been delivered---
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context arg0, Intent arg1) {
+                switch (getResultCode()) {
+                    case Activity.RESULT_OK:
+                        Toast.makeText(getBaseContext(), "SMS delivered",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        Toast.makeText(getBaseContext(), "SMS not delivered",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        }, new IntentFilter(DELIVERED));
+
+        SmsManager sms = SmsManager.getDefault();
+        sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
     }
 
-    public boolean checkPermission(String permission){
-        int check = ContextCompat.checkSelfPermission(this, permission);
-        return (check == PackageManager.PERMISSION_GRANTED);
-    }
+//    public void sendSms() {
+//        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, SEND_SMS_PERMISSION_REQUEST_CODE);
+//        if(checkPermission(Manifest.permission.SEND_SMS)){
+//            SmsManager smsManager = SmsManager.getDefault();
+//            smsManager.sendTextMessage(packageOwnerPhone, null,"Hi,\n"+ userName +" deliveryman wants to take your package:"+ packageId+"\nplease enter GetAndSend app and confirm the delivery!\nDeliveryman Note:"+edtxt_deliverymanNote.getText(), null, null);
+//            Toast.makeText(PickedPackageActivity.this, "SMS send successfully", Toast.LENGTH_LONG).show();
+//        }else {
+//            Toast.makeText(PickedPackageActivity.this, "SMS failed", Toast.LENGTH_LONG).show();
+//        }
+//    }
+//
+//    public boolean checkPermission(String permission){
+//        int check = ContextCompat.checkSelfPermission(this, permission);
+//        return (check == PackageManager.PERMISSION_GRANTED);
+//    }
 
     @Override
     public void onClick(View view) {
         //update package status
-        refPackage.child(packKey).child("deliveryman").setValue(userKey);
-        refPackage.child(packKey).child("status").setValue(PACKAGE_STATUS_IN_PROCCESS);
-
-        //update deliveryman type
-        refUser.child(userKey).child("type").setValue(USER_TYPE_IN_PROCCESS);
-        //saved in the local memeory
-        SharedPreferences.Editor prefEditor = sharedPref.edit();
-        prefEditor.putString("type", String.valueOf(USER_TYPE_IN_PROCCESS));
-        prefEditor.commit();
+//        refPackage.child(packKey).child("deliveryman").setValue(userKey);
+//        refPackage.child(packKey).child("status").setValue(PACKAGE_STATUS_IN_PROCCESS);
+//
+//        //update deliveryman type
+//        refUser.child(userKey).child("type").setValue(USER_TYPE_IN_PROCCESS);
+//        //saved in the local memeory
+//        SharedPreferences.Editor prefEditor = sharedPref.edit();
+//        prefEditor.putString("type", String.valueOf(USER_TYPE_IN_PROCCESS));
+//        prefEditor.commit();
 
     // send sms too package owner that theres a deliverman
         Toast.makeText(PickedPackageActivity.this, packageOwnerPhone, Toast.LENGTH_LONG).show();
-        sendSms();
+        sendSMS(packageOwnerPhone, "Hi,\n"+ userName +" deliveryman wants to take your package:"+ packageId+"\nplease enter GetAndSend app and confirm the delivery!\nDeliveryman Note:"+edtxt_deliverymanNote.getText());
         startActivity(new Intent(PickedPackageActivity.this, MainActivity .class));
         finish();
         }
