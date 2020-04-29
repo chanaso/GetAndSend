@@ -1,23 +1,34 @@
 package com.example.getsend;
 
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 
 public class PowerOfAttorneyView extends AppCompatActivity {
 
+    private final long ONE_MEGABYTE = 1024 * 1024;
     private SharedPreferences sharedPref;
     private ImageView imageView;
     private TextView power_of_attorney_content;
     private ImageButton btn_exit;
     private Package pack;
     private String userKey, packageOwnerKey, packageId;
+    private StorageReference signatureRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +54,24 @@ public class PowerOfAttorneyView extends AppCompatActivity {
         }
 
         //get owner details
-        packageOwnerKey = pack.getPackageOwnerId();
-        packageId = pack.getPackageId();
+//        packageOwnerKey = pack.getPackageOwnerId();
+//        packageId = pack.getPackageId();
+        signatureRef = FirebaseStorage.getInstance().getReference("Signatures/"+ packageOwnerKey + ".JPEG");
+        signatureRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                    @Override
+                    public void onSuccess(byte[] bytes) {
+                        Bitmap bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        DisplayMetrics dm = new DisplayMetrics();
+                        getWindowManager().getDefaultDisplay().getMetrics(dm);
+                        imageView.setImageBitmap(bm);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+                Toast.makeText(PowerOfAttorneyView.this,"Uploaded..." , Toast.LENGTH_SHORT);
+            }
+        });
 
 
 

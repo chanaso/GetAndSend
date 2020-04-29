@@ -24,7 +24,6 @@ public class User {
 
     public String getPhone() { return phone; }
 
-
     public void setPhone(String phone) {
         this.phone = phone;
     }
@@ -38,6 +37,7 @@ public class User {
     }
 
     public void setRate(int rate){ this.rate = rate; }
+
     public int getRate(){ return rate; }
 
     public int getType() {
