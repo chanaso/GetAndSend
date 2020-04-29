@@ -17,6 +17,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 import com.hbb20.CountryCodePicker;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
@@ -26,7 +27,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private SharedPreferences sharedPref;
     private DatabaseReference refUser;
     private CountryCodePicker ccp;
-    private String userName, phoneNumber, rate, type, userKey, password;
+    private String userKey, password;
+    private User currUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,27 +61,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                 if (dataSnapshot.getValue() != null){
                     //it means user already registered
-                    for(DataSnapshot data: dataSnapshot.getChildren()) {
-                        value=data.child("pass").getValue().toString();
-                        userName = data.child("name").getValue().toString();
-                        phoneNumber = data.child("phone").getValue().toString();
-                        type = data.child("type").getValue().toString();
-                        rate = data.child("rate").getValue().toString();
-                        userKey = data.getKey();
+                    for(DataSnapshot datas: dataSnapshot.getChildren()) {
+                        value = datas.child("pass").getValue().toString();
+                        currUser = datas.getValue(User.class);
+                        userKey = datas.getKey();
                     }
                     //check if the input password is correct
                     if(value.equals(password)){
-                        //register user phone & password correct
-                        // save the registered user to a local memory
-                        SharedPreferences.Editor prefEditor = sharedPref.edit();
-                        prefEditor.putString("name",userName);
-                        prefEditor.putString("phone", phoneNumber);
-                        prefEditor.putString("type", type);
-                        prefEditor.putString("rate", rate);
-                        prefEditor.putString("userKey", userKey);
-                        prefEditor.commit();
-                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                        finish();
+                        saveCurrUser();
                     }
                     else{
                         //wrong password
@@ -99,6 +88,22 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         });
 
     }
+
+    private void saveCurrUser() {
+        //register user phone & password correct
+        // save the registered user to a local memory
+        // saving the username that registered to local memory.
+        SharedPreferences.Editor prefEditor = sharedPref.edit();
+
+        Gson gson = new Gson();
+        String json = gson.toJson(currUser);
+        prefEditor.putString("currUser", json);
+        prefEditor.putString("userKey", userKey);
+        prefEditor.commit();
+        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+        finish();
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()){

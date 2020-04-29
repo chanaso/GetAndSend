@@ -37,6 +37,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:19.3.1'
     implementation 'com.google.android.gms:play-services-gcm:17.0.0'
     implementation 'com.google.firebase:firebase-inappmessaging-display:17.0.4'
+//    implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:9.1.0'
     implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-places-v9:0.10.0'
     implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-locationlayer:0.11.0'
