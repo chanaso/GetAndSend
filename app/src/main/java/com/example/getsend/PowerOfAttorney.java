@@ -38,8 +38,8 @@ import java.util.Date;
 
 public class PowerOfAttorney extends AppCompatActivity {
 
-    private TextView title, power_of_attorney_content;
-    private Button btn_get_sign, mClear, mGetSign, mCancel;
+    private TextView power_of_attorney_content;
+    private Button btn_get_sign, mClear, mGetSign, mCancel, btn_confirm;
     private File file;
     private Dialog dialog;
     private LinearLayout mContent;
@@ -69,11 +69,11 @@ public class PowerOfAttorney extends AppCompatActivity {
         imageView.setVisibility(View.VISIBLE);
         signaturesRef = FirebaseStorage.getInstance().getReference("Signatures");
         // Setting ToolBar as ActionBar
-        title = (TextView) findViewById(R.id.textView);
         power_of_attorney_content = (TextView) findViewById(R.id.power_of_attorney_content);
 
         // Button to open signature panel
         btn_get_sign = (Button) findViewById(R.id.signature);
+        btn_confirm = (Button) findViewById(R.id.confirm);
 
         // Dialog Function
         dialog = new Dialog(PowerOfAttorney.this);
@@ -100,7 +100,12 @@ public class PowerOfAttorney extends AppCompatActivity {
             public void onClick(View v) {
                 // Function call for Digital Signature
                 dialog_action();
-
+            }
+        });
+        btn_confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               //ToDo
             }
         });
     }

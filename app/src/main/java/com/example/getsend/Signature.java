@@ -25,7 +25,7 @@ public class Signature extends View {
         paint.setColor(Color.RED);
         paint.setStrokeJoin(Paint.Join.ROUND);
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(5f);
+        paint.setStrokeWidth(20f);
     }
 
     @Override
