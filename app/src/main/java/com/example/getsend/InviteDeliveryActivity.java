@@ -50,7 +50,7 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
     private static final int USER_TYPE_DELIVERY_GETTER = 1;
     private static final String DELIMITER = " ";
     private int flagLocation = 0;
-    private String locationToGeo, phone, lastPackageKey;
+    private String locationToGeo, userKey, lastPackageKey;
     private SharedPreferences sharedPref;
 
     @Override
@@ -74,6 +74,7 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
         refUser = FirebaseDatabase.getInstance().getReference().child("User");
         new_package = new Package();
         sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
+        userKey = sharedPref.getString("userKey","");
     }
 
     @Override
@@ -97,11 +98,13 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
                 DatabaseReference newRefPackage = refPackage.push();
                 lastPackageKey = newRefPackage.getKey();
                 newRefPackage.setValue(new_package);
-                Toast.makeText(InviteDeliveryActivity.this, "Package registered successfully!", Toast.LENGTH_LONG).show();
+                Toast.makeText(InviteDeliveryActivity.this, "Package added successfully!", Toast.LENGTH_LONG).show();
 
                 userTypeUpdate();
                 addPackageToCurrentUser();
                 cleanEdtTxts();
+                startActivity(new Intent(InviteDeliveryActivity.this, MainActivity.class));
+                finish();
                 break;
             case R.id.edtxt_LocationID:
                 flagLocation = 1;
@@ -116,15 +119,13 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
 
     //add the package key that added to the current user list of keys packages
     private void addPackageToCurrentUser() {
-        refUser.orderByChild("phone").equalTo(phone).addListenerForSingleValueEvent(new ValueEventListener() {
+        refUser.child(userKey).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    for (DataSnapshot datas : dataSnapshot.getChildren()) {
-                        String userPackages = datas.child("packages").getValue().toString();
-                        //set the previous keys + the new package key
-                        refUser.child(datas.getKey()).child("packages").setValue(userPackages + lastPackageKey + DELIMITER);
-                    }
+                    String userPackages = dataSnapshot.child("packages").getValue().toString();
+                    //set the previous keys + the new package key
+                    refUser.child(userKey).child("packages").setValue(userPackages + lastPackageKey + DELIMITER);
                 }
             }
             @Override
@@ -136,39 +137,13 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
 
     // update user type to be 1- user as a delivery getter
     private void userTypeUpdate() {
-        phone = sharedPref.getString("phone", "");
-        // find user by his phone numder
-        Query query = refUser.orderByChild("phone").equalTo(phone);
-        query.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                //change this user type in the database
-                refUser.child(dataSnapshot.getKey()).child("type").setValue(USER_TYPE_DELIVERY_GETTER);
-            }
+        refUser.child(userKey).child("type").setValue(USER_TYPE_DELIVERY_GETTER);
 
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-
-        });
         //saved in the local memeory
         SharedPreferences.Editor prefEditor = sharedPref.edit();
         prefEditor.putString("type", String.valueOf(USER_TYPE_DELIVERY_GETTER));
         prefEditor.commit();
     }
-
 
     // check input correction and if all edtxt_ filled
     private void checkAllInputs() {
