@@ -32,6 +32,9 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 public class PowerOfAttorney extends AppCompatActivity {
 
@@ -44,10 +47,12 @@ public class PowerOfAttorney extends AppCompatActivity {
     private signature mSignature;
     private Bitmap bitmap;
     private StorageReference signaturesRef;
-    private String userKey, StoredPath, poa_content, userName, userId;
+    private String userKey, StoredPath, poa_content, userName, userId, todayString;
     private SharedPreferences sharedPref;
     private Uri downloadUri;
     private ImageView imageView;
+    private SimpleDateFormat dateFormat;
+    private Date todayDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,8 +88,11 @@ public class PowerOfAttorney extends AppCompatActivity {
         userName = sharedPref.getString("name", "");
 //        userId = sharedPref.getString("id", "");
         StoredPath = userKey + ".JPEG";
+        todayDate = Calendar.getInstance().getTime();
+        dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        todayString = dateFormat.format(todayDate);
 
-        poa_content = getString(R.string.poa_content_1) + userName ;
+        poa_content = getString(R.string.poa_content_1) + " " + "Hanni"+ " \n" + getString(R.string.poa_content_2) + " " +"1234" + "\n"+ getString(R.string.poa_content_3) + " " +"ג4123" + "\n"+ getString(R.string.poa_content_4)+ " " +userName + "\n"+getString(R.string.poa_content_5) + " " +"1234" + "\n"+getString(R.string.poa_content_6) + " " +todayString+"\n"+getString(R.string.poa_content_7);
         power_of_attorney_content.setText(poa_content);
 
         btn_get_sign.setOnClickListener(new View.OnClickListener() {

@@ -9,8 +9,8 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:context="@string/signature_title">
+        android:layout_height="wrap_content">
+
 
         <TextView
             android:id="@+id/toolbar"
@@ -18,7 +18,12 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             android:theme="@style/AppTheme"
-            app:popupTheme="@style/AppTheme" />
+            app:popupTheme="@style/AppTheme"
+            android:gravity="center"
+            android:text="Power Of Attorney"
+            android:textColor="@color/Black"
+            android:textSize="25sp"
+            android:textStyle="bold"/>
 
     </RelativeLayout>
 
@@ -29,9 +34,24 @@
         android:gravity="center">
 
         <TextView
+            android:id="@+id/power_of_attorney_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:gravity="center"
+            android:text="@string/poa_title"
+            android:textColor="#2196F3"
+            android:textSize="30sp"
+            android:textStyle="bold"/>
+        <TextView
             android:id="@+id/power_of_attorney_content"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="3pt"
+            android:layout_margin="20dp"
+            android:textColor="@color/Black"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
 
         <ImageView
             android:id="@+id/imageView"
@@ -45,13 +65,32 @@
             android:layout_centerVertical="true"
             android:orientation="vertical" />
 
-        <Button
-        android:id="@+id/signature"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/hint_sign"
-        android:padding="5dp"
-        android:background="@color/ColorPrimary" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/signature"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/hint_sign"
+                android:padding="5dp"
+                android:background="@color/ColorPrimary"
+                android:layout_margin="7dp"/>
+
+            <Button
+                android:id="@+id/confirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:background="@color/ColorPrimaryDark"
+                android:padding="5dp"
+                android:text="Confirm" />
+
+        </LinearLayout>
 
 
     </LinearLayout>
