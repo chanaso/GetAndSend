@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -92,7 +93,12 @@ public class PowerOfAttorneyView extends AppCompatActivity {
                 Toast.makeText(PowerOfAttorneyView.this,"error..." , Toast.LENGTH_SHORT);
             }
         });
-
+        btn_exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
     }
 }
