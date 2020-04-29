@@ -13,7 +13,6 @@
     <string name="confirm_delivery"><u>Confirm delivery</u></string>
 
 
-
     <!--Location tracking activity permission toasts-->
     <string name="user_location_permission_explanation">This app needs location permissions in order to show its functionality.</string>
     <string name="user_location_permission_not_granted">You didn\'t grant location permissions.</string>
@@ -54,6 +53,5 @@
     <string name="poa_content_5">מספר זהות הנמען: </string>
     <string name="poa_content_6">תאריך: </string>
     <string name="poa_content_7">חתימת הנמען: </string>
-
 
 </resources>

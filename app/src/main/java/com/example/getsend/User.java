@@ -2,7 +2,7 @@ package com.example.getsend;
 
 public class User {
     private String name, phone, pass, packages;
-    private int rate, type;
+    private int rate, type, id;
 //    types:
 //    (-1) NOT SET
 //    (0) USER_TYPE_DELIVERYMAN
@@ -56,6 +56,14 @@ public class User {
         this.packages = packages;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public User(String name, String phone, String pass) {
         this.name = name;
         this.phone = phone;
@@ -63,5 +71,6 @@ public class User {
         this.rate = 0;
         this.type = -1;
         this.packages = "";
+        this.id = 0;
     }
 }

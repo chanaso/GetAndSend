@@ -1,16 +1,23 @@
 package com.example.getsend;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.os.StrictMode;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import android.Manifest;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
+import android.os.StrictMode;
+
+import android.telephony.SmsManager;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -18,25 +25,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-
 
 public class PickedPackageActivity extends AppCompatActivity implements View.OnClickListener {
 
     private String location, packageId, userKey, userName, userPhone, packKey, packageOwnerPhone, packageOwnerId;
     private static final String PACKAGE_STATUS_IN_PROCCESS = "In proccess!";
     private static final int USER_TYPE_DELIVERYMAN_IN_PROCCESS = 2, USER_TYPE_DELIVERY_GETTER_IN_PROCCESS = 3;
-    // Find your Account Sid and Token at twilio.com/console
-    // DANGER! This is insecure. See http://twil.io/secure
-    public static final String ACCOUNT_SID = "AC7459f27f90947fc0b469094a4992f6e4";
-    public static final String AUTH_TOKEN = "8681e4f34758edc493e7a9202a731953";
+    private static final int SEND_SMS_PERMISSION_REQUEST_CODE = 1;
+
 
     private TextView edtxt_Size, edtxt_Weight, edtxt_Location, edtxt_Destination, edtxt_PackageId, edtxt_packageOwner;
+    private EditText edtxt_deliverymanNote, edtxt_deliverymanId;
     private Button btn_confirmDelivery;
     private SharedPreferences sharedPref;
     private DatabaseReference refUser, refPackage;
@@ -63,6 +62,8 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
         edtxt_Destination = findViewById(R.id.edtxt_DestinationID);
         btn_confirmDelivery = findViewById(R.id.btn_confirmDeliveryID);
         edtxt_packageOwner = findViewById(R.id.edtxt_packageOwnerID);
+        edtxt_deliverymanNote = findViewById(R.id.edtxt_deliveryNoteID);
+        edtxt_deliverymanId = findViewById(R.id.edtxt_deliverymanIdID);
 
         sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
         userKey = sharedPref.getString("userKey", "");
@@ -71,6 +72,7 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
 
         refUser = FirebaseDatabase.getInstance().getReference().child("User");
         refPackage = FirebaseDatabase.getInstance().getReference().child("Package");
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, SEND_SMS_PERMISSION_REQUEST_CODE);
 
         setTxtViews();
         btn_confirmDelivery.setOnClickListener(this);
@@ -78,6 +80,7 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
         StrictMode.setThreadPolicy(policy);
 
     }
+
 
     private void setTxtViews() {
         refPackage.orderByChild("packageId").equalTo(packageId).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -122,51 +125,49 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
     }
 
     public void sendSms() {
-        String request = "https://sendpk.com/api/sms.php?username=972533917843&password=2JFUWsbE5Tbu@H&mobile=972549448461&sender=GetAndSend&message="+"Hi,\n"+ userName +" Deliveryman wants to take your package:"+ packageId+"\nplease confirm the delivery!";
-        try
-        {
-            URL url = new URL(request);
-            URLConnection urlConnection = url.openConnection();
-            HttpURLConnection connection = null;
-            if(urlConnection instanceof HttpURLConnection)
-            {
-                connection = (HttpURLConnection) urlConnection;
-            }
-            else
-            {
-                Toast.makeText(PickedPackageActivity.this, "Please enter an HTTP URL.", Toast.LENGTH_LONG).show();
-
-            }
-            final BufferedReader rd = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String urlString = "";
-            String current;
-
-            while((current = rd.readLine()) != null)
-            {
-                urlString += current;
-            }
-            Toast.makeText(PickedPackageActivity.this, urlString, Toast.LENGTH_LONG).show();
-        }catch(IOException e)
-        {
-            Toast.makeText(PickedPackageActivity.this, "SMS NOT WORKING" + e, Toast.LENGTH_LONG).show();
+        if(checkPermission(Manifest.permission.SEND_SMS)){
+            SmsManager smsManager = SmsManager.getDefault();
+            smsManager.sendTextMessage(packageOwnerPhone, null,"Hi,\n"+ userName+" deliveryman wants to take your package number: "+ packageId+"\nplease enter GetAndSend app and confirm the delivery!",null , null);
+            smsManager.sendTextMessage(packageOwnerPhone, null, "Deliveryman Note: "+edtxt_deliverymanNote.getText().toString(),null , null);
+            Toast.makeText(PickedPackageActivity.this, "SMS send successfully", Toast.LENGTH_LONG).show();
+        }else {
+            Toast.makeText(PickedPackageActivity.this, "SMS failed", Toast.LENGTH_LONG).show();
         }
+
+    }
+
+    public boolean checkPermission(String permission){
+        int check = ContextCompat.checkSelfPermission(this, permission);
+        return (check == PackageManager.PERMISSION_GRANTED);
     }
 
     @Override
     public void onClick(View view) {
-        //update package status
-        refPackage.child(packKey).child("deliveryman").setValue(userKey);
-        refPackage.child(packKey).child("status").setValue(PACKAGE_STATUS_IN_PROCCESS);
+        // integrity input check
+        if(edtxt_deliverymanId.getText().length() !=9){
+            this.edtxt_deliverymanId.setError("An Israeli ID must contain 9 numbers:");
+            this.edtxt_deliverymanId.requestFocus();
+            return;
+        }
+        if(edtxt_deliverymanNote.getText().length() > 100){
+            this.edtxt_deliverymanNote.setError("Note should be less than 160 letters");
+            this.edtxt_deliverymanNote.requestFocus();
+            return;
+        }
 
-        //update deliveryman type
-        refUser.child(userKey).child("type").setValue(USER_TYPE_DELIVERYMAN_IN_PROCCESS);
-        //update owner type
-        refUser.child(packageOwnerId).child("type").setValue(USER_TYPE_DELIVERY_GETTER_IN_PROCCESS);
-        //saved in the local memory
-        SharedPreferences.Editor prefEditor = sharedPref.edit();
-        prefEditor.putString("type", String.valueOf(USER_TYPE_DELIVERYMAN_IN_PROCCESS));
-        
-        prefEditor.commit();
+//        //update package status
+//        refPackage.child(packKey).child("deliveryman").setValue(userKey);
+//        refPackage.child(packKey).child("status").setValue(PACKAGE_STATUS_IN_PROCCESS);
+//
+//        //update deliveryman type
+//        refUser.child(userKey).child("type").setValue(USER_TYPE_DELIVERYMAN_IN_PROCCESS);
+//        //update owner type
+//        refUser.child(packageOwnerId).child("type").setValue(USER_TYPE_DELIVERY_GETTER_IN_PROCCESS);
+//        //saved in the local memory
+//        SharedPreferences.Editor prefEditor = sharedPref.edit();
+//        prefEditor.putString("type", String.valueOf(USER_TYPE_DELIVERYMAN_IN_PROCCESS));
+//
+//        prefEditor.commit();
 
     // send sms too package owner that theres a deliverman
         Toast.makeText(PickedPackageActivity.this, packageOwnerPhone, Toast.LENGTH_LONG).show();
