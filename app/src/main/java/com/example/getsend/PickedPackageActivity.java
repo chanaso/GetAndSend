@@ -131,7 +131,7 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
             smsManager.sendTextMessage(packageOwnerPhone, null, "Deliveryman Note: "+edtxt_deliverymanNote.getText().toString(),null , null);
             Toast.makeText(PickedPackageActivity.this, "SMS send successfully", Toast.LENGTH_LONG).show();
         }else {
-            Toast.makeText(PickedPackageActivity.this, "SMS failed", Toast.LENGTH_LONG).show();
+            Toast.makeText(PickedPackageActivity.this, "SMS did not sended to the package owner", Toast.LENGTH_LONG).show();
         }
 
     }
@@ -155,21 +155,11 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
             return;
         }
 
-//        //update package status
-//        refPackage.child(packKey).child("deliveryman").setValue(userKey);
-//        refPackage.child(packKey).child("status").setValue(PACKAGE_STATUS_IN_PROCCESS);
-//
-//        //update deliveryman type
-//        refUser.child(userKey).child("type").setValue(USER_TYPE_DELIVERYMAN_IN_PROCCESS);
-//        //update owner type
-//        refUser.child(packageOwnerId).child("type").setValue(USER_TYPE_DELIVERY_GETTER_IN_PROCCESS);
-//        //saved in the local memory
-//        SharedPreferences.Editor prefEditor = sharedPref.edit();
-//        prefEditor.putString("type", String.valueOf(USER_TYPE_DELIVERYMAN_IN_PROCCESS));
-//
-//        prefEditor.commit();
+        //update package status and deliveryman
+        refPackage.child(packKey).child("deliveryman").setValue(userKey);
+        refPackage.child(packKey).child("status").setValue(PACKAGE_STATUS_IN_PROCCESS);
 
-    // send sms too package owner that theres a deliverman
+        // send sms too package owner that theres a deliverman
         Toast.makeText(PickedPackageActivity.this, packageOwnerPhone, Toast.LENGTH_LONG).show();
         sendSms();
         startActivity(new Intent(PickedPackageActivity.this, MainActivity .class));

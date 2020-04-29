@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 {
     private static final int USER_TYPE_DELIVERYMAN = 0;
     private static final int USER_TYPE_DELIVERY_GETTER = 1;
-    private static final int USER_TYPE_IN_PROCCESS = 2;
 
     private PermissionsManager permissionsManager;
     private MapboxMap mapboxMap;
@@ -140,15 +139,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             /////do somthinggggg
             //TODO
         }
-        if(type.equals(String.valueOf(USER_TYPE_IN_PROCCESS))){
-            btnInvite.setVisibility(View.GONE);
-            btnJoin.setText("Waiting for confirmation...");
-            btnJoin.setEnabled(false);
-            btnJoin.setGravity(Gravity.CENTER);
-            /////do somthinggggg
-            //TODO
-        }
-
     }
 
     @Override
@@ -262,6 +252,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             case R.id.btnInvite:
             {
                 startActivity(new Intent(MainActivity.this, InviteDeliveryActivity.class));
+                finish();
                 break;
             }
             case R.id.btnJoin:

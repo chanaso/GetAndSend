@@ -62,7 +62,7 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
 
     private List<Feature> symbolLayerIconFeatureList;
     private SharedPreferences sharedPref;
-    private String phone;
+    private String userKey;
     DatabaseReference refUser;
 
 
@@ -85,6 +85,7 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
         locationsList = new ArrayList<>();
 
         sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
+        userKey = sharedPref.getString("userKey","");
 
     }
 
@@ -248,33 +249,9 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
 
     // update user type to be 1- user as a delivery getter
     private void userTypeUpdate() {
-        phone = sharedPref.getString("phone", "");
-        // find user by his phone numder
-        Query query = refUser.orderByChild("phone").equalTo(phone);
-        query.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                //change this user type in the database
-                refUser.child(dataSnapshot.getKey()).child("type").setValue(USER_TYPE_DELIVERYMAN);
-            }
 
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-            }
+        refUser.child(userKey).child("type").setValue(USER_TYPE_DELIVERYMAN);
 
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-
-        });
         //saved in the local memeory
         SharedPreferences.Editor prefEditor = sharedPref.edit();
         prefEditor.putString("type", String.valueOf(USER_TYPE_DELIVERYMAN));
