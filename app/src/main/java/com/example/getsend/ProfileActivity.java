@@ -7,10 +7,12 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.gson.Gson;
+
 public class ProfileActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPref;
-    private String userName, phone, rate;
+    private User currUser;
     private TextView edtProfile, edtPhone, edtRate;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,18 +21,20 @@ public class ProfileActivity extends AppCompatActivity {
         sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
 
         //getting the current username from the sp
-        userName = sharedPref.getString("name", "");
-        phone = sharedPref.getString("phone", "");
-        rate = sharedPref.getString("rate", "");
+        // store from local memory the current user
+        sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPref.getString("currUser", "");
+        currUser = gson.fromJson(json, User.class);
 
         edtProfile = findViewById(R.id.profileNameID);
-        edtProfile.setText(userName);
+        edtProfile.setText(currUser.getName());
 
         edtPhone = findViewById(R.id.profilePhoneID);
-        edtPhone.setText(phone);
+        edtPhone.setText(currUser.getPhone());
 
         edtRate = findViewById(R.id.profileRateID);
-        switch(rate){
+        switch(String.valueOf(currUser.getRate())){
             case "1":
                 edtRate.setText("★☆☆☆☆");
                 break;

@@ -52,18 +52,16 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
     private PermissionsManager permissionsManager;
     private MapboxMap mapboxMap;
     private MapView mapView;
+    private User currUser;
     private DatabaseReference refPackage;
     private List<String> locationsList;
     private static final String SOURCE_ID = "SOURCE_ID";
     private static final String ICON_ID = "ICON_ID";
     private static final String LAYER_ID = "LAYER_ID";
     private static final int USER_TYPE_DELIVERYMAN = 0;
-
-
     private List<Feature> symbolLayerIconFeatureList;
     private SharedPreferences sharedPref;
     private String userKey;
-    DatabaseReference refUser;
 
 
     @Override
@@ -81,11 +79,14 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
         refPackage = FirebaseDatabase.getInstance().getReference().child("Package");
-        refUser = FirebaseDatabase.getInstance().getReference().child("User");
         locationsList = new ArrayList<>();
 
+        // store from local memory the current user
         sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
-        userKey = sharedPref.getString("userKey","");
+        Gson gson = new Gson();
+        String json = sharedPref.getString("currUser", "");
+        currUser = gson.fromJson(json, User.class);
+        userKey = sharedPref.getString("userKey", "");
 
     }
 
@@ -249,8 +250,7 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
 
     // update user type to be 1- user as a delivery getter
     private void userTypeUpdate() {
-
-        refUser.child(userKey).child("type").setValue(USER_TYPE_DELIVERYMAN);
+        currUser.getRefUser().child(userKey).child("type").setValue(USER_TYPE_DELIVERYMAN);
 
         //saved in the local memeory
         SharedPreferences.Editor prefEditor = sharedPref.edit();

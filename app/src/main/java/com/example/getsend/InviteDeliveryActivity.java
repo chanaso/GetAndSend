@@ -23,6 +23,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 import com.mapbox.api.geocoding.v5.MapboxGeocoding;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
@@ -32,23 +33,16 @@ import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete;
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions;
 
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 
 public class InviteDeliveryActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText edtxt_Weight, edtxt_Size, edtxt_Location, edtxt_Destination, edtxt_PackageId;
 
-    private Button btnEnter;
-    private DatabaseReference refPackage, refUser;
+    private User currUser;
+    private DatabaseReference refPackage;
     private Package new_package;
     private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
     private static final int USER_TYPE_DELIVERY_GETTER = 1;
-    private static final String DELIMITER = " ";
     private int flagLocation = 0;
     private String locationToGeo, userKey, lastPackageKey;
     private SharedPreferences sharedPref;
@@ -71,10 +65,14 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
 
         //create a new DB table of package, User if not exist
         refPackage = FirebaseDatabase.getInstance().getReference().child("Package");
-        refUser = FirebaseDatabase.getInstance().getReference().child("User");
         new_package = new Package();
+
+        // store from local memory the current user
         sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
-        userKey = sharedPref.getString("userKey","");
+        Gson gson = new Gson();
+        String json = sharedPref.getString("currUser", "");
+        currUser = gson.fromJson(json, User.class);
+        userKey = sharedPref.getString("userKey", "");
     }
 
     @Override
@@ -119,26 +117,12 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
 
     //add the package key that added to the current user list of keys packages
     private void addPackageToCurrentUser() {
-        refUser.child(userKey).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    String userPackages = dataSnapshot.child("packages").getValue().toString();
-                    //set the previous keys + the new package key
-                    refUser.child(userKey).child("packages").setValue(userPackages + lastPackageKey + DELIMITER);
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        currUser.setPackages(lastPackageKey, userKey);
     }
 
     // update user type to be 1- user as a delivery getter
     private void userTypeUpdate() {
-        refUser.child(userKey).child("type").setValue(USER_TYPE_DELIVERY_GETTER);
-
+        currUser.getRefUser().child(userKey).child("type").setValue(USER_TYPE_DELIVERY_GETTER);
         //saved in the local memeory
         SharedPreferences.Editor prefEditor = sharedPref.edit();
         prefEditor.putString("type", String.valueOf(USER_TYPE_DELIVERY_GETTER));

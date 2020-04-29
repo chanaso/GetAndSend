@@ -54,4 +54,8 @@
     <string name="poa_content_6">תאריך: </string>
     <string name="poa_content_7">חתימת הנמען: </string>
 
+    <!-- access to firebase failed-->
+    <string name="access_to_Firebase_failed">Access_to_Firebase_failed</string>
+
+
 </resources>

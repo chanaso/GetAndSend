@@ -25,6 +25,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 import com.hbb20.CountryCodePicker;
 
 import java.util.concurrent.TimeUnit;
@@ -93,16 +94,16 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-            if (dataSnapshot.getValue() != null){
-                //it means user already registered
-                Toast.makeText(SignUpActivity.this, "User exist already", Toast.LENGTH_LONG).show();
-                edtxt_phoneNumber.requestFocus();
-                return;
-            }
-            else{
-                //It is new user
-                PhoneAuthProvider.getInstance().verifyPhoneNumber(phone, 60, TimeUnit.SECONDS, TaskExecutors.MAIN_THREAD, mCallbacks);        // OnVerificationStateChangedCallbacks
-            }
+                if (dataSnapshot.getValue() != null){
+                    //it means user already registered
+                    Toast.makeText(SignUpActivity.this, "User exist already", Toast.LENGTH_LONG).show();
+                    edtxt_phoneNumber.requestFocus();
+                    return;
+                }
+                else{
+                    //It is new user
+                    PhoneAuthProvider.getInstance().verifyPhoneNumber(phone, 60, TimeUnit.SECONDS, TaskExecutors.MAIN_THREAD, mCallbacks);        // OnVerificationStateChangedCallbacks
+                }
             }
 
             @Override
@@ -179,7 +180,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         User user = new User(name, phone, pass);
         signInWithPhoneAuthCredential(credential, user);
     }
-     // sign up user and check if the input code is matched
+    // sign up user and check if the input code is matched
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential, User user) {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -199,12 +200,11 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                                         userKey = ref.getKey();
                                         ref.setValue(user);
                                         Toast.makeText(SignUpActivity.this, "User registered successfully!", Toast.LENGTH_LONG).show();
-                                        // saving the username that registered.
+                                        // saving the username that registered to local memory.
                                         SharedPreferences.Editor prefEditor = sharedPref.edit();
-                                        prefEditor.putString("name", user.getName());
-                                        prefEditor.putString("phone", user.getPhone());
-                                        prefEditor.putString("type", String.valueOf(user.getType()));
-                                        prefEditor.putString("rate", user.getRate() + "");
+                                        Gson gson = new Gson();
+                                        String json = gson.toJson(user);
+                                        prefEditor.putString("currUser", json);
                                         prefEditor.putString("userKey", userKey);
                                         prefEditor.commit();
                                         startActivity(new Intent(SignUpActivity.this, MainActivity.class));

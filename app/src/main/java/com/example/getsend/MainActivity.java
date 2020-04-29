@@ -25,6 +25,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.mapboxsdk.Mapbox;
@@ -48,12 +49,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private PermissionsManager permissionsManager;
     private MapboxMap mapboxMap;
     private MapView mapView;
-    private Button goBtn ;
+    private User currUser;
     private DrawerLayout drawer;
-    private String userName, phone, type, rate, userKey;
+    private String userKey;
     private SharedPreferences sharedPref;
-    Button btnJoin, btnInvite;
-    DatabaseReference refUser;
+    private Button btnJoin, btnInvite;
+    private DatabaseReference refUser;
+
 
     @Override
     protected void  onCreate(Bundle savedInstanceState) {
@@ -69,12 +71,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapView = findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
-        refUser = FirebaseDatabase.getInstance().getReference().child("User");
 
         btnInvite = (Button) findViewById(R.id.btnInvite);
         btnJoin = (Button) findViewById(R.id.btnJoin);
 
-
+        //navBar view
         Toolbar toolbar = findViewById(R.id.toolBar);
         setSupportActionBar(toolbar);
 
@@ -83,28 +84,29 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        refUser = FirebaseDatabase.getInstance().getReference().child("User");
 
-        //getting the current username from the sp
+        // store from local memory the current user
         sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
-        userName = sharedPref.getString("name", "");
-        phone = sharedPref.getString("phone", "");
-        rate = sharedPref.getString("rate", "");
-        type = sharedPref.getString("type","");
-        userKey = sharedPref.getString("userKey","");
+        Gson gson = new Gson();
+        String json = sharedPref.getString("currUser", "");
+        currUser = gson.fromJson(json, User.class);
+        userKey = sharedPref.getString("userKey", "");
 
         checkType();
         checkUserExist();
+
+        //navBar view
         NavigationView nav_view= (NavigationView)findViewById(R.id.nav_view);//this is navigation view from my main xml where i call another xml file
         View header = nav_view.getHeaderView(0);//set View header to nav_view first element (i guess)
         TextView txt = (TextView)header.findViewById(R.id.UserNameID);//now assign textview imeNaloga to header.id since we made View header.
-        txt.setText(userName);// And now just set text to that textview
+        txt.setText(currUser.getName());// And now just set text to that textview
+
         nav_view.setNavigationItemSelectedListener(this);
         nav_view.bringToFront();
 
-
         btnInvite.setOnClickListener(this);
         btnJoin.setOnClickListener(this);
-
     }
 
     private void checkUserExist() {
@@ -127,17 +129,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void checkType() {
-        if(type.equals(String.valueOf(USER_TYPE_DELIVERY_GETTER))){
+        if(USER_TYPE_DELIVERY_GETTER == currUser.getType()){
             btnJoin.setVisibility(View.GONE);
             btnInvite.setText("i want another delivery service");
             btnInvite.setGravity(Gravity.CENTER);
         }
-        if(type.equals(String.valueOf(USER_TYPE_DELIVERYMAN))){
+        if(USER_TYPE_DELIVERYMAN == currUser.getType()){
             btnInvite.setVisibility(View.GONE);
             btnJoin.setText("i want to take another delivery");
             btnJoin.setGravity(Gravity.CENTER);
-            /////do somthinggggg
-            //TODO
         }
     }
 
@@ -285,9 +285,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void signOut() {
         //delete the existing userName
-        SharedPreferences.Editor prefEditor = sharedPref.edit();
-        prefEditor.putString("name","");
-        prefEditor.commit();
+        sharedPref.edit().clear().commit();
         startActivity(new Intent(MainActivity.this, LoginActivity.class));
         finish();
     }

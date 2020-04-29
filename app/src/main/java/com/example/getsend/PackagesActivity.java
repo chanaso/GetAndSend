@@ -3,12 +3,10 @@ package com.example.getsend;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.ListActivity;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -25,30 +23,34 @@ import java.util.List;
 
 public class PackagesActivity extends AppCompatActivity {
     private ListView listView_packages;
+    private User currUser;
     private SharedPreferences sharedPref;
     private String userKey;
     private ArrayList<String> userPackagesList = new ArrayList<String>();
     private List<Package> packagesOfCurrUser =  new ArrayList<Package>();
-
-
-    DatabaseReference refUser, refPackage;
+    private DatabaseReference refPackage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_packages);
         listView_packages = findViewById(R.id.listView_packagesID);
+
+        // store from local memory the current user
         sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
-        refUser = FirebaseDatabase.getInstance().getReference().child("User");
+        Gson gson = new Gson();
+        String json = sharedPref.getString("currUser", "");
+        currUser = gson.fromJson(json, User.class);
+        userKey = sharedPref.getString("userKey", "");
+
         refPackage = FirebaseDatabase.getInstance().getReference().child("Package");
 
-        //getting the current username from the sp
-        userKey = sharedPref.getString("userKey", "");
+        //extract user packages and display in the viewlist
         extractUserPackages(userKey);
+
         listView_packages.setOnItemClickListener((adapterView, view, i, l) -> {
             Intent intent = new Intent(PackagesActivity.this, PackageActivity.class);
             // transfer the selected package as json to packageActivity which will dispaly that package
-            Gson gson = new Gson();
             // checking what the location of the selected package and transfer all the package details
             String jsonPackage = gson.toJson(packagesOfCurrUser.stream().
                     filter(p -> (p.getPackageId()+" "+p.getLocation()).equals(listView_packages.getItemAtPosition(i).toString().split("\n")[0])).
@@ -58,9 +60,9 @@ public class PackagesActivity extends AppCompatActivity {
         });
     }
 
-    //extract packages id for current user
+    //extract packages id for current user and display them
     public void extractUserPackages(String userKey) {
-        refUser.child(userKey).addListenerForSingleValueEvent(new ValueEventListener() {
+        currUser.getRefUser().child(userKey).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -73,7 +75,7 @@ public class PackagesActivity extends AppCompatActivity {
                         new String[]{"No packages history"});
                         listView_packages.setAdapter(mAdapter);
                     }else{
-
+                        // dispaly current user packages
                         String userPackages = user.getPackages();
                         String[] userPackagesIdList = userPackages.split(" ");
                         ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(PackagesActivity.this,
@@ -94,19 +96,16 @@ public class PackagesActivity extends AppCompatActivity {
 
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                                        Toast.makeText(PackagesActivity.this, R.string.access_to_Firebase_failed, Toast.LENGTH_LONG).show();
                                 }
                             });
                         }
-
-
                     }
-
                 }
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                Toast.makeText(PackagesActivity.this, R.string.access_to_Firebase_failed, Toast.LENGTH_LONG).show();
             }
         });
     }

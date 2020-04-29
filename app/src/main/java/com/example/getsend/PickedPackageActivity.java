@@ -24,21 +24,21 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 
 
 public class PickedPackageActivity extends AppCompatActivity implements View.OnClickListener {
 
     private String location, packageId, userKey, userName, userPhone, packKey, packageOwnerPhone, packageOwnerId;
     private static final String PACKAGE_STATUS_IN_PROCCESS = "In proccess!";
-    private static final int USER_TYPE_DELIVERYMAN_IN_PROCCESS = 2, USER_TYPE_DELIVERY_GETTER_IN_PROCCESS = 3;
     private static final int SEND_SMS_PERMISSION_REQUEST_CODE = 1;
 
-
+    private User currUser;
     private TextView edtxt_Size, edtxt_Weight, edtxt_Location, edtxt_Destination, edtxt_PackageId, edtxt_packageOwner;
     private EditText edtxt_deliverymanNote, edtxt_deliverymanId;
     private Button btn_confirmDelivery;
     private SharedPreferences sharedPref;
-    private DatabaseReference refUser, refPackage;
+    private DatabaseReference refPackage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,12 +65,13 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
         edtxt_deliverymanNote = findViewById(R.id.edtxt_deliveryNoteID);
         edtxt_deliverymanId = findViewById(R.id.edtxt_deliverymanIdID);
 
+        // store from local memory the current user
         sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPref.getString("currUser", "");
+        currUser = gson.fromJson(json, User.class);
         userKey = sharedPref.getString("userKey", "");
-        userName = sharedPref.getString("name", "");
-        userPhone = sharedPref.getString("phone", "");
 
-        refUser = FirebaseDatabase.getInstance().getReference().child("User");
         refPackage = FirebaseDatabase.getInstance().getReference().child("Package");
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, SEND_SMS_PERMISSION_REQUEST_CODE);
 
@@ -96,7 +97,7 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
                             edtxt_Destination.setText(pack.getDestination());
                             packKey = datas.getKey();
                             packageOwnerId = pack.getPackageOwnerId();
-                            refUser.child(packageOwnerId).addListenerForSingleValueEvent(new ValueEventListener() {
+                            currUser.getRefUser().child(packageOwnerId).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     if (dataSnapshot.exists()) {
@@ -160,10 +161,13 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
         refPackage.child(packKey).child("status").setValue(PACKAGE_STATUS_IN_PROCCESS);
 
         // send sms too package owner that theres a deliverman
-        Toast.makeText(PickedPackageActivity.this, packageOwnerPhone, Toast.LENGTH_LONG).show();
         sendSms();
+        // add package to the deliveryMan packages
+        currUser.setPackages(packKey, userKey);
         startActivity(new Intent(PickedPackageActivity.this, MainActivity .class));
         finish();
         }
-    }
+
+
+}
 

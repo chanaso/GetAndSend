@@ -1,8 +1,23 @@
 package com.example.getsend;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Exclude;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 public class User {
     private String name, phone, pass, packages;
     private int rate, type, id;
+    private static final String DELIMITER = " ";
+    private transient DatabaseReference refUser = FirebaseDatabase.getInstance().getReference().child("User");
+
+    @Exclude
+    public DatabaseReference getRefUser() {
+        return refUser;
+    }
+
 //    types:
 //    (-1) NOT SET
 //    (0) USER_TYPE_DELIVERYMAN
@@ -28,10 +43,6 @@ public class User {
         this.phone = phone;
     }
 
-    public String getPass() {
-        return pass;
-    }
-
     public void setPass(String pass) {
         this.pass = pass;
     }
@@ -44,6 +55,10 @@ public class User {
         return type;
     }
 
+    public String getPass() {
+        return pass;
+    }
+
     public void setType(int type) {
         this.type = type;
     }
@@ -54,6 +69,29 @@ public class User {
 
     public void setPackages(String packages) {
         this.packages = packages;
+    }
+
+    @Exclude
+    //add the package key that added to the current user list of keys packages
+    public void setPackages(String packageKey, String userKey) {
+        refUser.child(userKey).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    if(dataSnapshot.hasChild("packages")){
+                        String userPackages = dataSnapshot.child("packages").getValue().toString();
+                        //set the previous keys + the new package key
+                        refUser.child(userKey).child("packages").setValue(userPackages + packageKey + DELIMITER);
+                    }else {
+                        refUser.child(userKey).child("packages").setValue(packageKey + DELIMITER);
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public int getId() {
