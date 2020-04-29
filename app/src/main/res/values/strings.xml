@@ -45,6 +45,15 @@
     <string name="hint_clear">Clear</string>
     <string name="hint_save">Save</string>
 
+    <!--    PowerOfAttorney-->
+    <string name="poa_title">ייפוי כח לקבלת דבר דואר</string>
+    <string name="poa_content_1">הריני מייפה את כוחו של: </string>
+    <string name="poa_content_2">מספר זהות: </string>
+    <string name="poa_content_3">לקבל עבורי את דבר הדואר שמספרו הוא: </string>
+    <string name="poa_content_4">שם הנמען: </string>
+    <string name="poa_content_5">מספר זהות הנמען: </string>
+    <string name="poa_content_6">תאריך: </string>
+    <string name="poa_content_7">חתימת הנמען: </string>
 
 
 </resources>

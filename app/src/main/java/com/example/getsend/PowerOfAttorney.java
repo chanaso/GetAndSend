@@ -39,13 +39,12 @@ public class PowerOfAttorney extends AppCompatActivity {
     private Button btn_get_sign, mClear, mGetSign, mCancel;
     private File file;
     private Dialog dialog;
-    private LinearLayout mContent, canvas;
+    private LinearLayout mContent;
     private View view;
     private signature mSignature;
     private Bitmap bitmap;
-    private String content;
     private StorageReference signaturesRef;
-    private String userKey,StoredPath;
+    private String userKey, StoredPath, poa_content, userName, userId;
     private SharedPreferences sharedPref;
     private Uri downloadUri;
     private ImageView imageView;
@@ -59,7 +58,6 @@ public class PowerOfAttorney extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         setContentView(R.layout.activity_power_of_attorney);
-//        canvas = (LinearLayout)findViewById(R.id.canvas);
         // Create a storage reference
         imageView = (ImageView) findViewById(R.id.imageView);
         imageView.setImageBitmap(bitmap);
@@ -82,7 +80,12 @@ public class PowerOfAttorney extends AppCompatActivity {
         // find id of current user
         sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
         userKey = sharedPref.getString("userKey", "");
+        userName = sharedPref.getString("name", "");
+//        userId = sharedPref.getString("id", "");
         StoredPath = userKey + ".JPEG";
+
+        poa_content = getString(R.string.poa_content_1) + userName ;
+        power_of_attorney_content.setText(poa_content);
 
         btn_get_sign.setOnClickListener(new View.OnClickListener() {
             @Override
