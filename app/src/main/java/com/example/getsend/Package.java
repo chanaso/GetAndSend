@@ -1,7 +1,9 @@
 package com.example.getsend;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+// Package status options:
+// Waiting for delivery
+// Waiting for approval
+// Arrived :)
 
 public class Package {
     private String size, location, destination, geoLocation, geoDestination, packageOwnerId, deliveryman, status, packageId;
@@ -9,7 +11,7 @@ public class Package {
 
     public Package(){
         this.deliveryman = "";
-        this.status = "waiting...";
+        this.status = "Waiting for delivery";
     }
 
     public String getSize() {
@@ -97,6 +99,6 @@ public class Package {
         this.packageOwnerId = packageOwnerId;
         this.packageId = packageId;
         this.deliveryman = "";
-        this.status = "waiting...";
+        this.status = "Waiting for delivery";
     }
 }

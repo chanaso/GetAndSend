@@ -29,6 +29,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -49,6 +50,7 @@ public class PowerOfAttorney extends AppCompatActivity {
     private StorageReference signaturesRef;
     private String userKey, StoredPath, poa_content, userName, userId, todayString;
     private SharedPreferences sharedPref;
+    private User currUser;
     private Uri downloadUri;
     private ImageView imageView;
     private SimpleDateFormat dateFormat;
@@ -82,11 +84,14 @@ public class PowerOfAttorney extends AppCompatActivity {
         dialog.setContentView(R.layout.dialog_signature);
         dialog.setCancelable(true);
 
-        // find id of current user
+        // store from local memory the current user
         sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPref.getString("currUser", "");
+        currUser = gson.fromJson(json, User.class);
         userKey = sharedPref.getString("userKey", "");
-        userName = sharedPref.getString("name", "");
-//        userId = sharedPref.getString("id", "");
+
+        // get today date
         StoredPath = userKey + ".JPEG";
         todayDate = Calendar.getInstance().getTime();
         dateFormat = new SimpleDateFormat("dd/MM/yyyy");

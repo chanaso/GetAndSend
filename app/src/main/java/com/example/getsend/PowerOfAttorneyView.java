@@ -35,6 +35,7 @@ public class PowerOfAttorneyView extends AppCompatActivity {
     private StorageReference signatureRef;
     private SimpleDateFormat dateFormat;
     private Date todayDate;
+    private User currUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,19 +46,23 @@ public class PowerOfAttorneyView extends AppCompatActivity {
         power_of_attorney_content = (TextView) findViewById(R.id.power_of_attorney_content);
 
         //get current user details
+        // store from local memory the current user
         sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPref.getString("currUser", "");
+        currUser = gson.fromJson(json, User.class);
         userKey = sharedPref.getString("userKey", "");
 
         //get package details from caller activity
-        Bundle mBundle = getIntent().getExtras();
-        if (mBundle != null) {
-            String packStr = mBundle.getString("package");
-            getIntent().removeExtra("showMessage");
-
-            // convert json to Package object
-            Gson gson = new Gson();
-            pack = gson.fromJson(packStr , Package.class);
-        }
+//        Bundle mBundle = getIntent().getExtras();
+//        if (mBundle != null) {
+//            String packStr = mBundle.getString("package");
+//            getIntent().removeExtra("showMessage");
+//
+//            // convert json to Package object
+//            Gson gson = new Gson();
+//            pack = gson.fromJson(packStr , Package.class);
+//        }
 
         //get owner details
         packageOwnerKey = pack.getPackageOwnerId();
@@ -68,7 +73,7 @@ public class PowerOfAttorneyView extends AppCompatActivity {
         dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         todayString = dateFormat.format(todayDate);
 //        ToDo
-//        poa_content = getString(R.string.poa_content_1) + " " + userName + " \n" + getString(R.string.poa_content_2) + " " + userId + "\n"+ getString(R.string.poa_content_3) + " " +packageId + "\n"+ getString(R.string.poa_content_4)+ " " +ownerName + "\n"+getString(R.string.poa_content_5) + " " +ownerId + "\n"+getString(R.string.poa_content_6) + " " +todayString+"\n"+getString(R.string.poa_content_7);
+//        poa_content = getString(R.string.poa_content_1) + " " + currUser.getName() + " \n" + getString(R.string.poa_content_2) + " " + currUser.getId() + "\n"+ getString(R.string.poa_content_3) + " " +packageId + "\n"+ getString(R.string.poa_content_4)+ " " +ownerName + "\n"+getString(R.string.poa_content_5) + " " +ownerId + "\n"+getString(R.string.poa_content_6) + " " +todayString+"\n"+getString(R.string.poa_content_7);
 //        power_of_attorney_content.setText(poa_content);
 
         signatureRef = FirebaseStorage.getInstance().getReference("Signatures/"+ packageOwnerKey + ".JPEG");
