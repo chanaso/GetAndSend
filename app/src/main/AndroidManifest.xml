@@ -17,7 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".PickedPackageActivity" />
-<!--        <activity android:name=".PowerOfAttorneyView" />-->
+        <activity android:name=".PowerOfAttorneyView" />
         <activity android:name=".PackageActivity" />
         <activity android:name=".PickedPackagesListActivity" />
         <activity android:name=".JoinAsDeliverymanActivity" />
@@ -27,9 +27,9 @@
         <activity android:name=".LoginActivity" />
         <activity android:name=".PowerOfAttorney" />
         <activity android:name=".SignUpActivity" />
-        <activity android:name=".SplashActivity"/>
+<!--        <activity android:name=".SplashActivity"/>-->
 
-        <activity android:name=".PowerOfAttorneyView">
+        <activity android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

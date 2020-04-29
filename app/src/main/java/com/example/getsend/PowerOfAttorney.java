@@ -91,9 +91,9 @@ public class PowerOfAttorney extends AppCompatActivity {
         todayDate = Calendar.getInstance().getTime();
         dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         todayString = dateFormat.format(todayDate);
-
-        poa_content = getString(R.string.poa_content_1) + " " + deliverymanName + " \n" + getString(R.string.poa_content_2) + " " + deliverymanId + "\n"+ getString(R.string.poa_content_3) + " " +packageId + "\n"+ getString(R.string.poa_content_4)+ " " +ownerName + "\n"+getString(R.string.poa_content_5) + " " +ownerId + "\n"+getString(R.string.poa_content_6) + " " +todayString+"\n"+getString(R.string.poa_content_7);
-        power_of_attorney_content.setText(poa_content);
+//        ToDo
+//        poa_content = getString(R.string.poa_content_1) + " " + deliverymanName + " \n" + getString(R.string.poa_content_2) + " " + deliverymanId + "\n"+ getString(R.string.poa_content_3) + " " +packageId + "\n"+ getString(R.string.poa_content_4)+ " " +ownerName + "\n"+getString(R.string.poa_content_5) + " " +ownerId + "\n"+getString(R.string.poa_content_6) + " " +todayString+"\n"+getString(R.string.poa_content_7);
+//        power_of_attorney_content.setText(poa_content);
 
         btn_get_sign.setOnClickListener(new View.OnClickListener() {
             @Override
