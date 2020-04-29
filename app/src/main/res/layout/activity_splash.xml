@@ -16,7 +16,8 @@
         android:gravity="center"
         android:text="Get and Send"
         android:textColor="#2196F3"
-        android:textSize="36sp" />
+        android:textSize="36sp"
+        android:textStyle="bold"/>
 
     <ImageView
         android:id="@+id/imageView"
