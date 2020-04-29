@@ -30,8 +30,8 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
 
     private String location, packageId, userKey, userName, userPhone, packKey, packageOwnerPhone, packageOwnerId;
     private static final String PACKAGE_STATUS_IN_PROCCESS = "In proccess!";
-    private static final int USER_TYPE_DELIVERYMAN_IN_PROCCESS = 2, USER_TYPE_DELIVERY_GETTER_IN_PROCCESS = 3;
     private static final int SEND_SMS_PERMISSION_REQUEST_CODE = 1;
+    private static final String DELIMITER = " ";
 
 
     private TextView edtxt_Size, edtxt_Weight, edtxt_Location, edtxt_Destination, edtxt_PackageId, edtxt_packageOwner;
@@ -160,10 +160,13 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
         refPackage.child(packKey).child("status").setValue(PACKAGE_STATUS_IN_PROCCESS);
 
         // send sms too package owner that theres a deliverman
-        Toast.makeText(PickedPackageActivity.this, packageOwnerPhone, Toast.LENGTH_LONG).show();
         sendSms();
+        // add package to the deliveryMan packages
+        addPackageToCurrentUser();
         startActivity(new Intent(PickedPackageActivity.this, MainActivity .class));
         finish();
         }
-    }
+
+
+}
 

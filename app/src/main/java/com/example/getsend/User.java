@@ -1,5 +1,9 @@
 package com.example.getsend;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+
 public class User {
     private String name, phone, pass, packages;
     private int rate, type, id;
@@ -54,6 +58,23 @@ public class User {
 
     public void setPackages(String packages) {
         this.packages = packages;
+    }
+    //add the package key that added to the current user list of keys packages
+    public void setPackages() {
+        refUser.child(userKey).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    String userPackages = dataSnapshot.child("packages").getValue().toString();
+                    //set the previous keys + the new package key
+                    refUser.child(userKey).child("packages").setValue(userPackages + packKey + DELIMITER);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public int getId() {
