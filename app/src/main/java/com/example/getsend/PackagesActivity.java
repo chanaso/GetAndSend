@@ -1,15 +1,14 @@
 package com.example.getsend;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -96,7 +95,7 @@ public class PackagesActivity extends AppCompatActivity {
 
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                                        Toast.makeText(PackagesActivity.this, R.string.access_to_Firebase_failed, Toast.LENGTH_LONG).show();
+                                        Toast.makeText(PackagesActivity.this, R.string.error_message, Toast.LENGTH_LONG).show();
                                 }
                             });
                         }
@@ -105,7 +104,7 @@ public class PackagesActivity extends AppCompatActivity {
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(PackagesActivity.this, R.string.access_to_Firebase_failed, Toast.LENGTH_LONG).show();
+                Toast.makeText(PackagesActivity.this, R.string.error_message, Toast.LENGTH_LONG).show();
             }
         });
     }

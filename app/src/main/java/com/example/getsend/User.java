@@ -8,8 +8,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class User {
-    private String name, phone, pass, packages;
-    private int rate, type, id;
+    private String name, phone, pass, packages, id;
+    private int rate, type;
     private static final String DELIMITER = " ";
     private transient DatabaseReference refUser = FirebaseDatabase.getInstance().getReference().child("User");
 
@@ -94,11 +94,11 @@ public class User {
         });
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -109,6 +109,6 @@ public class User {
         this.rate = 0;
         this.type = -1;
         this.packages = "";
-        this.id = 0;
+        this.id = "";
     }
 }
