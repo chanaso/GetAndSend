@@ -55,8 +55,9 @@ public class PowerOfAttorney extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_power_of_attorney);
 //        canvas = (LinearLayout)findViewById(R.id.canvas);
-        imageView = (ImageView) findViewById(R.id.imageView);
         // Create a storage reference
+        imageView = (ImageView) findViewById(R.id.imageView);
+        imageView.setVisibility(View.VISIBLE);
         signaturesRef = FirebaseStorage.getInstance().getReference("Signatures");
         // Setting ToolBar as ActionBar
         title = (TextView) findViewById(R.id.textView);
@@ -86,6 +87,46 @@ public class PowerOfAttorney extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        setContentView(R.layout.activity_power_of_attorney);
+//        canvas = (LinearLayout)findViewById(R.id.canvas);
+        // Create a storage reference
+        imageView = (ImageView) findViewById(R.id.imageView);
+        imageView.setImageBitmap(bitmap);
+        imageView.setVisibility(View.VISIBLE);
+        signaturesRef = FirebaseStorage.getInstance().getReference("Signatures");
+        // Setting ToolBar as ActionBar
+        title = (TextView) findViewById(R.id.textView);
+        power_of_attorney_content = (TextView) findViewById(R.id.power_of_attorney_content);
+
+        // Button to open signature panel
+        btn_get_sign = (Button) findViewById(R.id.signature);
+
+        // Dialog Function
+        dialog = new Dialog(PowerOfAttorney.this);
+        // Removing the features of Normal Dialogs
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_signature);
+        dialog.setCancelable(true);
+
+        // find id of current user
+        sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
+        userKey = sharedPref.getString("userKey", "");
+        StoredPath = userKey + ".JPEG";
+
+        btn_get_sign.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Function call for Digital Signature
+                dialog_action();
+
+            }
+        });
+    }
+
     // Function for Digital Signature
     public void dialog_action() {
 
@@ -116,7 +157,8 @@ public class PowerOfAttorney extends AppCompatActivity {
                 // Calling the same class
 //                Picasso.with(PowerOfAttorney.this).load(downloadUri).into(imageView);
                 imageView.setImageBitmap(bitmap);
-                recreate();
+                onRestart();
+                onStart();
             }
         });
         mCancel.setOnClickListener(new View.OnClickListener() {
