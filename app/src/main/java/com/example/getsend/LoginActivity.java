@@ -6,10 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -53,7 +51,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         password = edtxt_Password.getText().toString().trim();
         integrityCheck();
 
-        //check if the user is regiter already and if the phone number exist in db
+        //check if the user is registered already and if the phone number exist in db
         refUser.orderByChild("phone").equalTo(phone).addListenerForSingleValueEvent(new ValueEventListener() {
             String value;
             @Override
@@ -71,14 +69,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         saveCurrUser();
                     }
                     else{
-                        //wrong password
-                        edtxt_Password.setError("Inncorrect password");
+                        //Incorrect password
+                        edtxt_Password.setError("Incorrect password");
                         edtxt_Password.requestFocus();
                     }
                 }
                 else{
                     //It is new users
-                    Toast.makeText(LoginActivity.this, "User not exist", Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this, R.string.User_does_not_exist, Toast.LENGTH_LONG).show();
                 }
             }
             @Override
@@ -91,10 +89,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void saveCurrUser() {
         //register user phone & password correct
-        // save the registered user to a local memory
-        // saving the username that registered to local memory.
         SharedPreferences.Editor prefEditor = sharedPref.edit();
-
+        // convert User object to json and
+        // save the registered user to the local memory
         Gson gson = new Gson();
         String json = gson.toJson(currUser);
         prefEditor.putString("currUser", json);
@@ -125,13 +122,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onStart() {
         super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        updateUI(currentUser);
-    }
-
-    private void updateUI(FirebaseUser currentUser) {
-        FirebaseAuth.getInstance().signOut(); // sign out user
     }
 
     //check inputs validation
