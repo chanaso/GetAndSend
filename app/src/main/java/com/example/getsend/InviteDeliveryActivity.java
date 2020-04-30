@@ -4,30 +4,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.firebase.FirebaseError;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
-import com.mapbox.api.geocoding.v5.MapboxGeocoding;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
-import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
-import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete;
@@ -36,10 +22,10 @@ import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions;
 
 public class InviteDeliveryActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private EditText edtxt_Weight, edtxt_Size, edtxt_Location, edtxt_Destination, edtxt_PackageId;
+    private EditText edtxt_Weight, edtxt_Size, edtxt_Location, edtxt_Destination, edtxt_PackageId, edtxt_userID;
 
     private User currUser;
-    private DatabaseReference refPackage;
+    private DatabaseReference refPackage, refUser;
     private Package new_package;
     private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
     private static final int USER_TYPE_DELIVERY_GETTER = 1;
@@ -58,6 +44,7 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
         edtxt_Location = findViewById(R.id.edtxt_LocationID);
         edtxt_PackageId = findViewById(R.id.edtxt_PackageIdID);
         edtxt_Destination = findViewById(R.id.edtxt_DestinationID);
+        edtxt_userID = findViewById(R.id.edtxt_userID);
 
         findViewById(R.id.btn_EnterID).setOnClickListener(this);
         findViewById(R.id.edtxt_LocationID).setOnClickListener(this);
@@ -65,6 +52,7 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
 
         //create a new DB table of package, User if not exist
         refPackage = FirebaseDatabase.getInstance().getReference().child("Package");
+        refUser = FirebaseDatabase.getInstance().getReference().child("User");
         new_package = new Package();
 
         // store from local memory the current user

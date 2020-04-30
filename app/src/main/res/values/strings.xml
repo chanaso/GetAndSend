@@ -24,9 +24,10 @@
 
     <!-- InviteDeliveryActivity -->
     <!-- xml-->
-    <string name="under_line_order_delivery"><u>~Order delivery~</u></string>
+    <string name="under_line_order_delivery"><u>Order delivery</u></string>
     <string name="complete_the_following">Complete the following information\n about your package:</string>
-    <string name="package_id">package id:</string>
+    <string name="package_id">Package ID:</string>
+    <string name="user_id">Your ID:</string>
     <string name="weight">Weight(gr):</string>
     <string name="size">Size(sqm):</string>
     <string name="location">Location:</string>
