@@ -40,8 +40,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     private CountryCodePicker edtxt_ccp;
     private SharedPreferences sharedPref;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -213,6 +211,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 break;
             case R.id.btn_VerifyID:
                 sendVerificationCode();
+                break;
         }
     }
 }
