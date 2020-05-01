@@ -1,11 +1,15 @@
 package com.example.getsend;
 
+import android.widget.Toast;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import static com.mapbox.mapboxsdk.Mapbox.getApplicationContext;
 
 public class User {
     private String name, phone, pass, packages, id;
@@ -87,7 +91,7 @@ public class User {
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+//                Toast.makeText(getApplicationContext(), R.string.access_to_Firebase_failed, Toast.LENGTH_LONG).show();
             }
         });
     }

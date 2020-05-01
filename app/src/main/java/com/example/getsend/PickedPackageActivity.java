@@ -29,7 +29,7 @@ import com.google.gson.Gson;
 public class PickedPackageActivity extends AppCompatActivity implements View.OnClickListener {
 
     private String location, packageId, userKey, userName, userPhone, packKey, packageOwnerPhone, packageOwnerId;
-    private static final String PACKAGE_STATUS_IN_PROCCESS = "Waiting for approval";
+//    private String location, packageId, userKey, packKey, packageOwnerPhone, packageOwnerId;
     private static final int SEND_SMS_PERMISSION_REQUEST_CODE = 1;
 
     private User currUser;
@@ -108,7 +108,7 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
 
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                                    Toast.makeText(PickedPackageActivity.this, R.string.access_to_Firebase_failed, Toast.LENGTH_LONG).show();
                                 }
 
                             });
@@ -119,7 +119,7 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Toast.makeText(PickedPackageActivity.this, R.string.access_to_Firebase_failed, Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -127,8 +127,8 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
     public void sendSms() {
         if(checkPermission(Manifest.permission.SEND_SMS)){
             SmsManager smsManager = SmsManager.getDefault();
-            smsManager.sendTextMessage(packageOwnerPhone, null,"Hi,\n"+ userName+" deliveryman wants to take your package number: "+ packageId+"\nplease enter GetAndSend app and confirm the delivery!",null , null);
-            smsManager.sendTextMessage(packageOwnerPhone, null, "Deliveryman Note: "+edtxt_deliverymanNote.getText().toString(),null , null);
+            smsManager.sendTextMessage(packageOwnerPhone, null,"Hi,\n" + currUser.getName() +" deliveryman wants to take your package number: "+ packageId+"\nplease enter GetAndSend app and confirm the delivery!",null , null);
+            smsManager.sendTextMessage(packageOwnerPhone, null, "Deliveryman Note: " + edtxt_deliverymanNote.getText().toString(),null , null);
             Toast.makeText(PickedPackageActivity.this, "SMS send successfully", Toast.LENGTH_LONG).show();
         }else {
             Toast.makeText(PickedPackageActivity.this, "SMS did not sended to the package owner", Toast.LENGTH_LONG).show();
