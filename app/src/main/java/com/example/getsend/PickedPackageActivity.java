@@ -29,6 +29,7 @@ import com.google.gson.Gson;
 public class PickedPackageActivity extends AppCompatActivity implements View.OnClickListener {
 
     private String location, packageId, userKey, userName, userPhone, packKey, packageOwnerPhone, packageOwnerId;
+    private static final String PACKAGE_STATUS_IN_PROCCESS = "Waiting for approval";
 //    private String location, packageId, userKey, packKey, packageOwnerPhone, packageOwnerId;
     private static final int SEND_SMS_PERMISSION_REQUEST_CODE = 1;
 
@@ -108,7 +109,7 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
 
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                                    Toast.makeText(PickedPackageActivity.this, R.string.access_to_Firebase_failed, Toast.LENGTH_LONG).show();
+                                    Toast.makeText(PickedPackageActivity.this, R.string.error_message, Toast.LENGTH_LONG).show();
                                 }
 
                             });
@@ -119,7 +120,7 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(PickedPackageActivity.this, R.string.access_to_Firebase_failed, Toast.LENGTH_LONG).show();
+                Toast.makeText(PickedPackageActivity.this, R.string.error_message, Toast.LENGTH_LONG).show();
             }
         });
     }

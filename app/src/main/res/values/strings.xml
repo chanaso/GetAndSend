@@ -55,8 +55,21 @@
     <string name="poa_content_6">תאריך: </string>
     <string name="poa_content_7">חתימת הנמען: </string>
 
+
+    packageActivity
+    <string name="btn_confirm_delivery">Confirm Delivery</string>
+    <string name="delete_packge">Delete package</string>
+    <string name="view_profile">View Deliveryman Porfile</string>
+    <string name="chat">Chat with deliveryman</string>
+    <string name="view_poa">View Power Of Attorney</string>
+
+
     <!-- access to firebase failed-->
     <string name="error_message">Access_to_Firebase_failed...</string>
+
+
+
+
 
 
 </resources>

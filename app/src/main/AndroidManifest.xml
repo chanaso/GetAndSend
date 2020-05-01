@@ -21,7 +21,7 @@
         <activity android:name=".PackageActivity" />
         <activity android:name=".PickedPackagesListActivity" />
         <activity android:name=".JoinAsDeliverymanActivity" />
-        <activity android:name=".PackagesActivity" />
+        <activity android:name=".NavbarPackagesActivity" />
         <activity android:name=".InviteDeliveryActivity" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".LoginActivity" />

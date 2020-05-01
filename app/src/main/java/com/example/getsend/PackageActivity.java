@@ -1,13 +1,10 @@
 package com.example.getsend;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.app.ListActivity;
-import android.os.Bundle;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
 
@@ -31,7 +28,7 @@ public class PackageActivity extends AppCompatActivity {
         }
 
         edtxt_PackageId = findViewById(R.id.edtxt_packageID);
-        edtxt_PackageId.setText(pack.getPackageId());
+        edtxt_PackageId.setText(pack.getPackageId()+"");
 
         edtxt_Size = findViewById(R.id.edtxt_SizeID);
         edtxt_Size.setText(pack.getSize());
