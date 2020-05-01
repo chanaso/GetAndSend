@@ -69,9 +69,6 @@ public class User {
         return packages;
     }
 
-    public void setPackages(String packages) {
-        this.packages = packages;
-    }
 
     @Exclude
     //add the package key that added to the current user list of keys packages
@@ -94,6 +91,7 @@ public class User {
 //                Toast.makeText(getApplicationContext(), R.string.access_to_Firebase_failed, Toast.LENGTH_LONG).show();
             }
         });
+        this.packages = this.packages + DELIMITER + packageKey ;
     }
 
     public String getId() {

@@ -112,19 +112,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void checkUserExist() {
-        refUser.child(userKey).addListenerForSingleValueEvent(new ValueEventListener() {
+        //  check if the user exist in the db
+        refUser.child(userKey).addValueEventListener(new ValueEventListener(){
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()){
-                    Log.d("ic", "userExist");
-                } else {
-                    // User does not exist.
+            public void onDataChange(DataSnapshot dataSnapshot){
+                if(!dataSnapshot.exists()) {
                     signOut();
                 }
             }
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(MainActivity.this, R.string.error_message, Toast.LENGTH_LONG).show();
             }
         });
     }
