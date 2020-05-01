@@ -24,9 +24,10 @@
 
     <!-- InviteDeliveryActivity -->
     <!-- xml-->
-    <string name="under_line_order_delivery"><u>~Order delivery~</u></string>
+    <string name="under_line_order_delivery"><u>Order delivery</u></string>
     <string name="complete_the_following">Complete the following information\n about your package:</string>
-    <string name="package_id">package id:</string>
+    <string name="package_id">Package ID:</string>
+    <string name="user_id">Your ID:</string>
     <string name="weight">Weight(gr):</string>
     <string name="size">Size(sqm):</string>
     <string name="location">Location:</string>
@@ -54,8 +55,21 @@
     <string name="poa_content_6">תאריך: </string>
     <string name="poa_content_7">חתימת הנמען: </string>
 
+
+    packageActivity
+    <string name="btn_confirm_delivery">Confirm Delivery</string>
+    <string name="delete_packge">Delete package</string>
+    <string name="view_profile">View Deliveryman Porfile</string>
+    <string name="chat">Chat with deliveryman</string>
+    <string name="view_poa">View Power Of Attorney</string>
+
+
     <!-- access to firebase failed-->
-    <string name="access_to_Firebase_failed">Access_to_Firebase_failed</string>
+    <string name="error_message">Access_to_Firebase_failed...</string>
+
+
+
+
 
     <!-- verification code-->
     <string name="verification_code_failed_Too_many_tries">Too many tries. Please try again later!</string>

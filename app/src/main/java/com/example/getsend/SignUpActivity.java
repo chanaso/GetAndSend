@@ -101,7 +101,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(SignUpActivity.this, R.string.access_to_Firebase_failed, Toast.LENGTH_LONG).show();
+                Toast.makeText(SignUpActivity.this, R.string.error_message, Toast.LENGTH_LONG).show();
             }
         });
     }

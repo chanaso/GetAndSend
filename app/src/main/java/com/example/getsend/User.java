@@ -26,8 +26,6 @@ public class User {
 //    (-1) NOT SET
 //    (0) USER_TYPE_DELIVERYMAN
 //    (1) USER_TYPE_DELIVERY_GETTER
-//    (2) USER_TYPE_DELIVERYMAN_IN_PROCCESS
-//    (3) USER_TYPE_DELIVERY_GETTER_IN_PROCCESS
 
     public User(){
 
@@ -52,6 +50,7 @@ public class User {
     }
 
     public void setRate(int rate){ this.rate = rate; }
+
     public int getRate(){ return rate; }
 
     public int getType() {

@@ -29,6 +29,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -38,8 +39,8 @@ import java.util.Date;
 
 public class PowerOfAttorney extends AppCompatActivity {
 
-    private TextView title, power_of_attorney_content;
-    private Button btn_get_sign, mClear, mGetSign, mCancel;
+    private TextView power_of_attorney_content;
+    private Button btn_get_sign, mClear, mGetSign, mCancel, btn_confirm;
     private File file;
     private Dialog dialog;
     private LinearLayout mContent;
@@ -49,6 +50,7 @@ public class PowerOfAttorney extends AppCompatActivity {
     private StorageReference signaturesRef;
     private String userKey, StoredPath, poa_content, userName, userId, todayString;
     private SharedPreferences sharedPref;
+    private User currUser;
     private Uri downloadUri;
     private ImageView imageView;
     private SimpleDateFormat dateFormat;
@@ -69,11 +71,11 @@ public class PowerOfAttorney extends AppCompatActivity {
         imageView.setVisibility(View.VISIBLE);
         signaturesRef = FirebaseStorage.getInstance().getReference("Signatures");
         // Setting ToolBar as ActionBar
-        title = (TextView) findViewById(R.id.textView);
         power_of_attorney_content = (TextView) findViewById(R.id.power_of_attorney_content);
 
         // Button to open signature panel
         btn_get_sign = (Button) findViewById(R.id.signature);
+        btn_confirm = (Button) findViewById(R.id.confirm);
 
         // Dialog Function
         dialog = new Dialog(PowerOfAttorney.this);
@@ -82,25 +84,33 @@ public class PowerOfAttorney extends AppCompatActivity {
         dialog.setContentView(R.layout.dialog_signature);
         dialog.setCancelable(true);
 
-        // find id of current user
+        // store from local memory the current user
         sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPref.getString("currUser", "");
+        currUser = gson.fromJson(json, User.class);
         userKey = sharedPref.getString("userKey", "");
-        userName = sharedPref.getString("name", "");
-//        userId = sharedPref.getString("id", "");
+
+        // get today date
         StoredPath = userKey + ".JPEG";
         todayDate = Calendar.getInstance().getTime();
         dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         todayString = dateFormat.format(todayDate);
-
-        poa_content = getString(R.string.poa_content_1) + " " + "Hanni"+ " \n" + getString(R.string.poa_content_2) + " " +"1234" + "\n"+ getString(R.string.poa_content_3) + " " +"ג4123" + "\n"+ getString(R.string.poa_content_4)+ " " +userName + "\n"+getString(R.string.poa_content_5) + " " +"1234" + "\n"+getString(R.string.poa_content_6) + " " +todayString+"\n"+getString(R.string.poa_content_7);
-        power_of_attorney_content.setText(poa_content);
+//        ToDo
+//        poa_content = getString(R.string.poa_content_1) + " " + deliverymanName + " \n" + getString(R.string.poa_content_2) + " " + deliverymanId + "\n"+ getString(R.string.poa_content_3) + " " +packageId + "\n"+ getString(R.string.poa_content_4)+ " " +ownerName + "\n"+getString(R.string.poa_content_5) + " " +ownerId + "\n"+getString(R.string.poa_content_6) + " " +todayString+"\n"+getString(R.string.poa_content_7);
+//        power_of_attorney_content.setText(poa_content);
 
         btn_get_sign.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Function call for Digital Signature
                 dialog_action();
-
+            }
+        });
+        btn_confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               //ToDo
             }
         });
     }

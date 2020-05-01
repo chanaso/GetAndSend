@@ -1,15 +1,14 @@
 package com.example.getsend;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -21,7 +20,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PackagesActivity extends AppCompatActivity {
+public class NavbarPackagesActivity extends AppCompatActivity {
     private ListView listView_packages;
     private User currUser;
     private SharedPreferences sharedPref;
@@ -49,7 +48,7 @@ public class PackagesActivity extends AppCompatActivity {
         extractUserPackages(userKey);
 
         listView_packages.setOnItemClickListener((adapterView, view, i, l) -> {
-            Intent intent = new Intent(PackagesActivity.this, PackageActivity.class);
+            Intent intent = new Intent(NavbarPackagesActivity.this, PackageActivity.class);
             // transfer the selected package as json to packageActivity which will dispaly that package
             // checking what the location of the selected package and transfer all the package details
             String jsonPackage = gson.toJson(packagesOfCurrUser.stream().
@@ -65,7 +64,7 @@ public class PackagesActivity extends AppCompatActivity {
         if(currUser.getPackages().equals(""))
         {
             // theres no packsges for the current user
-            ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(PackagesActivity.this,
+            ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(NavbarPackagesActivity.this,
             android.R.layout.simple_list_item_1,
             new String[]{"No packages history"});
             listView_packages.setAdapter(mAdapter);
@@ -73,7 +72,7 @@ public class PackagesActivity extends AppCompatActivity {
             // dispaly current user packages
             String userPackages = currUser.getPackages();
             String[] userPackagesIdList = userPackages.split(" ");
-            ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(PackagesActivity.this,
+            ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(NavbarPackagesActivity.this,
                     android.R.layout.simple_list_item_1,
                     userPackagesList);
             listView_packages.setAdapter(mAdapter);
@@ -91,7 +90,7 @@ public class PackagesActivity extends AppCompatActivity {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
-                            Toast.makeText(PackagesActivity.this, R.string.access_to_Firebase_failed, Toast.LENGTH_LONG).show();
+                            Toast.makeText(NavbarPackagesActivity.this, R.string.error_message, Toast.LENGTH_LONG).show();
                     }
                 });
             }

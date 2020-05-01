@@ -1,23 +1,22 @@
 package com.example.getsend;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.StrictMode;
-
 import android.telephony.SmsManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -29,8 +28,9 @@ import com.google.gson.Gson;
 
 public class PickedPackageActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private String location, packageId, userKey, packKey, packageOwnerPhone, packageOwnerId;
-    private static final String PACKAGE_STATUS_IN_PROCCESS = "In proccess!";
+    private String location, packageId, userKey, userName, userPhone, packKey, packageOwnerPhone, packageOwnerId;
+    private static final String PACKAGE_STATUS_IN_PROCCESS = "Waiting for approval";
+//    private String location, packageId, userKey, packKey, packageOwnerPhone, packageOwnerId;
     private static final int SEND_SMS_PERMISSION_REQUEST_CODE = 1;
 
     private User currUser;
@@ -109,7 +109,7 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
 
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                                    Toast.makeText(PickedPackageActivity.this, R.string.access_to_Firebase_failed, Toast.LENGTH_LONG).show();
+                                    Toast.makeText(PickedPackageActivity.this, R.string.error_message, Toast.LENGTH_LONG).show();
                                 }
 
                             });
@@ -120,7 +120,7 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(PickedPackageActivity.this, R.string.access_to_Firebase_failed, Toast.LENGTH_LONG).show();
+                Toast.makeText(PickedPackageActivity.this, R.string.error_message, Toast.LENGTH_LONG).show();
             }
         });
     }
