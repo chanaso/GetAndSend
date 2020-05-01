@@ -40,8 +40,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     private CountryCodePicker edtxt_ccp;
     private SharedPreferences sharedPref;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +60,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         btn_Verify.setOnClickListener(this);
 
         sharedPref = getSharedPreferences("userDetails",MODE_PRIVATE);
-
     }
 
     private void sendVerificationCode() {
@@ -113,19 +110,19 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
         @Override
         public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
-            Toast.makeText(SignUpActivity.this, "Too many tries, please try again later!", Toast.LENGTH_LONG).show();
+            Toast.makeText(SignUpActivity.this, R.string.verification_code_failed_Too_many_tries, Toast.LENGTH_LONG).show();
         }
 
         @Override
         public void onVerificationFailed(@NonNull FirebaseException e) {
-            Toast.makeText(SignUpActivity.this, "please Try again!", Toast.LENGTH_LONG).show();
+            Toast.makeText(SignUpActivity.this, R.string.verification_code_failed_please_try_again, Toast.LENGTH_LONG).show();
 
         }
         @Override
         public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
             super.onCodeSent(s, forceResendingToken);
             codeSend = s;
-            Toast.makeText(SignUpActivity.this, "Sent", Toast.LENGTH_LONG).show();
+            Toast.makeText(SignUpActivity.this, R.string.verification_code_sent, Toast.LENGTH_LONG).show();
 
         }
     };
@@ -133,9 +130,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onStart() {
         super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-//        FirebaseUser currentUser = mAuth.getCurrentUser();
-//        updateUI(currentUser);
     }
 
 

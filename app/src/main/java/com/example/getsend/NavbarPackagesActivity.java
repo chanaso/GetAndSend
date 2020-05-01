@@ -61,52 +61,39 @@ public class NavbarPackagesActivity extends AppCompatActivity {
 
     //extract packages id for current user and display them
     public void extractUserPackages(String userKey) {
-        currUser.getRefUser().child(userKey).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    User user  = dataSnapshot.getValue(User.class);
-                    if(user.getPackages().equals(""))
-                    {
-                        // theres no packsges for the current user
-                        ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(NavbarPackagesActivity.this,
-                        android.R.layout.simple_list_item_1,
-                        new String[]{"No packages history"});
-                        listView_packages.setAdapter(mAdapter);
-                    }else{
-                        // dispaly current user packages
-                        String userPackages = user.getPackages();
-                        String[] userPackagesIdList = userPackages.split(" ");
-                        ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(NavbarPackagesActivity.this,
-                                android.R.layout.simple_list_item_1,
-                                userPackagesList);
-                        listView_packages.setAdapter(mAdapter);
-                        for (String index : userPackagesIdList) {
-                            refPackage.child(index).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshotP) {
-                                    if (dataSnapshotP.exists()) {
-                                        Package pack = dataSnapshotP.getValue(Package.class);
-                                        packagesOfCurrUser.add(pack);
-                                        userPackagesList.add(pack.getPackageId()+" "+pack.getLocation()+"\n"+pack.getStatus());
-                                        mAdapter.notifyDataSetChanged();
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-                                        Toast.makeText(NavbarPackagesActivity.this, R.string.error_message, Toast.LENGTH_LONG).show();
-                                }
-                            });
+        if(currUser.getPackages().equals(""))
+        {
+            // theres no packsges for the current user
+            ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(NavbarPackagesActivity.this,
+            android.R.layout.simple_list_item_1,
+            new String[]{"No packages history"});
+            listView_packages.setAdapter(mAdapter);
+        }else{
+            // dispaly current user packages
+            String userPackages = currUser.getPackages();
+            String[] userPackagesIdList = userPackages.split(" ");
+            ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(NavbarPackagesActivity.this,
+                    android.R.layout.simple_list_item_1,
+                    userPackagesList);
+            listView_packages.setAdapter(mAdapter);
+            for (String index : userPackagesIdList) {
+                refPackage.child(index).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            Package pack = dataSnapshot.getValue(Package.class);
+                            packagesOfCurrUser.add(pack);
+                            userPackagesList.add(pack.getPackageId()+" "+pack.getLocation()+"\n"+pack.getStatus());
+                            mAdapter.notifyDataSetChanged();
                         }
                     }
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(NavbarPackagesActivity.this, R.string.error_message, Toast.LENGTH_LONG).show();
-            }
-        });
-    }
 
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Toast.makeText(NavbarPackagesActivity.this, R.string.error_message, Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        }
+    }
 }

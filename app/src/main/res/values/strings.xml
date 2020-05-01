@@ -71,5 +71,11 @@
 
 
 
+    <!-- verification code-->
+    <string name="verification_code_failed_Too_many_tries">Too many tries. Please try again later!</string>
+    <string name="verification_code_failed_please_try_again">Please try again!</string>
+    <string name="verification_code_sent">Sent</string>
+    <string name="User_does_not_exist">User does not exist</string>
+
 
 </resources>

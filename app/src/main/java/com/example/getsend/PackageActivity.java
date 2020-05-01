@@ -51,6 +51,5 @@ public class PackageActivity extends AppCompatActivity {
         edtxt_Status = findViewById(R.id.edtxt_StatusID);
         edtxt_Status.setText(pack.getStatus());
 
-
     }
 }
