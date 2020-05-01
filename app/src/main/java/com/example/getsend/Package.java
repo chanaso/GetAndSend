@@ -3,6 +3,7 @@ package com.example.getsend;
 // Package status options:
 // Waiting for delivery
 // Waiting for approval
+// On the way...
 // Arrived :)
 
 public class Package {
