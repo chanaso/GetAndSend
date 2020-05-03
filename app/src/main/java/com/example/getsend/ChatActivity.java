@@ -24,7 +24,7 @@ public class ChatActivity extends AppCompatActivity implements RoomListener {
 
         // replace this with a real channelID from Scaledrone dashboard
         private String channelID = "ifROvUFv1iok6T8b";
-        private String roomName = "observable-room", contactName;
+        private String prefix = "observable-", contactName, packageId, roomName = "observable-room";
         private EditText editText;
         private Scaledrone scaledrone;
         private MessageAdapter messageAdapter;
@@ -41,10 +41,13 @@ public class ChatActivity extends AppCompatActivity implements RoomListener {
             // store from local memory the current user
             Bundle mBundle = getIntent().getExtras();
             if (mBundle != null) {
-                contactName = mBundle.getString("contactName");
+                String[] chatDetails = mBundle.getString("chat").split("@");
+                contactName = chatDetails[0];
+                packageId = chatDetails[1];
                 getIntent().removeExtra("showMessage");
             }
-
+//            roomName = prefix + packageId;
+//            roomName = "observable-room";
 
             editText = (EditText) findViewById(R.id.editText);
 
@@ -114,7 +117,11 @@ public class ChatActivity extends AppCompatActivity implements RoomListener {
         }
 
         private String getRandomName() {
-            return contactName;
+                String[] adjs = {"autumn", "hidden", "bitter", "misty", "silent", "empty", "dry", "dark", "summer", "icy", "delicate", "quiet", "white", "cool", "spring", "winter", "patient", "twilight", "dawn", "crimson", "wispy", "weathered", "blue", "billowing", "broken", "cold", "damp", "falling", "frosty", "green", "long", "late", "lingering", "bold", "little", "morning", "muddy", "old", "red", "rough", "still", "small", "sparkling", "throbbing", "shy", "wandering", "withered", "wild", "black", "young", "holy", "solitary", "fragrant", "aged", "snowy", "proud", "floral", "restless", "divine", "polished", "ancient", "purple", "lively", "nameless"};
+                String[] nouns = {"waterfall", "river", "breeze", "moon", "rain", "wind", "sea", "morning", "snow", "lake", "sunset", "pine", "shadow", "leaf", "dawn", "glitter", "forest", "hill", "cloud", "meadow", "sun", "glade", "bird", "brook", "butterfly", "bush", "dew", "dust", "field", "fire", "flower", "firefly", "feather", "grass", "haze", "mountain", "night", "pond", "darkness", "snowflake", "silence", "sound", "sky", "shape", "surf", "thunder", "violet", "water", "wildflower", "wave", "water", "resonance", "sun", "wood", "dream", "cherry", "tree", "fog", "frost", "voice", "paper", "frog", "smoke", "star"};
+                return (adjs[(int) Math.floor(Math.random() * adjs.length)] +
+                                "_" + nouns[(int) Math.floor(Math.random() * nouns.length)]);
+//            return contactName;
         }
 
         private String getRandomColor() {
