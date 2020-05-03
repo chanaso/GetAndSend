@@ -251,13 +251,14 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
     // update user type to be 1- user as a delivery getter
     private void userTypeUpdate() {
         currUser.getRefUser().child(userKey).child("type").setValue(USER_TYPE_DELIVERYMAN);
-
-        //saved in the local memeory
+    }
+    private void updateCurrUserInSP() {
         SharedPreferences.Editor prefEditor = sharedPref.edit();
-        prefEditor.putString("type", String.valueOf(USER_TYPE_DELIVERYMAN));
+        Gson gson = new Gson();
+        String json = gson.toJson(currUser);
+        prefEditor.putString("currUser", json);
         prefEditor.commit();
     }
-
 
     @Override
     public boolean onMapClick(@NonNull LatLng point) {
@@ -279,6 +280,7 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
                 double longitudeF = p.longitude(), latitudeF =p.latitude();
                 if (three.format(longitudeF).equals(three.format(longitude)) &&  three.format(latitudeF).equals(three.format(latitude))) {
                     userTypeUpdate();
+                    updateCurrUserInSP();
                     Intent intent = new Intent(JoinAsDeliverymanActivity.this, PickedPackagesListActivity.class);
                     // transfer the selected packagelocation as json to PackagePickedActivity
                     intent.putExtra("packageLocation", p.coordinates().toString());

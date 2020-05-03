@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="300dp"
+    tools:context=".RateUserViewActivity"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="5dp"
+    android:background="@color/ColorOldlace">
+
+    <TextView
+        android:id="@+id/edtxt_userToRateID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="24sp"
+        android:gravity="center" />
+
+    <RatingBar
+        android:id="@+id/ratingbarID"
+        style="?android:attr/ratingBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:progressTint="#A5E3F4" />
+
+    <Button
+        android:id="@+id/btn_sendID"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:text="Send"
+        android:gravity="center" />
+
+
+
+</LinearLayout>

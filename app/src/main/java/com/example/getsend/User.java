@@ -1,5 +1,6 @@
 package com.example.getsend;
 
+import android.content.SharedPreferences;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -13,7 +14,7 @@ import static com.mapbox.mapboxsdk.Mapbox.getApplicationContext;
 
 public class User {
     private String name, phone, pass, packages, id;
-    private int rate, type;
+    private int rate, type, numOfRates;
     private static final String DELIMITER = " ";
     private transient DatabaseReference refUser = FirebaseDatabase.getInstance().getReference().child("User");
 
@@ -102,6 +103,14 @@ public class User {
         this.id = id;
     }
 
+    public int getNumOfRates() {
+        return numOfRates;
+    }
+
+    public void setNumOfRates(int numOfRates) {
+        this.numOfRates = numOfRates;
+    }
+
     public User(String name, String phone, String pass) {
         this.name = name;
         this.phone = phone;
@@ -110,5 +119,6 @@ public class User {
         this.type = -1;
         this.packages = "";
         this.id = "";
+        this.numOfRates = 0;
     }
 }

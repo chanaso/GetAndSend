@@ -105,12 +105,11 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
     }
 
     private void updateCurrUserInSP() {
-//        SharedPreferences.Editor prefEditor = sharedPref.edit();
-//        Gson gson = new Gson();
-//        String json = gson.toJson(user);
-//        prefEditor.putString("currUser", json);
-//        prefEditor.putString("userKey", userKey);
-//        prefEditor.commit();
+        SharedPreferences.Editor prefEditor = sharedPref.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(currUser);
+        prefEditor.putString("currUser", json);
+        prefEditor.commit();
     }
 
     //add the package key that added to the current user list of keys packages

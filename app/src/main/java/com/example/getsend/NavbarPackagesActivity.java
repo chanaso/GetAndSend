@@ -77,22 +77,24 @@ public class NavbarPackagesActivity extends AppCompatActivity {
                     userPackagesList);
             listView_packages.setAdapter(mAdapter);
             for (String index : userPackagesIdList) {
-                refPackage.child(index).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()) {
-                            Package pack = dataSnapshot.getValue(Package.class);
-                            packagesOfCurrUser.add(pack);
-                            userPackagesList.add(pack.getPackageId()+" "+pack.getLocation()+"\n"+pack.getStatus());
-                            mAdapter.notifyDataSetChanged();
+                if (!index.equals("")) {
+                    refPackage.child(index).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                Package pack = dataSnapshot.getValue(Package.class);
+                                packagesOfCurrUser.add(pack);
+                                userPackagesList.add(pack.getPackageId() + " " + pack.getLocation() + "\n" + pack.getStatus());
+                                mAdapter.notifyDataSetChanged();
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
                             Toast.makeText(NavbarPackagesActivity.this, R.string.error_message, Toast.LENGTH_LONG).show();
-                    }
-                });
+                        }
+                    });
+                }
             }
         }
     }
