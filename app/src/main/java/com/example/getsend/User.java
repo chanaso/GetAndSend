@@ -1,5 +1,8 @@
 package com.example.getsend;
 
+import android.content.SharedPreferences;
+import android.widget.Toast;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -8,8 +11,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class User {
-    private String name, phone, pass, packages, id;
-    private int rate, type;
+    private String name, phone, pass, packagesToDeliver, myPackages, id;
+    private int rate, type, numOfRates;
     private static final String DELIMITER = " ";
     private transient DatabaseReference refUser = FirebaseDatabase.getInstance().getReference().child("User");
 
@@ -61,27 +64,37 @@ public class User {
         this.type = type;
     }
 
-    public String getPackages() {
-        return packages;
+    public String getPackagesToDeliver() {
+        return packagesToDeliver;
     }
 
-    public void setPackages(String packages) {
-        this.packages = packages;
+    public void setPackagesToDeliver(String packageKey, String userKey) {
+        setPackages("packagesToDeliver",packageKey, userKey);
+        this.packagesToDeliver = this.packagesToDeliver + DELIMITER + packageKey ;
+    }
+
+    public String getMyPackages() {
+        return myPackages;
+    }
+
+    public void setMyPackages(String packageKey, String userKey) {
+        setPackages("myPackages",packageKey, userKey);
+        this.myPackages = this.myPackages + DELIMITER + packageKey ;
     }
 
     @Exclude
     //add the package key that added to the current user list of keys packages
-    public void setPackages(String packageKey, String userKey) {
+    public void setPackages(String packageType ,String packageKey, String userKey) {
         refUser.child(userKey).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    if(dataSnapshot.hasChild("packages")){
-                        String userPackages = dataSnapshot.child("packages").getValue().toString();
+                    if(dataSnapshot.hasChild(packageType)){
+                        String userPackages = dataSnapshot.child(packageType).getValue().toString();
                         //set the previous keys + the new package key
-                        refUser.child(userKey).child("packages").setValue(userPackages + packageKey + DELIMITER);
+                        refUser.child(userKey).child(packageType).setValue(userPackages + packageKey + DELIMITER);
                     }else {
-                        refUser.child(userKey).child("packages").setValue(packageKey + DELIMITER);
+                        refUser.child(userKey).child(packageType).setValue(packageKey + DELIMITER);
                     }
                 }
             }
@@ -121,13 +134,23 @@ public class User {
         this.id = id;
     }
 
+    public int getNumOfRates() {
+        return numOfRates;
+    }
+
+    public void setNumOfRates(int numOfRates) {
+        this.numOfRates = numOfRates;
+    }
+
     public User(String name, String phone, String pass) {
         this.name = name;
         this.phone = phone;
         this.pass = pass;
         this.rate = 0;
         this.type = -1;
-        this.packages = "";
+        this.packagesToDeliver = "";
+        this.myPackages = "";
         this.id = "";
+        this.numOfRates = 0;
     }
 }

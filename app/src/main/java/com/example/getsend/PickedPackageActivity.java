@@ -142,6 +142,14 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
         return (check == PackageManager.PERMISSION_GRANTED);
     }
 
+    private void updateCurrUserInSP() {
+        SharedPreferences.Editor prefEditor = sharedPref.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(currUser);
+        prefEditor.putString("currUser", json);
+        prefEditor.commit();
+    }
+
     @Override
     public void onClick(View view) {
         // integrity input check
@@ -163,7 +171,8 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
         // send sms too package owner that theres a deliverman
         sendSms();
         // add package to the deliveryMan packages
-        currUser.setPackages(packKey, userKey);
+        currUser.setPackagesToDeliver(packKey, userKey);
+        updateCurrUserInSP();
         startActivity(new Intent(PickedPackageActivity.this, MainActivity .class));
         finish();
         }

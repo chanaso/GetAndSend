@@ -29,6 +29,8 @@ public class NavbarPackagesActivity extends AppCompatActivity {
     private List<Package> packagesOfCurrUser =  new ArrayList<Package>();
     private List<String> packagesKeysOfCurrUser =  new ArrayList<String>();
     private DatabaseReference refPackage;
+    private static final int USER_TYPE_DELIVERYMAN = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +48,7 @@ public class NavbarPackagesActivity extends AppCompatActivity {
         refPackage = FirebaseDatabase.getInstance().getReference().child("Package");
 
         //extract user packages and display in the viewlist
-        extractUserPackages(userKey);
+        extractUserPackages();
 
         listView_packages.setOnItemClickListener((adapterView, view, i, l) -> {
             Intent intent = new Intent(NavbarPackagesActivity.this, PackageActivity.class);
@@ -62,8 +64,15 @@ public class NavbarPackagesActivity extends AppCompatActivity {
     }
 
     //extract packages id for current user and display them
-    public void extractUserPackages(String userKey) {
-        if(currUser.getPackages().equals(""))
+    public void extractUserPackages() {
+        String userPackages;
+        //check user type to display the right packages
+        if(currUser.getType() == USER_TYPE_DELIVERYMAN){
+            userPackages = currUser.getPackagesToDeliver();
+        }else {
+            userPackages = currUser.getMyPackages();
+        }
+        if(userPackages.equals(""))
         {
             // theres no packsges for the current user
             ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(NavbarPackagesActivity.this,
@@ -72,30 +81,31 @@ public class NavbarPackagesActivity extends AppCompatActivity {
             listView_packages.setAdapter(mAdapter);
         }else{
             // dispaly current user packages
-            String userPackages = currUser.getPackages();
             String[] userPackagesIdList = userPackages.split(" ");
             ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(NavbarPackagesActivity.this,
                     android.R.layout.simple_list_item_1,
                     userPackagesList);
             listView_packages.setAdapter(mAdapter);
             for (String index : userPackagesIdList) {
-                refPackage.child(index).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()) {
-                            Package pack = dataSnapshot.getValue(Package.class);
-                            packagesOfCurrUser.add(pack);
-                            packagesKeysOfCurrUser.add(dataSnapshot.getKey());
-                            userPackagesList.add(pack.getPackageId()+" "+pack.getLocation()+"\n"+pack.getStatus());
-                            mAdapter.notifyDataSetChanged();
+                if (!index.equals("")) {
+                    refPackage.child(index).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                Package pack = dataSnapshot.getValue(Package.class);
+                                packagesOfCurrUser.add(pack);
+                                packagesKeysOfCurrUser.add(dataSnapshot.getKey());
+                                userPackagesList.add(pack.getPackageId() + " " + pack.getLocation() + "\n" + pack.getStatus());
+                                mAdapter.notifyDataSetChanged();
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
                             Toast.makeText(NavbarPackagesActivity.this, R.string.error_message, Toast.LENGTH_LONG).show();
-                    }
-                });
+                        }
+                    });
+                }
             }
         }
     }

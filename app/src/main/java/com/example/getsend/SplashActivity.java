@@ -14,7 +14,7 @@ public class SplashActivity extends AppCompatActivity
     private int timeLeft;
     private ProgressBar progressBar;
     private SharedPreferences sharedPref;
-    private String userName;
+    private String userKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -24,7 +24,7 @@ public class SplashActivity extends AppCompatActivity
 
         progressBar = findViewById(R.id.progressBarID);
         sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
-        userName = sharedPref.getString("name", "");
+        userKey = sharedPref.getString("userKey", "");
         startTimer();
     }
 
@@ -43,7 +43,7 @@ public class SplashActivity extends AppCompatActivity
                     timeLeft--;
                 }
 
-                if(userName.isEmpty()) {
+                if(userKey.isEmpty()) {
                     //Open the login activity if there is no user signed in.
                     startActivity(new Intent(SplashActivity.this, LoginActivity.class));
                     finish();

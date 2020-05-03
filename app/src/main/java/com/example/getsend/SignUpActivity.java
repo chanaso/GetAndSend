@@ -184,7 +184,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                             userKey = ref.getKey();
                             ref.setValue(user);
                             Toast.makeText(SignUpActivity.this, "User registered successfully!", Toast.LENGTH_LONG).show();
-                            // saving the username that registered to local memory.
+                            // saving the user that registered to local memory.
                             SharedPreferences.Editor prefEditor = sharedPref.edit();
                             Gson gson = new Gson();
                             String json = gson.toJson(user);

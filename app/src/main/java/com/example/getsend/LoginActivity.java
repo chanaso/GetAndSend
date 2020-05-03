@@ -88,6 +88,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void saveCurrUser() {
+
         //register user phone & password correct
         SharedPreferences.Editor prefEditor = sharedPref.edit();
         // convert User object to json and

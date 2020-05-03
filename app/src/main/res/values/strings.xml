@@ -68,9 +68,6 @@
     <string name="error_message">Access_to_Firebase_failed...</string>
 
 
-
-
-
     <!-- verification code-->
     <string name="verification_code_failed_Too_many_tries">Too many tries. Please try again later!</string>
     <string name="verification_code_failed_please_try_again">Please try again!</string>

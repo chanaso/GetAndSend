@@ -86,9 +86,9 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
                 newRefPackage.setValue(new_package);
                 Toast.makeText(InviteDeliveryActivity.this, "Package added successfully!", Toast.LENGTH_LONG).show();
 
-                userTypeUpdate();
                 addPackageToCurrentUser();
                 cleanEdtTxts();
+                updateCurrUserInSP();
                 startActivity(new Intent(InviteDeliveryActivity.this, MainActivity.class));
                 finish();
                 break;
@@ -103,19 +103,19 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
         }
     }
 
-    //add the package key that added to the current user list of keys packages
-    private void addPackageToCurrentUser() {
-        currUser.setPackages(lastPackageKey, userKey);
-    }
-
-    // update user type to be 1- user as a delivery getter
-    private void userTypeUpdate() {
-        currUser.getRefUser().child(userKey).child("type").setValue(USER_TYPE_DELIVERY_GETTER);
-        //saved in the local memeory
+    private void updateCurrUserInSP() {
         SharedPreferences.Editor prefEditor = sharedPref.edit();
-        prefEditor.putString("type", String.valueOf(USER_TYPE_DELIVERY_GETTER));
+        Gson gson = new Gson();
+        String json = gson.toJson(currUser);
+        prefEditor.putString("currUser", json);
         prefEditor.commit();
     }
+
+    //add the package key that added to the current user list of keys packages
+    private void addPackageToCurrentUser() {
+        currUser.setMyPackages(lastPackageKey, userKey);
+    }
+
 
     // check input correction and if all edtxt_ filled
     private void checkAllInputs() {
@@ -147,6 +147,7 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
     }
 
     private void cleanEdtTxts() {
+        edtxt_userID.setText("");
         edtxt_PackageId.setText("");
         edtxt_Weight.setText("");
         edtxt_Size.setText("");

@@ -95,7 +95,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         currUser = gson.fromJson(json, User.class);
         userKey = sharedPref.getString("userKey", "");
 
-        checkType();
         checkUserExist();
 
         //navBar view
@@ -112,34 +111,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void checkUserExist() {
-        refUser.child(userKey).addListenerForSingleValueEvent(new ValueEventListener() {
+        //  check if the user exist in the db
+        refUser.child(userKey).addValueEventListener(new ValueEventListener(){
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()){
-                    Log.d("ic", "userExist");
-                } else {
-                    // User does not exist.
+            public void onDataChange(DataSnapshot dataSnapshot){
+                if(!dataSnapshot.exists()) {
                     signOut();
                 }
             }
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(MainActivity.this, R.string.error_message, Toast.LENGTH_LONG).show();
             }
         });
-    }
-
-    private void checkType() {
-        if(USER_TYPE_DELIVERY_GETTER == currUser.getType()){
-            btnJoin.setVisibility(View.GONE);
-            btnInvite.setText("i want another delivery service");
-            btnInvite.setGravity(Gravity.CENTER);
-        }
-        if(USER_TYPE_DELIVERYMAN == currUser.getType()){
-            btnInvite.setVisibility(View.GONE);
-            btnJoin.setText("i want to take another delivery");
-            btnJoin.setGravity(Gravity.CENTER);
-        }
     }
 
     @Override
@@ -265,6 +249,21 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         }
     }
+
+    // update user type to be 1- user as a delivery getter
+    private void userTypeUpdate(int type) {
+        currUser.getRefUser().child(userKey).child("type").setValue(type);
+        currUser.setType(type);
+    }
+
+    private void updateCurrUserInSP() {
+        SharedPreferences.Editor prefEditor = sharedPref.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(currUser);
+        prefEditor.putString("currUser", json);
+        prefEditor.commit();
+    }
+
     // navbar selection list and move to the selected option/activity
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -272,7 +271,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             case R.id.nav_profile:
                 startActivity(new Intent(MainActivity.this, ProfileActivity.class));
                 break;
-            case R.id.nav_packeges:
+            case R.id.nav_myPackeges:
+                if(currUser.getType() != USER_TYPE_DELIVERY_GETTER){
+                    userTypeUpdate(USER_TYPE_DELIVERY_GETTER);
+                    updateCurrUserInSP();
+                }
+                startActivity(new Intent(MainActivity.this, NavbarPackagesActivity.class));
+                break;
+            case R.id.nav_packegesToDeliver:
+                if(currUser.getType() != USER_TYPE_DELIVERYMAN){
+                    userTypeUpdate(USER_TYPE_DELIVERYMAN);
+                    updateCurrUserInSP();
+                }
                 startActivity(new Intent(MainActivity.this, NavbarPackagesActivity.class));
                 break;
             case R.id.nav_sign_out:
