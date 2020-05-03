@@ -27,6 +27,7 @@ public class NavbarPackagesActivity extends AppCompatActivity {
     private String userKey;
     private ArrayList<String> userPackagesList = new ArrayList<String>();
     private List<Package> packagesOfCurrUser =  new ArrayList<Package>();
+    private List<String> packagesKeysOfCurrUser =  new ArrayList<String>();
     private DatabaseReference refPackage;
 
     @Override
@@ -55,6 +56,7 @@ public class NavbarPackagesActivity extends AppCompatActivity {
                     filter(p -> (p.getPackageId()+" "+p.getLocation()).equals(listView_packages.getItemAtPosition(i).toString().split("\n")[0])).
                     findAny().orElse(null));
             intent.putExtra("package", jsonPackage);
+            intent.putExtra("packageKey", packagesKeysOfCurrUser.get(i));
             startActivity(intent);
         });
     }
@@ -83,6 +85,7 @@ public class NavbarPackagesActivity extends AppCompatActivity {
                         if (dataSnapshot.exists()) {
                             Package pack = dataSnapshot.getValue(Package.class);
                             packagesOfCurrUser.add(pack);
+                            packagesKeysOfCurrUser.add(dataSnapshot.getKey());
                             userPackagesList.add(pack.getPackageId()+" "+pack.getLocation()+"\n"+pack.getStatus());
                             mAdapter.notifyDataSetChanged();
                         }

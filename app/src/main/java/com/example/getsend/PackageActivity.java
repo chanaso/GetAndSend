@@ -17,7 +17,7 @@ public class PackageActivity extends AppCompatActivity{
     private Button btn_1, btn_2, btn_confirm;
     private User currUser;
     private SharedPreferences sharedPref;
-    private String userKey;
+    private String userKey, packKey;
 
     @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -38,11 +38,13 @@ public class PackageActivity extends AppCompatActivity{
             Bundle mBundle = getIntent().getExtras();
             if (mBundle != null) {
                 String packStr = mBundle.getString("package");
+                String packkey = mBundle.getString("packagekey");
                 getIntent().removeExtra("showMessage");
 
                 // convert json to Package object
                 Gson gson_2 = new Gson();
                 pack = gson_2.fromJson(packStr , Package.class);
+                packKey = gson_2.fromJson(packkey , String.class);
             }
 
             edtxt_PackageId = findViewById(R.id.edtxt_packageID);
@@ -78,7 +80,7 @@ public class PackageActivity extends AppCompatActivity{
                             @Override
                             public void onClick(View v) {
                                 //Delete package option
-
+                                deletePackage();
                             }
                         });
                         break;
@@ -164,5 +166,8 @@ public class PackageActivity extends AppCompatActivity{
                         break;
                 }
              }
+    }
+    private void deletePackage(){
+        currUser.deletePackage(packKey, userKey);
     }
 }
