@@ -1,15 +1,11 @@
 package com.example.getsend;
 
-import android.widget.Toast;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import static com.mapbox.mapboxsdk.Mapbox.getApplicationContext;
 
 public class User {
     private String name, phone, pass, packages, id;
@@ -92,6 +88,27 @@ public class User {
             @Override
             public void onCancelled(DatabaseError databaseError) {
 //                Toast.makeText(getApplicationContext(), R.string.access_to_Firebase_failed, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    @Exclude
+    //delete the package key from the current user list of keys packages
+    public void deletePackage(String packageKey, String userKey) {
+        refUser.child(userKey).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    if(dataSnapshot.hasChild("packages")){
+                        String userPackages = dataSnapshot.child("packages").getValue().toString();
+                        //set the previous keys - the package key
+                        userPackages = userPackages.replace(" "+packageKey+" "," ");
+                        refUser.child(userKey).child("packages").setValue(userPackages);
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
             }
         });
     }
