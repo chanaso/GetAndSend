@@ -171,7 +171,7 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
         // send sms too package owner that theres a deliverman
         sendSms();
         // add package to the deliveryMan packages
-        currUser.setPackages(packKey, userKey);
+        currUser.setPackagesToDeliver(packKey, userKey);
         updateCurrUserInSP();
         startActivity(new Intent(PickedPackageActivity.this, MainActivity .class));
         finish();

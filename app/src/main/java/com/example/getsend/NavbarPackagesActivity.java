@@ -28,6 +28,8 @@ public class NavbarPackagesActivity extends AppCompatActivity {
     private ArrayList<String> userPackagesList = new ArrayList<String>();
     private List<Package> packagesOfCurrUser =  new ArrayList<Package>();
     private DatabaseReference refPackage;
+    private static final int USER_TYPE_DELIVERYMAN = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +47,7 @@ public class NavbarPackagesActivity extends AppCompatActivity {
         refPackage = FirebaseDatabase.getInstance().getReference().child("Package");
 
         //extract user packages and display in the viewlist
-        extractUserPackages(userKey);
+        extractUserPackages();
 
         listView_packages.setOnItemClickListener((adapterView, view, i, l) -> {
             Intent intent = new Intent(NavbarPackagesActivity.this, PackageActivity.class);
@@ -60,8 +62,15 @@ public class NavbarPackagesActivity extends AppCompatActivity {
     }
 
     //extract packages id for current user and display them
-    public void extractUserPackages(String userKey) {
-        if(currUser.getPackages().equals(""))
+    public void extractUserPackages() {
+        String userPackages;
+        //check user type to display the right packages
+        if(currUser.getType() == USER_TYPE_DELIVERYMAN){
+            userPackages = currUser.getPackagesToDeliver();
+        }else {
+            userPackages = currUser.getMyPackages();
+        }
+        if(userPackages.equals(""))
         {
             // theres no packsges for the current user
             ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(NavbarPackagesActivity.this,
@@ -70,7 +79,6 @@ public class NavbarPackagesActivity extends AppCompatActivity {
             listView_packages.setAdapter(mAdapter);
         }else{
             // dispaly current user packages
-            String userPackages = currUser.getPackages();
             String[] userPackagesIdList = userPackages.split(" ");
             ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(NavbarPackagesActivity.this,
                     android.R.layout.simple_list_item_1,

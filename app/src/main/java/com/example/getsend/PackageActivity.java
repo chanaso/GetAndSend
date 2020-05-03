@@ -46,6 +46,7 @@ public class PackageActivity extends AppCompatActivity {
             edtxt_delivery = findViewById(R.id.edtxt_DeliveryID);
             edtxt_delivery.setVisibility(View.VISIBLE);
             edtxt_delivery.setText(pack.getDeliveryman());
+            //TODO change to deliveryman name
         }
 
         edtxt_Status = findViewById(R.id.edtxt_StatusID);

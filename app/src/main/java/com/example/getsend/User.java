@@ -13,7 +13,7 @@ import com.google.firebase.database.ValueEventListener;
 import static com.mapbox.mapboxsdk.Mapbox.getApplicationContext;
 
 public class User {
-    private String name, phone, pass, packages, id;
+    private String name, phone, pass, packagesToDeliver, myPackages, id;
     private int rate, type, numOfRates;
     private static final String DELIMITER = " ";
     private transient DatabaseReference refUser = FirebaseDatabase.getInstance().getReference().child("User");
@@ -66,24 +66,37 @@ public class User {
         this.type = type;
     }
 
-    public String getPackages() {
-        return packages;
+    public String getPackagesToDeliver() {
+        return packagesToDeliver;
     }
 
+    public void setPackagesToDeliver(String packageKey, String userKey) {
+        setPackages("packagesToDeliver",packageKey, userKey);
+        this.packagesToDeliver = this.packagesToDeliver + DELIMITER + packageKey ;
+    }
+
+    public String getMyPackages() {
+        return myPackages;
+    }
+
+    public void setMyPackages(String packageKey, String userKey) {
+        setPackages("myPackages",packageKey, userKey);
+        this.myPackages = this.myPackages + DELIMITER + packageKey ;
+    }
 
     @Exclude
     //add the package key that added to the current user list of keys packages
-    public void setPackages(String packageKey, String userKey) {
+    public void setPackages(String packageType ,String packageKey, String userKey) {
         refUser.child(userKey).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    if(dataSnapshot.hasChild("packages")){
-                        String userPackages = dataSnapshot.child("packages").getValue().toString();
+                    if(dataSnapshot.hasChild(packageType)){
+                        String userPackages = dataSnapshot.child(packageType).getValue().toString();
                         //set the previous keys + the new package key
-                        refUser.child(userKey).child("packages").setValue(userPackages + packageKey + DELIMITER);
+                        refUser.child(userKey).child(packageType).setValue(userPackages + packageKey + DELIMITER);
                     }else {
-                        refUser.child(userKey).child("packages").setValue(packageKey + DELIMITER);
+                        refUser.child(userKey).child(packageType).setValue(packageKey + DELIMITER);
                     }
                 }
             }
@@ -92,7 +105,6 @@ public class User {
 //                Toast.makeText(getApplicationContext(), R.string.access_to_Firebase_failed, Toast.LENGTH_LONG).show();
             }
         });
-        this.packages = this.packages + DELIMITER + packageKey ;
     }
 
     public String getId() {
@@ -117,7 +129,8 @@ public class User {
         this.pass = pass;
         this.rate = 0;
         this.type = -1;
-        this.packages = "";
+        this.packagesToDeliver = "";
+        this.myPackages = "";
         this.id = "";
         this.numOfRates = 0;
     }

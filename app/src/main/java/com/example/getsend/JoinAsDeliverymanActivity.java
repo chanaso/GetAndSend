@@ -116,7 +116,7 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
                     if (dataSnapshot.exists()) {
                         for (DataSnapshot datas : dataSnapshot.getChildren()) {
                             Package pack = datas.getValue(Package.class);
-                            if(pack.getDeliveryman().isEmpty()) {
+                            if(pack.getDeliveryman().isEmpty() && !pack.getPackageOwnerId().equals(userKey)) {
                                 String location = pack.getGeoLocation();
                                 locationsList.add(location);
                             }
@@ -193,12 +193,7 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
     @Override
     public void onPermissionResult(boolean granted) {
         if (granted) {
-            mapboxMap.getStyle(new Style.OnStyleLoaded() {
-                @Override
-                public void onStyleLoaded(@NonNull Style style) {
-                    enableLocationComponent(style);
-                }
-            });
+            mapboxMap.getStyle(style -> enableLocationComponent(style));
         } else {
             Toast.makeText(this, "user_location_permission_not_granted", Toast.LENGTH_LONG).show();
             finish();
@@ -248,17 +243,6 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
         mapView.onLowMemory();
     }
 
-    // update user type to be 1- user as a delivery getter
-    private void userTypeUpdate() {
-        currUser.getRefUser().child(userKey).child("type").setValue(USER_TYPE_DELIVERYMAN);
-    }
-    private void updateCurrUserInSP() {
-        SharedPreferences.Editor prefEditor = sharedPref.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(currUser);
-        prefEditor.putString("currUser", json);
-        prefEditor.commit();
-    }
 
     @Override
     public boolean onMapClick(@NonNull LatLng point) {
@@ -279,8 +263,6 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
                 Point p = (Point) featureList.get(i).geometry();
                 double longitudeF = p.longitude(), latitudeF =p.latitude();
                 if (three.format(longitudeF).equals(three.format(longitude)) &&  three.format(latitudeF).equals(three.format(latitude))) {
-                    userTypeUpdate();
-                    updateCurrUserInSP();
                     Intent intent = new Intent(JoinAsDeliverymanActivity.this, PickedPackagesListActivity.class);
                     // transfer the selected packagelocation as json to PackagePickedActivity
                     intent.putExtra("packageLocation", p.coordinates().toString());

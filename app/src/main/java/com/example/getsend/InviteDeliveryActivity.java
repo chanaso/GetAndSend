@@ -86,7 +86,6 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
                 newRefPackage.setValue(new_package);
                 Toast.makeText(InviteDeliveryActivity.this, "Package added successfully!", Toast.LENGTH_LONG).show();
 
-                userTypeUpdate();
                 addPackageToCurrentUser();
                 cleanEdtTxts();
                 updateCurrUserInSP();
@@ -114,14 +113,9 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
 
     //add the package key that added to the current user list of keys packages
     private void addPackageToCurrentUser() {
-        currUser.setPackages(lastPackageKey, userKey);
+        currUser.setMyPackages(lastPackageKey, userKey);
     }
 
-    // update user type to be 1- user as a delivery getter
-    private void userTypeUpdate() {
-        currUser.getRefUser().child(userKey).child("type").setValue(USER_TYPE_DELIVERY_GETTER);
-        currUser.setType(USER_TYPE_DELIVERY_GETTER);
-    }
 
     // check input correction and if all edtxt_ filled
     private void checkAllInputs() {
