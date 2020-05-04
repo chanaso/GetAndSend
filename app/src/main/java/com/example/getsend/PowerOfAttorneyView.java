@@ -32,7 +32,7 @@ public class PowerOfAttorneyView extends AppCompatActivity {
     private TextView power_of_attorney_content;
     private ImageButton btn_exit;
     private Package pack;
-    private String userKey, packageOwnerKey, packageId, poa_content, todayString;
+    private String userKey, packageOwnerKey, packageId, poa_content, todayString, packKey;
     private StorageReference signatureRef;
     private SimpleDateFormat dateFormat;
     private Date todayDate;
@@ -54,16 +54,16 @@ public class PowerOfAttorneyView extends AppCompatActivity {
         currUser = gson.fromJson(json, User.class);
         userKey = sharedPref.getString("userKey", "");
 
-        //get package details from caller activity
-//        Bundle mBundle = getIntent().getExtras();
-//        if (mBundle != null) {
-//            String packStr = mBundle.getString("package");
-//            getIntent().removeExtra("showMessage");
-//
-//            // convert json to Package object
-//            Gson gson = new Gson();
-//            pack = gson.fromJson(packStr , Package.class);
-//        }
+        //get current package from previous activity
+        Bundle mBundle = getIntent().getExtras();
+        if (mBundle != null) {
+            String packStr = mBundle.getString("package");
+            packKey = mBundle.getString("packageKey");
+            getIntent().removeExtra("showMessage");
+            // convert json to Package object
+            Gson gson_2 = new Gson();
+            pack = gson_2.fromJson(packStr , Package.class);
+        }
 
         //get owner details
         packageOwnerKey = pack.getPackageOwnerId();

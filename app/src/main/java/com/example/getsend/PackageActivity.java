@@ -151,16 +151,19 @@ public class PackageActivity extends AppCompatActivity{
                         break;
                     case "On the way...":
                         btn_1.setVisibility(View.INVISIBLE);
+                        btn_2.setText(" Open chat ");
                         btn_2.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 //Open chat
                             }
                         });
+                        btn_confirm.setText(" Delivery Confirmation ");
                         btn_confirm.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 //Delivery confirmation
+
                             }
                         });
                         break;
@@ -172,13 +175,29 @@ public class PackageActivity extends AppCompatActivity{
                 }
             }
             else{ //DELIVERYMAN type
+                //get the owner details from DB
+                refUser.child(pack.getPackageOwnerId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            user2 = dataSnapshot.getValue(User.class);
+                            saveUser2();
+                        }
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Toast.makeText(PackageActivity.this, R.string.error_message, Toast.LENGTH_LONG).show();
+                    }
+                });
                 switch (pack.getStatus()) {
                     case "Waiting for delivery":
                         btn_1.setVisibility(View.INVISIBLE);
+                        btn_2.setText("View Owner Details");
                         btn_2.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 //View owner details
+                                viewUserDetails(pack.getPackageOwnerId());
                             }
                         });
                         btn_confirm.setVisibility(View.INVISIBLE);
@@ -190,18 +209,22 @@ public class PackageActivity extends AppCompatActivity{
                         btn_confirm.setVisibility(View.INVISIBLE);
                         break;
                     case "On the way...":
+                        btn_2.setText("View Package Power Of Attorney");
                         btn_1.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 //view POA
+                                openPOAView();
                             }
                         });
+                        btn_2.setText(" Open chat ");
                         btn_2.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 //Open chat
                             }
                         });
+                        btn_confirm.setText(" Delivery Confirmation ");
                         btn_confirm.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -248,6 +271,15 @@ public class PackageActivity extends AppCompatActivity{
     }
     private void signPOA(){
         Intent intent = new Intent(PackageActivity.this, PowerOfAttorney.class);
+        // transfer the selected package as json to packageActivity which will dispaly that package
+        Gson gson = new Gson();
+        String jsonPackage = gson.toJson(pack);
+        intent.putExtra("package", jsonPackage);
+        intent.putExtra("packageKey", packKey);
+        startActivity(intent);
+    }
+    private void openPOAView(){
+        Intent intent = new Intent(PackageActivity.this, PowerOfAttorneyView.class);
         // transfer the selected package as json to packageActivity which will dispaly that package
         Gson gson = new Gson();
         String jsonPackage = gson.toJson(pack);
