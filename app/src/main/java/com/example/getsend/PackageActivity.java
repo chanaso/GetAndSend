@@ -18,14 +18,14 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
 public class PackageActivity extends AppCompatActivity{
-    private final String PACKAGE_LIST_TYPE = "myPackages";
+    private final String MY_PACKAGE_LIST = "myPackages", PACKAGE_LIST_TO_DELIVER = "packagesToDeliver";
     private final int OWNER = 1, DELIVERYMAN = 0;
     private TextView edtxt_Size, edtxt_Weight, edtxt_Location, edtxt_Destination, edtxt_delivery, edtxt_Status, edtxt_PackageId;
     private Package pack;
     private Button btn_1, btn_2, btn_confirm;
-    private User currUser;
+    private User currUser, user2;
     private SharedPreferences sharedPref;
-    private String userKey, packKey, profileView;
+    private String userKey, packKey, profileView, user2Key, user2Name, user2Rate, user2Id;
     private DatabaseReference refPackage, refUser;
 
     @Override
@@ -36,7 +36,7 @@ public class PackageActivity extends AppCompatActivity{
             refPackage = FirebaseDatabase.getInstance().getReference().child("Package");
             refUser = FirebaseDatabase.getInstance().getReference().child("User");
 
-        // store from local memory the current user
+            // store from local memory the current user
             sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
             Gson gson = new Gson();
             String json = sharedPref.getString("currUser", "");
@@ -94,6 +94,20 @@ public class PackageActivity extends AppCompatActivity{
             edtxt_Status.setText(pack.getStatus());
 
             if(currUser.getType() == OWNER) {
+                //get the deliveryman details from DB
+                refUser.child(pack.getDeliveryman()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            user2 = dataSnapshot.getValue(User.class);
+                            saveUser2();
+                        }
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Toast.makeText(PackageActivity.this, R.string.error_message, Toast.LENGTH_LONG).show();
+                    }
+                });
                 switch (pack.getStatus()) {
                     case "Waiting for delivery":
                         btn_1.setVisibility(View.INVISIBLE);
@@ -103,7 +117,7 @@ public class PackageActivity extends AppCompatActivity{
                             @Override
                             public void onClick(View v) {
                                 //Delete package option
-                                deletePackage();
+                                deleteCurrPackage(currUser, userKey, MY_PACKAGE_LIST);
                             }
                         });
                         break;
@@ -116,10 +130,14 @@ public class PackageActivity extends AppCompatActivity{
                                 viewUserDetails(pack.getDeliveryman());
                             }
                         });
+                        btn_2.setText("Reject Deliveryman");
                         btn_2.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 //Reject delivery
+                                rejectDeliveryman(pack.getDeliveryman());
+                                //ToDo
+                                //send SMS to deliveryman that the delivery was rejected
                             }
                         });
                         btn_confirm.setOnClickListener(new View.OnClickListener() {
@@ -192,8 +210,17 @@ public class PackageActivity extends AppCompatActivity{
                 }
              }
     }
-    private void deletePackage(){
-        currUser.deletePackage(PACKAGE_LIST_TYPE,packKey, userKey);
+    private void saveUser2() {
+        //register user phone & password correct
+        SharedPreferences.Editor prefEditor = sharedPref.edit();
+        // save user to the local memory
+        Gson gson = new Gson();
+        String json = gson.toJson(user2);
+        prefEditor.putString("user2", json);
+        prefEditor.commit();
+    }
+    private void deleteCurrPackage(User tmpUser, String userTmpKey, String package_list_type){
+        tmpUser.deletePackage(package_list_type,packKey, userTmpKey);
         refPackage.child(packKey).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -206,22 +233,16 @@ public class PackageActivity extends AppCompatActivity{
         });
     }
     private void viewUserDetails(String userViewKey){
-        refUser.child(userViewKey).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    profileView = dataSnapshot.child("name").getValue().toString() +"@"+ dataSnapshot.child("rate").getValue().toString();
-                    Intent intent = new Intent(PackageActivity.this, UserProfileViewActivity.class);
-                    intent.putExtra("profileView", profileView);
-                    startActivity(intent);
-                    finish();
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        Gson gson = new Gson();
+        String json = sharedPref.getString("user2", "");
+        user2 = gson.fromJson(json, User.class);
+        profileView = user2.getName() +"@"+ user2.getRate();
+        Intent intent = new Intent(PackageActivity.this, UserProfileViewActivity.class);
+        intent.putExtra("profileView", profileView);
+        startActivity(intent);
+    }
+    private void rejectDeliveryman(String deliverymanKey){
+        deleteCurrPackage(user2, deliverymanKey, PACKAGE_LIST_TO_DELIVER);
     }
 
 }
