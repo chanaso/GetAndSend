@@ -217,7 +217,6 @@
             android:id="@+id/btn_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/hint_sign"
             android:padding="5dp"
             android:background="@color/ColorLightBlue"
             android:layout_margin="7dp"/>
@@ -228,8 +227,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
             android:background="@color/ColorLightBlue"
-            android:padding="5dp"
-            android:text="Confirm" />
+            android:padding="5dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -243,7 +241,6 @@
                 android:id="@+id/btn_confirm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/hint_sign"
                 android:padding="5dp"
                 android:background="@color/ColorPrimaryLight"
                 android:layout_margin="2dp"/>
