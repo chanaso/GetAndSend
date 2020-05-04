@@ -46,13 +46,13 @@ public class SplashActivity extends AppCompatActivity
                 if(userKey.isEmpty()) {
                     //Open the login activity if there is no user signed in.
 //                    startActivity(new Intent(SplashActivity.this, LoginActivity.class));
-                    startActivity(new Intent(SplashActivity.this, ChatActivity.class));
+                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
 
                     finish();
                 } else {
                     //Open Home activity the user is already registered
 //                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
-                    startActivity(new Intent(SplashActivity.this, ChatActivity.class));
+                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
                     finish();
                 }
             }
