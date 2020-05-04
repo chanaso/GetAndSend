@@ -1,13 +1,10 @@
 package com.example.getsend;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -43,7 +40,6 @@ public class RateUserViewActivity extends Activity {
         findViewById(R.id.btn_sendID).setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-                Toast.makeText(RateUserViewActivity.this,  bar.getRating()+"", Toast.LENGTH_LONG).show();
                 if(bar.getRating() != 0.0){
                     // set the new rate
                     refUser.child(userKey).child("rate").setValue((bar.getRating() + userRate)/numOfRates);
@@ -51,6 +47,7 @@ public class RateUserViewActivity extends Activity {
                     // add (1) number of rates to user
                     refUser.child(userKey).child("numOfRates").setValue(numOfRates);
                 }
+                finish();
             }
         });
 

@@ -163,7 +163,8 @@ public class PackageActivity extends AppCompatActivity{
                             @Override
                             public void onClick(View v) {
                                 //Delivery confirmation
-
+                                rateUser(user2, pack.getDeliveryman());
+                                refPackage.child(packKey).child("status").setValue("Arrived :)");
                             }
                         });
                         break;
@@ -203,7 +204,6 @@ public class PackageActivity extends AppCompatActivity{
                         btn_confirm.setVisibility(View.INVISIBLE);
                         break;
                     case "Waiting for approval":
-                    case "Arrived :)":
                         btn_1.setVisibility(View.INVISIBLE);
                         btn_2.setVisibility(View.INVISIBLE);
                         btn_confirm.setVisibility(View.INVISIBLE);
@@ -229,6 +229,20 @@ public class PackageActivity extends AppCompatActivity{
                             @Override
                             public void onClick(View v) {
                                 //Delivery confirmation
+                                Toast.makeText(PackageActivity.this, "The owner didn't confirm the arrival yet", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                        break;
+                    case "Arrived :)":
+                        btn_1.setVisibility(View.INVISIBLE);
+                        btn_2.setVisibility(View.INVISIBLE);
+                        btn_confirm.setText(" Delivery Confirmation ");
+                        btn_confirm.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                //Delivery confirmation
+                                rateUser(user2, pack.getPackageOwnerId());
+                                btn_confirm.setVisibility(View.INVISIBLE);
                             }
                         });
                         break;
@@ -271,20 +285,29 @@ public class PackageActivity extends AppCompatActivity{
     }
     private void signPOA(){
         Intent intent = new Intent(PackageActivity.this, PowerOfAttorney.class);
-        // transfer the selected package as json to packageActivity which will dispaly that package
+        // transfer the current package
         Gson gson = new Gson();
         String jsonPackage = gson.toJson(pack);
         intent.putExtra("package", jsonPackage);
         intent.putExtra("packageKey", packKey);
         startActivity(intent);
     }
+    private void rateUser(User user, String userKey){
+        Intent intent = new Intent(PackageActivity.this, RateUserViewActivity.class);
+        // transfer the selected user as json to packageActivity which will dispaly that package
+        String userDetails = user.getName()+"@"+ userKey + "@" + user.getRate() + "@" + user.getNumOfRates();
+        intent.putExtra("userToRate", userDetails);
+        startActivity(intent);
+    }
+
     private void openPOAView(){
         Intent intent = new Intent(PackageActivity.this, PowerOfAttorneyView.class);
-        // transfer the selected package as json to packageActivity which will dispaly that package
+        // transfer the current package
         Gson gson = new Gson();
         String jsonPackage = gson.toJson(pack);
         intent.putExtra("package", jsonPackage);
         intent.putExtra("packageKey", packKey);
         startActivity(intent);
     }
+
 }
