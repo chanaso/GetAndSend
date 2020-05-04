@@ -74,5 +74,7 @@
     <string name="verification_code_sent">Sent</string>
     <string name="User_does_not_exist">User does not exist</string>
 
+    <string name="input_placeholder">Write a message</string>
+
 
 </resources>
