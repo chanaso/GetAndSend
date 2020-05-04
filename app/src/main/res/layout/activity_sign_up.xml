@@ -10,7 +10,7 @@
     tools:context=".SignUpActivity">
 
     <EditText
-        android:id="@+id/edtxt_userID"
+        android:id="@+id/edtxt_userNameID"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -83,6 +83,13 @@
         android:layout_height="wrap_content"
         android:inputType="numberPassword"
         android:hint="Confirm Password" />
+
+    <EditText
+        android:id="@+id/edtxt_userIdID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberPassword"
+        android:hint="Id number" />
 
     <Button
         android:id="@+id/btn_SignUpID"

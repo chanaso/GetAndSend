@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private EditText edtxt_userName, edtxt_phoneNumber, edtxt_pass, edtxt_passCon, edtxt_verifiCode;
+    private EditText edtxt_userName, edtxt_phoneNumber, edtxt_pass, edtxt_passCon, edtxt_verifiCode, edtxt_userId;
     private Button btn_SignUp, btn_Verify;
     private String codeSend, userKey;
     private FirebaseAuth mAuth;
@@ -47,12 +47,13 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
         btn_SignUp = findViewById(R.id.btn_SignUpID);
         btn_Verify = findViewById(R.id.btn_VerifyID);
-        edtxt_userName = findViewById(R.id.edtxt_userID);
+        edtxt_userName = findViewById(R.id.edtxt_userNameID);
         edtxt_ccp = findViewById(R.id.ccp);
         edtxt_phoneNumber = findViewById(R.id.edtxt_phoneNumberID);
         edtxt_verifiCode = findViewById(R.id.edtxt_verificationCodeID);
         edtxt_pass = findViewById(R.id.edtxt_passID);
         edtxt_passCon = findViewById(R.id.edtxt_passConID);
+        edtxt_userId = findViewById(R.id.edtxt_userIdID);
         refUser = FirebaseDatabase.getInstance().getReference().child("User");
         mAuth = FirebaseAuth.getInstance();
 
@@ -140,6 +141,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         final String code = edtxt_verifiCode.getText().toString().trim();
         final String pass = this.edtxt_pass.getText().toString().trim();
         final String passCon = this.edtxt_passCon.getText().toString().trim();
+        final String id = edtxt_userId.getText().toString().trim();
 
         // integrity input check
         if(pass.length() < 6){
@@ -166,38 +168,42 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             this.edtxt_pass.requestFocus();
             return;
         }
+
+        if(id.length() != 9)
+        {
+            this.edtxt_userId.setError("Incorrect Id");
+            this.edtxt_userId.requestFocus();
+            return;
+        }
         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(codeSend, code);
-        User user = new User(name, phone, pass);
+        User user = new User(name, phone, pass, id);
         signInWithPhoneAuthCredential(credential, user);
     }
 
     // sign up user and check if the input code is matched
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential, User user) {
         mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            //matched input code and push user details to db
-                            //get user id
-                            DatabaseReference ref = refUser.push();
-                            userKey = ref.getKey();
-                            ref.setValue(user);
-                            Toast.makeText(SignUpActivity.this, "User registered successfully!", Toast.LENGTH_LONG).show();
-                            // saving the user that registered to local memory.
-                            SharedPreferences.Editor prefEditor = sharedPref.edit();
-                            Gson gson = new Gson();
-                            String json = gson.toJson(user);
-                            prefEditor.putString("currUser", json);
-                            prefEditor.putString("userKey", userKey);
-                            prefEditor.commit();
-                            startActivity(new Intent(SignUpActivity.this, MainActivity.class));
-                            finish();
-                        } else {
-                            if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                                // The verification code entered was invalid
-                                Toast.makeText(SignUpActivity.this, "Inncorrect Verification Code", Toast.LENGTH_LONG).show();
-                            }
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        //matched input code and push user details to db
+                        //get user id
+                        DatabaseReference ref = refUser.push();
+                        userKey = ref.getKey();
+                        ref.setValue(user);
+                        Toast.makeText(SignUpActivity.this, "User registered successfully!", Toast.LENGTH_LONG).show();
+                        // saving the user that registered to local memory.
+                        SharedPreferences.Editor prefEditor = sharedPref.edit();
+                        Gson gson = new Gson();
+                        String json = gson.toJson(user);
+                        prefEditor.putString("currUser", json);
+                        prefEditor.putString("userKey", userKey);
+                        prefEditor.commit();
+                        startActivity(new Intent(SignUpActivity.this, MainActivity.class));
+                        finish();
+                    } else {
+                        if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                            // The verification code entered was invalid
+                            Toast.makeText(SignUpActivity.this, "Inncorrect Verification Code", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
