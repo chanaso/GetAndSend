@@ -31,30 +31,25 @@ public class SplashActivity extends AppCompatActivity
     private void startTimer()
     {
         timeLeft = DELAY_TIME;
-        new Thread(new Runnable()
-        {
-            @Override
-            public void run()
+        new Thread(() -> {
+            while(timeLeft >= 0)
             {
-                while(timeLeft >= 0)
-                {
-                    progressBar.setProgress(progressBar.getMax()-timeLeft);
-                    SystemClock.sleep(1000); //Thread.sleep(1000);
-                    timeLeft--;
-                }
+                progressBar.setProgress(progressBar.getMax()-timeLeft);
+                SystemClock.sleep(1000); //Thread.sleep(1000);
+                timeLeft--;
+            }
 
-                if(userKey.isEmpty()) {
-                    //Open the login activity if there is no user signed in.
-                    startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+            if(userKey.isEmpty()) {
+                //Open the login activity if there is no user signed in.
+                startActivity(new Intent(SplashActivity.this, LoginActivity.class));
 //                    startActivity(new Intent(SplashActivity.this, ChatActivity.class));
 
-                    finish();
-                } else {
-                    //Open Home activity the user is already registered
-                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                finish();
+            } else {
+                //Open Home activity the user is already registered
+                startActivity(new Intent(SplashActivity.this, MainActivity.class));
 //                    startActivity(new Intent(SplashActivity.this, ChatActivity.class));
-                    finish();
-                }
+                finish();
             }
         }).start();
     }
