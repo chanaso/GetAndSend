@@ -76,11 +76,10 @@
 
     <string name="input_placeholder">Write a message</string>
     <string name="create_account">Create Account</string>
-    <string name="forgot_your_password"><u>Forgot your password?</u>></string>
+    <string name="forgot_your_password"><u>Forgot your password?</u></string>
     <string name="phone_number">Phone number</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="user_name">User name</string>
-    <string name="phone_number">Phone number</string>
     <string name="get_verification_code">Get verification code</string>
     <string name="verification_code">Verification code</string>
     <string name="password">Password</string>

@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private EditText edtxt_userName, edtxt_phoneNumber, edtxt_pass, edtxt_passCon, edtxt_verifiCode;
+    private EditText edtxt_userName, edtxt_phoneNumber, edtxt_pass, edtxt_passCon, edtxt_verifiCode, edtxt_userId;
     private Button btn_SignUp, btn_Verify;
     private String codeSend, userKey;
     private FirebaseAuth mAuth;
@@ -53,6 +53,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         edtxt_verifiCode = findViewById(R.id.edtxt_verificationCodeID);
         edtxt_pass = findViewById(R.id.edtxt_passID);
         edtxt_passCon = findViewById(R.id.edtxt_passConID);
+        edtxt_userId = findViewById(R.id.edtxt_userIdID);
         refUser = FirebaseDatabase.getInstance().getReference().child("User");
         mAuth = FirebaseAuth.getInstance();
 
@@ -140,6 +141,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         final String code = edtxt_verifiCode.getText().toString().trim();
         final String pass = this.edtxt_pass.getText().toString().trim();
         final String passCon = this.edtxt_passCon.getText().toString().trim();
+        final String id = edtxt_userId.getText().toString().trim();
 
         // integrity input check
         if(pass.length() < 6){
@@ -167,12 +169,19 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             return;
         }
 
+        if(id.length() != 9)
+        {
+            this.edtxt_userId.setError("Incorrect Id");
+            this.edtxt_userId.requestFocus();
+            return;
+        }
         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(codeSend, code);
-        signInWithPhoneAuthCredential(credential);
+        User user = new User(name, phone, pass, id);
+        signInWithPhoneAuthCredential(credential, user);
     }
 
     // sign up user and check if the input code is matched
-    private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
+    private void signInWithPhoneAuthCredential(PhoneAuthCredential credential, User user) {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
@@ -180,12 +189,12 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                         //get user id
                         DatabaseReference ref = refUser.push();
                         userKey = ref.getKey();
-//                        ref.setValue(user);
+                        ref.setValue(user);
                         Toast.makeText(SignUpActivity.this, "User registered successfully!", Toast.LENGTH_LONG).show();
                         // saving the user that registered to local memory.
                         SharedPreferences.Editor prefEditor = sharedPref.edit();
                         Gson gson = new Gson();
-//                        String json = gson.toJson(user);
+                        String json = gson.toJson(user);
                         prefEditor.putString("currUser", json);
                         prefEditor.putString("userKey", userKey);
                         prefEditor.commit();
