@@ -1,8 +1,5 @@
 package com.example.getsend;
 
-import android.content.SharedPreferences;
-import android.widget.Toast;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -107,16 +104,16 @@ public class User {
 
     @Exclude
     //delete the package key from the current user list of keys packages
-    public void deletePackage(String packageKey, String userKey) {
+    public void deletePackage(String packageType ,String packageKey, String userKey) {
         refUser.child(userKey).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    if(dataSnapshot.hasChild("packages")){
-                        String userPackages = dataSnapshot.child("packages").getValue().toString();
+                    if(dataSnapshot.hasChild(packageType)){
+                        String userPackages = dataSnapshot.child(packageType).getValue().toString();
                         //set the previous keys - the package key
                         userPackages = userPackages.replace(" "+packageKey+" "," ");
-                        refUser.child(userKey).child("packages").setValue(userPackages);
+                        refUser.child(userKey).child(packageType).setValue(userPackages);
                     }
                 }
             }

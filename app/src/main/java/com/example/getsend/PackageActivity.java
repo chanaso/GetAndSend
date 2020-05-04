@@ -1,30 +1,42 @@
 package com.example.getsend;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
 public class PackageActivity extends AppCompatActivity{
-    private final int DELIVERYMAN = 0, OWNER = 1;
+    private final String PACKAGE_LIST_TYPE = "myPackages";
+    private final int OWNER = 1, DELIVERYMAN = 0;
     private TextView edtxt_Size, edtxt_Weight, edtxt_Location, edtxt_Destination, edtxt_delivery, edtxt_Status, edtxt_PackageId;
     private Package pack;
     private Button btn_1, btn_2, btn_confirm;
     private User currUser;
     private SharedPreferences sharedPref;
-    private String userKey, packKey;
+    private String userKey, packKey, profileView;
+    private DatabaseReference refPackage, refUser;
 
     @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_package);
 
-            // store from local memory the current user
+            refPackage = FirebaseDatabase.getInstance().getReference().child("Package");
+            refUser = FirebaseDatabase.getInstance().getReference().child("User");
+
+        // store from local memory the current user
             sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
             Gson gson = new Gson();
             String json = sharedPref.getString("currUser", "");
@@ -38,13 +50,13 @@ public class PackageActivity extends AppCompatActivity{
             Bundle mBundle = getIntent().getExtras();
             if (mBundle != null) {
                 String packStr = mBundle.getString("package");
-                String packkey = mBundle.getString("packagekey");
+                packKey = mBundle.getString("packageKey");
+
                 getIntent().removeExtra("showMessage");
 
                 // convert json to Package object
                 Gson gson_2 = new Gson();
                 pack = gson_2.fromJson(packStr , Package.class);
-                packKey = gson_2.fromJson(packkey , String.class);
             }
 
             edtxt_PackageId = findViewById(R.id.edtxt_packageID);
@@ -62,18 +74,21 @@ public class PackageActivity extends AppCompatActivity{
             edtxt_Destination = findViewById(R.id.edtxt_DestinationID);
             edtxt_Destination.setText(pack.getDestination());
 
-            if(!pack.getDeliveryman().isEmpty()) {
-                edtxt_delivery = findViewById(R.id.edtxt_DeliveryID);
-                edtxt_delivery.setVisibility(View.VISIBLE);
-                edtxt_delivery.setText(pack.getDeliveryman());
-                //TODO change to deliveryman name
-            }
 
-            if(!pack.getDeliveryman().isEmpty()) {
-                edtxt_delivery = findViewById(R.id.edtxt_DeliveryID);
-                edtxt_delivery.setVisibility(View.VISIBLE);
-                edtxt_delivery.setText(pack.getDeliveryman());
-            }
+//      what is that??????????????????
+
+//            if(!pack.getDeliveryman().isEmpty()) {
+//                edtxt_delivery = findViewById(R.id.edtxt_DeliveryID);
+//                edtxt_delivery.setVisibility(View.VISIBLE);
+//                edtxt_delivery.setText(pack.getDeliveryman());
+//                //TODO change to deliveryman name
+//            }
+//
+//            if(!pack.getDeliveryman().isEmpty()) {
+//                edtxt_delivery = findViewById(R.id.edtxt_DeliveryID);
+//                edtxt_delivery.setVisibility(View.VISIBLE);
+//                edtxt_delivery.setText(pack.getDeliveryman());
+//            }
 
             edtxt_Status = findViewById(R.id.edtxt_StatusID);
             edtxt_Status.setText(pack.getStatus());
@@ -83,6 +98,7 @@ public class PackageActivity extends AppCompatActivity{
                     case "Waiting for delivery":
                         btn_1.setVisibility(View.INVISIBLE);
                         btn_2.setVisibility(View.INVISIBLE);
+                        btn_confirm.setText("Delete Package");
                         btn_confirm.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -92,10 +108,12 @@ public class PackageActivity extends AppCompatActivity{
                         });
                         break;
                     case "Waiting for approval":
+                        btn_1.setText("View Deliveryman Details");
                         btn_1.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 //View deliveryman details
+                                viewUserDetails(pack.getDeliveryman());
                             }
                         });
                         btn_2.setOnClickListener(new View.OnClickListener() {
@@ -175,6 +193,35 @@ public class PackageActivity extends AppCompatActivity{
              }
     }
     private void deletePackage(){
-        currUser.deletePackage(packKey, userKey);
+        currUser.deletePackage(PACKAGE_LIST_TYPE,packKey, userKey);
+        refPackage.child(packKey).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                dataSnapshot.getRef().removeValue();
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(PackageActivity.this, R.string.error_message, Toast.LENGTH_LONG).show();
+            }
+        });
     }
+    private void viewUserDetails(String userViewKey){
+        refUser.child(userViewKey).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    profileView = dataSnapshot.child("name").getValue().toString() +"@"+ dataSnapshot.child("rate").getValue().toString();
+                    Intent intent = new Intent(PackageActivity.this, UserProfileViewActivity.class);
+                    intent.putExtra("profileView", profileView);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 }
