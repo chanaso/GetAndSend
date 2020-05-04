@@ -152,6 +152,8 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
+                        //set the new password
+                        refUser.child(userKey).child("pass").setValue(edtxt_pass);
                         //check if the user is registered already and if the phone number exist in db
                         refUser.orderByChild("phone").equalTo(phone).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
@@ -180,7 +182,6 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
     }
 
     private void saveCurrUser() {
-
         //register user phone & password correct
         SharedPreferences.Editor prefEditor = sharedPref.edit();
         // convert User object to json and
