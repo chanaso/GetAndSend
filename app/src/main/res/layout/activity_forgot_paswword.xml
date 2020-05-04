@@ -7,15 +7,7 @@
     android:layout_margin="16dp"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".SignUpActivity">
-
-    <EditText
-        android:id="@+id/edtxt_userNameID"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/user_name"
-        android:inputType="textPersonName" />
+    tools:context=".ForgotPasswordActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -75,7 +67,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="numberPassword"
-        android:hint="@string/password" />
+        android:hint="@string/new_password" />
 
     <EditText
         android:id="@+id/edtxt_passConID"
@@ -84,20 +76,13 @@
         android:inputType="numberPassword"
         android:hint="@string/confirm_password" />
 
-    <EditText
-        android:id="@+id/edtxt_userIdID"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="numberPassword"
-        android:hint="@string/id_number" />
-
     <Button
-        android:id="@+id/btn_SignUpID"
+        android:id="@+id/btn_EnterID"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:padding="20dp"
-        android:text="@string/sign_up"
+        android:text="@string/sign_in"
         android:textSize="18sp" />
 
 </LinearLayout>

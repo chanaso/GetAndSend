@@ -139,7 +139,7 @@ public class User {
         this.numOfRates = numOfRates;
     }
 
-    public User(String name, String phone, String pass) {
+    public User(String name, String phone, String pass, String id) {
         this.name = name;
         this.phone = phone;
         this.pass = pass;
@@ -147,7 +147,7 @@ public class User {
         this.type = -1;
         this.packagesToDeliver = "";
         this.myPackages = "";
-        this.id = "";
+        this.id = id;
         this.numOfRates = 0;
     }
 }

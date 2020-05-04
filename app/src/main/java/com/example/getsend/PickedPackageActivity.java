@@ -35,7 +35,7 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
 
     private User currUser;
     private TextView edtxt_Size, edtxt_Weight, edtxt_Location, edtxt_Destination, edtxt_PackageId, edtxt_packageOwner;
-    private EditText edtxt_deliverymanNote, edtxt_deliverymanId;
+    private EditText edtxt_deliverymanNote;
     private Button btn_confirmDelivery;
     private SharedPreferences sharedPref;
     private DatabaseReference refPackage;
@@ -63,7 +63,6 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
         btn_confirmDelivery = findViewById(R.id.btn_confirmDeliveryID);
         edtxt_packageOwner = findViewById(R.id.edtxt_packageOwnerID);
         edtxt_deliverymanNote = findViewById(R.id.edtxt_deliveryNoteID);
-        edtxt_deliverymanId = findViewById(R.id.edtxt_deliverymanIdID);
 
         // store from local memory the current user
         sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
@@ -153,11 +152,6 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
     @Override
     public void onClick(View view) {
         // integrity input check
-        if(edtxt_deliverymanId.getText().length() !=9){
-            this.edtxt_deliverymanId.setError("An Israeli ID must contain 9 numbers:");
-            this.edtxt_deliverymanId.requestFocus();
-            return;
-        }
         if(edtxt_deliverymanNote.getText().length() > 100){
             this.edtxt_deliverymanNote.setError("Note should be less than 160 letters");
             this.edtxt_deliverymanNote.requestFocus();

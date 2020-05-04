@@ -30,51 +30,43 @@ import com.hbb20.CountryCodePicker;
 
 import java.util.concurrent.TimeUnit;
 
-public class SignUpActivity extends AppCompatActivity implements View.OnClickListener {
+public class ForgotPasswordActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private EditText edtxt_userName, edtxt_phoneNumber, edtxt_pass, edtxt_passCon, edtxt_verifiCode, edtxt_userId;
-    private Button btn_SignUp, btn_Verify;
+    private EditText edtxt_phoneNumber, edtxt_pass, edtxt_passCon, edtxt_verifiCode;
+    private Button btn_Enter, btn_Verify;
     private String codeSend, userKey;
     private FirebaseAuth mAuth;
     private DatabaseReference refUser;
     private CountryCodePicker edtxt_ccp;
     private SharedPreferences sharedPref;
+    private User currUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_up);
+        setContentView(R.layout.activity_forgot_paswword);
 
-        btn_SignUp = findViewById(R.id.btn_SignUpID);
+        btn_Enter = findViewById(R.id.btn_EnterID);
         btn_Verify = findViewById(R.id.btn_VerifyID);
-        edtxt_userName = findViewById(R.id.edtxt_userNameID);
         edtxt_ccp = findViewById(R.id.ccp);
         edtxt_phoneNumber = findViewById(R.id.edtxt_phoneNumberID);
         edtxt_verifiCode = findViewById(R.id.edtxt_verificationCodeID);
         edtxt_pass = findViewById(R.id.edtxt_passID);
         edtxt_passCon = findViewById(R.id.edtxt_passConID);
-        edtxt_userId = findViewById(R.id.edtxt_userIdID);
         refUser = FirebaseDatabase.getInstance().getReference().child("User");
         mAuth = FirebaseAuth.getInstance();
 
-        btn_SignUp.setOnClickListener(this);
+        btn_Enter.setOnClickListener(this);
         btn_Verify.setOnClickListener(this);
 
         sharedPref = getSharedPreferences("userDetails",MODE_PRIVATE);
     }
 
     private void sendVerificationCode() {
-        final String name = edtxt_userName.getText().toString().trim();
         final String prePhone = edtxt_ccp.getSelectedCountryCode();
         final String phone = "+" + prePhone + edtxt_phoneNumber.getText().toString().trim();
 
         // validation check
-        if(name.isEmpty()){
-            edtxt_userName.setError("user name required");
-            edtxt_userName.requestFocus();
-            return;
-        }
-
         if(phone.isEmpty()){
             edtxt_phoneNumber.setError("phone number required");
             edtxt_phoneNumber.requestFocus();
@@ -87,43 +79,26 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             return;
         }
 
-        //  check if the user exist in the db
-            refUser.orderByChild("phone").equalTo(phone).addValueEventListener(new ValueEventListener(){
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot){
-                    if(dataSnapshot.exists()) {
-                        Toast.makeText(SignUpActivity.this, phone + " registered already", Toast.LENGTH_LONG).show();
-                    }
-                    else {
-                        // send verifiction to new user name
-                    PhoneAuthProvider.getInstance().verifyPhoneNumber(phone, 60, TimeUnit.SECONDS, TaskExecutors.MAIN_THREAD, mCallbacks);        // OnVerificationStateChangedCallbacks
-                    }
-                }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(SignUpActivity.this, R.string.error_message, Toast.LENGTH_LONG).show();
-            }
-        });
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(phone, 60, TimeUnit.SECONDS, TaskExecutors.MAIN_THREAD, mCallbacks);        // OnVerificationStateChangedCallbacks
     }
 
     // send verification code to the entered number
     PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
         @Override
         public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
-            Toast.makeText(SignUpActivity.this, R.string.verification_code_failed_Too_many_tries, Toast.LENGTH_LONG).show();
+            Toast.makeText(ForgotPasswordActivity.this, R.string.verification_code_failed_Too_many_tries, Toast.LENGTH_LONG).show();
         }
 
         @Override
         public void onVerificationFailed(@NonNull FirebaseException e) {
-            Toast.makeText(SignUpActivity.this, R.string.verification_code_failed_please_try_again, Toast.LENGTH_LONG).show();
+            Toast.makeText(ForgotPasswordActivity.this, R.string.verification_code_failed_please_try_again, Toast.LENGTH_LONG).show();
 
         }
         @Override
         public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
             super.onCodeSent(s, forceResendingToken);
             codeSend = s;
-            Toast.makeText(SignUpActivity.this, R.string.verification_code_sent, Toast.LENGTH_LONG).show();
+            Toast.makeText(ForgotPasswordActivity.this, R.string.verification_code_sent, Toast.LENGTH_LONG).show();
 
         }
     };
@@ -134,14 +109,12 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     }
 
 
-    private void registerUser(){
-        final String name = edtxt_userName.getText().toString().trim();
+    private void signInUser(){
         final String prePhone = edtxt_ccp.getSelectedCountryCode();
         final String phone = "+" + prePhone + edtxt_phoneNumber.getText().toString().trim();
         final String code = edtxt_verifiCode.getText().toString().trim();
         final String pass = this.edtxt_pass.getText().toString().trim();
         final String passCon = this.edtxt_passCon.getText().toString().trim();
-        final String id = edtxt_userId.getText().toString().trim();
 
         // integrity input check
         if(pass.length() < 6){
@@ -169,51 +142,64 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             return;
         }
 
-        if(id.length() != 9)
-        {
-            this.edtxt_userId.setError("Incorrect Id");
-            this.edtxt_userId.requestFocus();
-            return;
-        }
         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(codeSend, code);
-        User user = new User(name, phone, pass, id);
-        signInWithPhoneAuthCredential(credential, user);
+//        User user = new User(name, phone, pass, id);
+        signInWithPhoneAuthCredential(credential, phone);
     }
 
     // sign up user and check if the input code is matched
-    private void signInWithPhoneAuthCredential(PhoneAuthCredential credential, User user) {
+    private void signInWithPhoneAuthCredential(PhoneAuthCredential credential, String phone) {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-                        //matched input code and push user details to db
-                        //get user id
-                        DatabaseReference ref = refUser.push();
-                        userKey = ref.getKey();
-                        ref.setValue(user);
-                        Toast.makeText(SignUpActivity.this, "User registered successfully!", Toast.LENGTH_LONG).show();
-                        // saving the user that registered to local memory.
-                        SharedPreferences.Editor prefEditor = sharedPref.edit();
-                        Gson gson = new Gson();
-                        String json = gson.toJson(user);
-                        prefEditor.putString("currUser", json);
-                        prefEditor.putString("userKey", userKey);
-                        prefEditor.commit();
-                        startActivity(new Intent(SignUpActivity.this, MainActivity.class));
-                        finish();
+                        //set the new password
+                        refUser.child(userKey).child("pass").setValue(edtxt_pass);
+                        //check if the user is registered already and if the phone number exist in db
+                        refUser.orderByChild("phone").equalTo(phone).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                if (dataSnapshot.getValue() != null){
+                                    for(DataSnapshot datas: dataSnapshot.getChildren()) {
+                                        currUser = datas.getValue(User.class);
+                                        userKey = datas.getKey();
+                                    }
+                                    saveCurrUser();
+                                }
+                            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
                     } else {
                         if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                             // The verification code entered was invalid
-                            Toast.makeText(SignUpActivity.this, "Inncorrect Verification Code", Toast.LENGTH_LONG).show();
+                            Toast.makeText(ForgotPasswordActivity.this, "Inncorrect Verification Code", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
     }
 
+    private void saveCurrUser() {
+        //register user phone & password correct
+        SharedPreferences.Editor prefEditor = sharedPref.edit();
+        // convert User object to json and
+        // save the registered user to the local memory
+        Gson gson = new Gson();
+        String json = gson.toJson(currUser);
+        prefEditor.putString("currUser", json);
+        prefEditor.putString("userKey", userKey);
+        prefEditor.commit();
+        startActivity(new Intent(ForgotPasswordActivity.this, MainActivity.class));
+        finish();
+    }
+
     @Override
     public void onClick(android.view.View v) {
         switch (v.getId()){
-            case R.id.btn_SignUpID:
-                registerUser();
+            case R.id.btn_EnterID:
+                signInUser();
                 break;
             case R.id.btn_VerifyID:
                 sendVerificationCode();
