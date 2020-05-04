@@ -140,10 +140,12 @@ public class PackageActivity extends AppCompatActivity{
                                 //send SMS to deliveryman that the delivery was rejected
                             }
                         });
+                        btn_2.setText(" Approve Delivery! ");
                         btn_confirm.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 //Approve delivery
+                                signPOA();
                             }
                         });
                         break;
@@ -244,5 +246,12 @@ public class PackageActivity extends AppCompatActivity{
     private void rejectDeliveryman(String deliverymanKey){
         deleteCurrPackage(user2, deliverymanKey, PACKAGE_LIST_TO_DELIVER);
     }
-
+    private void signPOA(){
+        Intent intent = new Intent(PackageActivity.this, PowerOfAttorney.class);
+        // transfer the selected package as json to packageActivity which will dispaly that package
+        Gson gson = new Gson();
+        String jsonPackage = gson.toJson(pack);
+        intent.putExtra("package", jsonPackage);
+        startActivity(intent);
+    }
 }
