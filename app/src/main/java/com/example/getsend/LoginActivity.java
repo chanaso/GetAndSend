@@ -40,6 +40,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         findViewById(R.id.btn_LogInID).setOnClickListener(this);
         findViewById(R.id.txt_CreateAccountID).setOnClickListener(this);
+        findViewById(R.id.txt_forgotPassID).setOnClickListener(this);
 
         sharedPref = getSharedPreferences("userDetails",MODE_PRIVATE);
         refUser = FirebaseDatabase.getInstance().getReference().child("User");
@@ -113,6 +114,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             case R.id.txt_CreateAccountID:
             {
                 startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
+                finish();
+                break;
+            }
+            case R.id.txt_forgotPassID:
+            {
+                startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class));
                 finish();
                 break;
             }

@@ -1,9 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ForgotPaswwordActivity">
+    android:layout_margin="16dp"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".ForgotPasswordActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <EditText
+        android:id="@+id/edtxt_userNameID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/user_name"
+        android:inputType="textPersonName" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.hbb20.CountryCodePicker
+            android:id="@+id/ccp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="bottom"
+            app:ccpDialog_allowSearch="true"
+            app:ccpDialog_fastScroller_bubbleTextAppearance="@style/TextAppearance.AppCompat.Display1"
+            app:ccpDialog_initialScrollToSelection="true"
+            app:ccpDialog_keyboardAutoPopup="true"
+            app:ccpDialog_showFlag="true"
+            app:ccpDialog_showNameCode="true"
+            app:ccpDialog_showPhoneCode="true"
+            app:ccpDialog_showTitle="true"
+            app:ccp_clickable="true"
+            app:ccp_defaultNameCode="IL"
+            app:ccp_defaultPhoneCode="972"
+            app:ccp_rememberLastSelection="true"
+            app:ccp_showArrow="true"
+            app:ccp_showFlag="true"
+            app:ccp_showFullName="true"
+            app:ccp_showNameCode="true"
+            app:ccp_showPhoneCode="true"
+            app:ccp_textSize="18sp" />
+
+        <EditText
+            android:id="@+id/edtxt_phoneNumberID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/phone_number"
+            android:inputType="phone" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_VerifyID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/get_verification_code" />
+
+    <EditText
+        android:id="@+id/edtxt_verificationCodeID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/verification_code"
+        android:inputType="number" />
+
+    <EditText
+        android:id="@+id/edtxt_passID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberPassword"
+        android:hint="@string/new_password" />
+
+    <EditText
+        android:id="@+id/edtxt_passConID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberPassword"
+        android:hint="@string/confirm_password" />
+
+    <Button
+        android:id="@+id/btn_EnterID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:padding="20dp"
+        android:text="@string/sign_in"
+        android:textSize="18sp" />
+
+</LinearLayout>
