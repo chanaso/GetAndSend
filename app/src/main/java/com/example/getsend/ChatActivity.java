@@ -27,7 +27,8 @@ import java.util.Random;
 
 public class ChatActivity extends AppCompatActivity implements RoomListener {
 
-        // replace this with a real channelID from Scaledrone dashboard
+    private static final String DELIMITER = "@";
+    // replace this with a real channelID from Scaledrone dashboard
         private String channelID = "ifROvUFv1iok6T8b";
         private String prefix = "observable-", contactName, packageId, userKey, roomName;
         private int messageTimeStamp = 0;
@@ -57,7 +58,7 @@ public class ChatActivity extends AppCompatActivity implements RoomListener {
             // store from local memory the current user
             Bundle mBundle = getIntent().getExtras();
             if (mBundle != null) {
-                String[] chatDetails = mBundle.getString("chat").split("@");
+                String[] chatDetails = mBundle.getString("chat").split(DELIMITER);
                 contactName = chatDetails[0];
                 packageId = chatDetails[1];
                 getIntent().removeExtra("showMessage");
@@ -104,15 +105,16 @@ public class ChatActivity extends AppCompatActivity implements RoomListener {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot datas : dataSnapshot.getChildren()){
                     if(datas.exists()){
-                        if(datas.getKey().split("@")[0].equals(userKey)){
+                        if(datas.getKey().split(DELIMITER)[0].equals(userKey)){
                             final Message message = new Message(datas.getValue().toString(), data, true);
                             messageAdapter.add(message);
                             messageAdapter.notifyDataSetChanged();
-                            messageTimeStamp = Integer.parseInt(datas.getKey().split("@")[1])+1;
+                            messageTimeStamp = Integer.parseInt(datas.getKey().split(DELIMITER)[1])+1;
                         }else {
                             final Message message = new Message(datas.getValue().toString(), data, false);
                             messageAdapter.add(message);
                             messageAdapter.notifyDataSetChanged();
+                            messageTimeStamp = Integer.parseInt(datas.getKey().split(DELIMITER)[1])+1;
                         }
                     }
                 }
@@ -130,7 +132,11 @@ public class ChatActivity extends AppCompatActivity implements RoomListener {
             String message = editText.getText().toString();
             if (message.length() > 0) {
                 scaledrone.publish(roomName, message);
-                refChat.child(roomName).child(userKey+"@"+messageTimeStamp).setValue(message);
+
+                // Firebase Database keys are strings ordered lexicographically,
+                // therefor used format that the key will be ordered by the timestamp value.
+                String sameLenght = String.format("%05d", messageTimeStamp); // 0 fill to 5 digits num
+                refChat.child(roomName).child(userKey + DELIMITER + sameLenght).setValue(message);
                 messageTimeStamp+=1;
                 editText.getText().clear();
             }
