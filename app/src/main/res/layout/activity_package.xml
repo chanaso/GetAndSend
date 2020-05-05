@@ -214,19 +214,21 @@
 
         <Button
             android:id="@+id/btn_1"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:padding="5dp"
-            android:background="@color/ColorLightBlue"
-            android:layout_margin="7dp"/>
+            android:background="@drawable/round_button"
+            android:layout_margin="7dp"
+            android:layout_weight="1"/>
 
         <Button
             android:id="@+id/btn_2"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
-            android:background="@color/ColorLightBlue"
-            android:padding="5dp" />
+            android:background="@drawable/round_button"
+            android:padding="5dp"
+            android:layout_weight="1"/>
         </LinearLayout>
 
         <LinearLayout
@@ -238,11 +240,12 @@
 
             <Button
                 android:id="@+id/btn_confirm"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
-                android:background="@color/ColorPrimaryLight"
-                android:layout_margin="2dp"/>
+                android:background="@drawable/round_button"
+                android:layout_margin="2dp"
+                android:layout_weight="1"/>
 
         </LinearLayout>
 
