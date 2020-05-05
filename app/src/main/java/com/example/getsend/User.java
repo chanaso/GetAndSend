@@ -112,7 +112,7 @@ public class User {
                     if(dataSnapshot.hasChild(packageType)){
                         String userPackages = dataSnapshot.child(packageType).getValue().toString();
                         //set the previous keys - the package key
-                        userPackages = userPackages.replace(" "+packageKey+" "," ");
+                        userPackages = userPackages.replace(packageKey+" "," ");
                         refUser.child(userKey).child(packageType).setValue(userPackages);
                     }
                 }
