@@ -125,7 +125,7 @@ public class PackageActivity extends AppCompatActivity{
                                 //Reject delivery
                                 rejectDeliveryman(pack.getDeliveryman());
                                 //send SMS to deliveryman that the delivery rejected
-                                sendSms(user2.getPhone(), user2.getName() + " Deliveryman,\nPackage number: "+pack.getLocation()+"-"+pack.getPackageId()+" Is not longer relevant.\n Get And Send");
+                                sendSms(user2.getPhone(), user2.getName() + " Deliveryman,\nPackage number: "+pack.getLocation()+"-"+pack.getPackageId()+" Rejected by the owner.\n Get And Send");
                             }
                         });
                         btn_confirm.setText(" Approve Delivery! ");
