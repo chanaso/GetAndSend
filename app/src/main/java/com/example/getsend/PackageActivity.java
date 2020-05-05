@@ -139,6 +139,7 @@ public class PackageActivity extends AppCompatActivity{
                             @Override
                             public void onClick(View v) {
                                 //Open chat
+                                openChat();
                             }
                         });
                         btn_confirm.setText(" Delivery Confirmation ");
@@ -201,19 +202,15 @@ public class PackageActivity extends AppCompatActivity{
                             }
                         });
                         btn_2.setText(" Open chat ");
-                        btn_2.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                //Open chat
-                            }
+                        btn_2.setOnClickListener(v -> {
+                            //Open chat
+                            openChat();
+
                         });
                         btn_confirm.setText(" Delivery Confirmation ");
-                        btn_confirm.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                //Delivery confirmation
-                                Toast.makeText(PackageActivity.this, "The owner didn't confirm the arrival yet", Toast.LENGTH_LONG).show();
-                            }
+                        btn_confirm.setOnClickListener(v -> {
+                            //Delivery confirmation
+                            Toast.makeText(PackageActivity.this, "The owner didn't confirm the arrival yet", Toast.LENGTH_LONG).show();
                         });
                         break;
                     case "Arrived :)":
@@ -232,6 +229,14 @@ public class PackageActivity extends AppCompatActivity{
                 }
              }
     }
+
+    private void openChat() {
+        String chatDetails = user2.getName() +"@"+ packKey;
+        Intent intent = new Intent(PackageActivity.this, ChatActivity.class);
+        intent.putExtra("chat", chatDetails);
+        startActivity(intent);
+    }
+
     private void saveUser2() {
         //register user phone & password correct
         SharedPreferences.Editor prefEditor = sharedPref.edit();
