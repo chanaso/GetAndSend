@@ -88,7 +88,7 @@ public class NavbarPackagesActivity extends AppCompatActivity {
             listView_packages.setAdapter(mAdapter);
             for (String index : userPackagesIdList) {
                 if (!index.equals("")) {
-                    refPackage.child(index).addListenerForSingleValueEvent(new ValueEventListener() {
+                    refPackage.child(index).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.exists()) {

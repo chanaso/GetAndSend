@@ -41,7 +41,6 @@ public class PickedPackagesListActivity extends AppCompatActivity {
         Bundle mBundle = getIntent().getExtras();
         if (mBundle != null) {
             pickedPackageLocation = mBundle.getString("packageLocation");
-//            Toast.makeText(PickedPackagesListActivity.this, pickedPackageLocation+"\n[35.1986715, 31.776654]",Toast.LENGTH_LONG).show();
             displayPackages(pickedPackageLocation);
             getIntent().removeExtra("showMessage");
         }

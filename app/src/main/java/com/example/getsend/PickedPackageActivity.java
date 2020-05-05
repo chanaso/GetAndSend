@@ -129,9 +129,9 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
             SmsManager smsManager = SmsManager.getDefault();
             smsManager.sendTextMessage(packageOwnerPhone, null,"Hi,\n" + currUser.getName() +" deliveryman wants to take your package number: "+ packageId+"\nplease enter GetAndSend app and confirm the delivery!",null , null);
             smsManager.sendTextMessage(packageOwnerPhone, null, "Deliveryman Note: " + edtxt_deliverymanNote.getText().toString(),null , null);
-            Toast.makeText(PickedPackageActivity.this, "SMS send successfully", Toast.LENGTH_LONG).show();
+            Toast.makeText(PickedPackageActivity.this, R.string.sms_send, Toast.LENGTH_LONG).show();
         }else {
-            Toast.makeText(PickedPackageActivity.this, "SMS did not sended to the package owner", Toast.LENGTH_LONG).show();
+            Toast.makeText(PickedPackageActivity.this, R.string.sms_did_not_send, Toast.LENGTH_LONG).show();
         }
 
     }

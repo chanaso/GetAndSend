@@ -1,14 +1,19 @@
 package com.example.getsend;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -18,7 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
 public class PackageActivity extends AppCompatActivity{
-    private final String MY_PACKAGE_LIST = "myPackages", PACKAGE_LIST_TO_DELIVER = "packagesToDeliver";
+    private final String MY_PACKAGE_LIST = "myPackages", PACKAGE_LIST_TO_DELIVER = "packagesToDeliver", DELIMITER = "@";
     private final int OWNER = 1, DELIVERYMAN = 0;
     private TextView edtxt_Size, edtxt_Weight, edtxt_Location, edtxt_Destination, edtxt_delivery, edtxt_Status, edtxt_PackageId;
     private Package pack;
@@ -27,12 +32,15 @@ public class PackageActivity extends AppCompatActivity{
     private SharedPreferences sharedPref;
     private String userKey, packKey, profileView, user2Key, user2Name, user2Rate, user2Id;
     private DatabaseReference refPackage, refUser;
+    private static final int SEND_SMS_PERMISSION_REQUEST_CODE = 1;
 
     @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_package);
 
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, SEND_SMS_PERMISSION_REQUEST_CODE);
             refPackage = FirebaseDatabase.getInstance().getReference().child("Package");
             refUser = FirebaseDatabase.getInstance().getReference().child("User");
 
@@ -96,23 +104,19 @@ public class PackageActivity extends AppCompatActivity{
                         btn_1.setVisibility(View.INVISIBLE);
                         btn_2.setVisibility(View.INVISIBLE);
                         btn_confirm.setText("Delete Package");
-                        btn_confirm.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                //Delete package option
-                                deleteCurrPackage(currUser, userKey, MY_PACKAGE_LIST);
-                                Toast.makeText(PackageActivity.this, R.string.delete_package, Toast.LENGTH_LONG).show();
-                            }
+                        btn_confirm.setOnClickListener(v -> {
+                            //Delete package option
+                            deleteCurrPackage(currUser, userKey, MY_PACKAGE_LIST);
+                            Toast.makeText(PackageActivity.this, R.string.delete_package, Toast.LENGTH_LONG).show();
+                            startActivity(new Intent(PackageActivity.this, NavbarPackagesActivity.class));
+                            finish();
                         });
                         break;
                     case "Waiting for approval":
                         btn_1.setText("View Deliveryman Details");
-                        btn_1.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                //View deliveryman details
-                                viewUserDetails(pack.getDeliveryman());
-                            }
+                        btn_1.setOnClickListener(v -> {
+                            //View deliveryman details
+                            viewUserDetails(pack.getDeliveryman());
                         });
                         btn_2.setText("Reject Deliveryman");
                         btn_2.setOnClickListener(new View.OnClickListener() {
@@ -120,8 +124,8 @@ public class PackageActivity extends AppCompatActivity{
                             public void onClick(View v) {
                                 //Reject delivery
                                 rejectDeliveryman(pack.getDeliveryman());
-                                //ToDo
-                                //send SMS to deliveryman that the delivery was rejected
+                                //send SMS to deliveryman that the delivery rejected
+                                sendSms(user2.getPhone(), user2.getName() + " Deliveryman,\nPackage number: "+pack.getLocation()+"-"+pack.getPackageId()+" Is not longer relevant.\n Get And Send");
                             }
                         });
                         btn_confirm.setText(" Approve Delivery! ");
@@ -230,9 +234,24 @@ public class PackageActivity extends AppCompatActivity{
                 }
              }
     }
+    public void sendSms(String phone, String message) {
+        if(checkPermission(Manifest.permission.SEND_SMS)){
+            SmsManager smsManager = SmsManager.getDefault();
+            smsManager.sendTextMessage(phone, null,message,null , null);
+            Toast.makeText(PackageActivity.this, R.string.sms_send, Toast.LENGTH_LONG).show();
+        }else {
+            Toast.makeText(PackageActivity.this, R.string.sms_did_not_send, Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+    public boolean checkPermission(String permission){
+        int check = ContextCompat.checkSelfPermission(this, permission);
+        return (check == PackageManager.PERMISSION_GRANTED);
+    }
 
     private void openChat() {
-        String chatDetails = user2.getName() +"@"+ packKey;
+        String chatDetails = user2.getName() +DELIMITER+ packKey;
         Intent intent = new Intent(PackageActivity.this, ChatActivity.class);
         intent.putExtra("chat", chatDetails);
         startActivity(intent);
@@ -264,7 +283,7 @@ public class PackageActivity extends AppCompatActivity{
         Gson gson = new Gson();
         String json = sharedPref.getString("user2", "");
         user2 = gson.fromJson(json, User.class);
-        profileView = user2.getName() +"@"+ user2.getRate();
+        profileView = user2.getName() +DELIMITER+ user2.getRate();
         Intent intent = new Intent(PackageActivity.this, UserProfileViewActivity.class);
         intent.putExtra("profileView", profileView);
         startActivity(intent);
@@ -284,7 +303,7 @@ public class PackageActivity extends AppCompatActivity{
     private void rateUser(User user, String userKey){
         Intent intent = new Intent(PackageActivity.this, RateUserViewActivity.class);
         // transfer the selected user as json to packageActivity which will dispaly that package
-        String userDetails = user.getName()+"@"+ userKey + "@" + user.getRate() + "@" + user.getNumOfRates();
+        String userDetails = user.getName()+DELIMITER+ userKey + DELIMITER + user.getRate() + DELIMITER + user.getNumOfRates();
         intent.putExtra("userToRate", userDetails);
         startActivity(intent);
     }
