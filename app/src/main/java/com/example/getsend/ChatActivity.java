@@ -5,15 +5,20 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.scaledrone.lib.Listener;
-import com.scaledrone.lib.Member;
 import com.scaledrone.lib.Room;
 import com.scaledrone.lib.RoomListener;
 import com.scaledrone.lib.Scaledrone;
@@ -24,18 +29,29 @@ public class ChatActivity extends AppCompatActivity implements RoomListener {
 
         // replace this with a real channelID from Scaledrone dashboard
         private String channelID = "ifROvUFv1iok6T8b";
-        private String prefix = "observable-", contactName, packageId, roomName = "observable-room";
+        private String prefix = "observable-", contactName, packageId, userKey, roomName;
+        private int messageTimeStamp = 0;
+        private User currUser;
         private EditText editText;
         private Scaledrone scaledrone;
         private MessageAdapter messageAdapter;
         private ListView messagesView;
         private SharedPreferences sharedPref;
+        DatabaseReference refChat;
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_chat);
+            // store from local memory the current user
             sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
+            Gson gson = new Gson();
+            String json = sharedPref.getString("currUser", "");
+            currUser = gson.fromJson(json, User.class);
+            userKey = sharedPref.getString("userKey", "");
+
+            refChat = FirebaseDatabase.getInstance().getReference().child("ChatRooms");
+
 
             //getting the current username from the sp
             // store from local memory the current user
@@ -54,6 +70,7 @@ public class ChatActivity extends AppCompatActivity implements RoomListener {
             messagesView.setAdapter(messageAdapter);
 
             MemberData data = new MemberData(getRandomName(), getRandomColor());
+            retrieveChatHistory(data);
 
             scaledrone = new Scaledrone(channelID, data);
             scaledrone.connect(new Listener() {
@@ -80,10 +97,41 @@ public class ChatActivity extends AppCompatActivity implements RoomListener {
             });
         }
 
-        public void sendMessage(View view) {
+    private void retrieveChatHistory(MemberData data) {
+        // retrieve chat history from db
+        refChat.child(roomName).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot datas : dataSnapshot.getChildren()){
+                    if(datas.exists()){
+                        if(datas.getKey().split("@")[0].equals(userKey)){
+                            final Message message = new Message(datas.getValue().toString(), data, true);
+                            messageAdapter.add(message);
+                            messageAdapter.notifyDataSetChanged();
+                            messageTimeStamp = Integer.parseInt(datas.getKey().split("@")[1])+1;
+                        }else {
+                            final Message message = new Message(datas.getValue().toString(), data, false);
+                            messageAdapter.add(message);
+                            messageAdapter.notifyDataSetChanged();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+
+        });
+    }
+
+    public void sendMessage(View view) {
             String message = editText.getText().toString();
             if (message.length() > 0) {
                 scaledrone.publish(roomName, message);
+                refChat.child(roomName).child(userKey+"@"+messageTimeStamp).setValue(message);
+                messageTimeStamp+=1;
                 editText.getText().clear();
             }
         }

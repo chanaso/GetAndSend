@@ -45,9 +45,8 @@ import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener, PermissionsListener, NavigationView.OnNavigationItemSelectedListener
 {
-    private static final int USER_TYPE_DELIVERYMAN = 0;
-    private static final int USER_TYPE_DELIVERY_GETTER = 1;
 
+    private final int OWNER = 1, DELIVERYMAN = 0;
     private PermissionsManager permissionsManager;
     private MapboxMap mapboxMap;
     private MapView mapView;
@@ -272,15 +271,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 startActivity(new Intent(MainActivity.this, ProfileActivity.class));
                 break;
             case R.id.nav_myPackeges:
-                if(currUser.getType() != USER_TYPE_DELIVERY_GETTER){
-                    userTypeUpdate(USER_TYPE_DELIVERY_GETTER);
+                if(currUser.getType() != OWNER){
+                    userTypeUpdate(OWNER);
                     updateCurrUserInSP();
                 }
                 startActivity(new Intent(MainActivity.this, NavbarPackagesActivity.class));
                 break;
             case R.id.nav_packegesToDeliver:
-                if(currUser.getType() != USER_TYPE_DELIVERYMAN){
-                    userTypeUpdate(USER_TYPE_DELIVERYMAN);
+                if(currUser.getType() != DELIVERYMAN){
+                    userTypeUpdate(DELIVERYMAN);
                     updateCurrUserInSP();
                 }
                 startActivity(new Intent(MainActivity.this, NavbarPackagesActivity.class));
