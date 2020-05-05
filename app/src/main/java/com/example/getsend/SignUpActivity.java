@@ -88,7 +88,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         }
 
         //  check if the user exist in the db
-            refUser.orderByChild("phone").equalTo(phone).addValueEventListener(new ValueEventListener(){
+            refUser.orderByChild("phone").equalTo(phone).addListenerForSingleValueEvent(new ValueEventListener(){
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot){
                     if(dataSnapshot.exists()) {

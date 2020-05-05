@@ -101,6 +101,9 @@ public class PackageActivity extends AppCompatActivity{
                             public void onClick(View v) {
                                 //Delete package option
                                 deleteCurrPackage(currUser, userKey, MY_PACKAGE_LIST);
+                                Toast.makeText(PackageActivity.this, "Package deleted successfully", Toast.LENGTH_LONG).show();
+                                startActivity(new Intent(PackageActivity.this, LoginActivity.class));
+                                finish();
                             }
                         });
                         break;
