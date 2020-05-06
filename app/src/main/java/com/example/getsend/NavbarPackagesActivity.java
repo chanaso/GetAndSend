@@ -96,7 +96,7 @@ public class NavbarPackagesActivity extends AppCompatActivity {
                                 Package pack = dataSnapshot.getValue(Package.class);
                                 packagesOfCurrUser.add(pack);
                                 packagesKeysOfCurrUser.add(dataSnapshot.getKey());
-                                userPackagesList.add(pack.getPackageId() + " " + pack.getLocation() + "\n\n ** " + pack.getStatus() + " **");
+                                userPackagesList.add(pack.getPackageId() + " " + pack.getLocation() + "\n\n   " + pack.getStatus() + "   ");
                                 mAdapter.notifyDataSetChanged();
                             }
                         }

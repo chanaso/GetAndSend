@@ -28,16 +28,16 @@ import com.google.gson.Gson;
 
 public class PickedPackageActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private String location, packageId, userKey, userName, userPhone, packKey, packageOwnerPhone, packageOwnerId, profileView;
+    private String location, packageId, userKey, userName, userPhone, packKey, packageOwnerPhone, packageOwnerId, packageOwnerRate, profileView, packageOwnerName;
     private static final String PACKAGE_STATUS_IN_PROCCESS = "Waiting for approval", DELIMITER = "@";
     private static final int SEND_SMS_PERMISSION_REQUEST_CODE = 1;
 
-    private User currUser, user2;
+    private User currUser;
     private TextView edtxt_Size, edtxt_Weight, edtxt_Location, edtxt_Destination, edtxt_PackageId, edtxt_packageOwner;
     private EditText edtxt_deliverymanNote;
     private Button btn_confirmDelivery, btn_view_profile;
     private SharedPreferences sharedPref;
-    private DatabaseReference refPackage, refUser;
+    private DatabaseReference refPackage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,24 +71,7 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
         currUser = gson.fromJson(json, User.class);
         userKey = sharedPref.getString("userKey", "");
 
-        refUser = FirebaseDatabase.getInstance().getReference().child("User");
-
-        refUser.child(packageId.getPackageOwnerId()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    user2 = dataSnapshot.getValue(User.class);
-                    saveUser2();
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(PickedPackageActivity.this, R.string.error_message, Toast.LENGTH_LONG).show();
-            }
-        });
-
         refPackage = FirebaseDatabase.getInstance().getReference().child("Package");
-
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, SEND_SMS_PERMISSION_REQUEST_CODE);
 
         setTxtViews();
@@ -119,7 +102,9 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
                                     if (dataSnapshot.exists()) {
                                         User user = dataSnapshot.getValue(User.class);
                                         packageOwnerPhone = user.getPhone();
-                                        edtxt_packageOwner.setText(user.getName());
+                                        packageOwnerRate = String.valueOf(user.getRate());
+                                        packageOwnerName = user.getName();
+                                        edtxt_packageOwner.setText(packageOwnerName);
                                     }
                                 }
 
@@ -193,10 +178,7 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
             }
             case R.id.btn_viewPofile:
             {
-                Gson gson = new Gson();
-                String json = sharedPref.getString("user2", "");
-                user2 = gson.fromJson(json, User.class);
-                profileView = user2.getName() +DELIMITER+ user2.getRate();
+                profileView = packageOwnerName +DELIMITER+ packageOwnerRate;
                 Intent intent = new Intent(PickedPackageActivity.this, UserProfileViewActivity.class);
                 intent.putExtra("profileView", profileView);
                 startActivity(intent);
@@ -205,16 +187,7 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
 
         }
 
-    }
-    private void saveUser2() {
-        //register user phone & password correct
-        SharedPreferences.Editor prefEditor = sharedPref.edit();
-        // save user to the local memory
-        Gson gson = new Gson();
-        String json = gson.toJson(user2);
-        prefEditor.putString("user2", json);
-        prefEditor.commit();
-    }
+        }
 
 
 }
