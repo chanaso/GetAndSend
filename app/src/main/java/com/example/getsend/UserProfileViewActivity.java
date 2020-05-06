@@ -1,20 +1,16 @@
 package com.example.getsend;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class UserProfileViewActivity extends AppCompatActivity {
 
     private TextView edtxt_name, edtxt_rate;
-    private Button btn_close;
+    private ImageButton btn_close;
     private String[] profileViewDetails;
     private final String DELIMITER = "@";
     private RatingBar ratingBar;

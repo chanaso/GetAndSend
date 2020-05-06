@@ -27,7 +27,8 @@
                 android:padding="10dp"
                 android:text="@string/confirm_delivery"
                 android:textColor="#000000"
-                android:textSize="22dp" />
+                android:textSize="22dp"
+                android:textStyle="bold"/>
         </LinearLayout>
 
         <LinearLayout
@@ -214,8 +215,31 @@
                 android:background="@drawable/text_input_border"
                 android:textColor="#000000"
                 android:hint="Enter your note to the package owner"
-                android:textSize="17sp" />
+                android:textSize="17sp"
+                android:padding="10dp" />
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <Button
+                android:id="@+id/btn_viewPofile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="confirm delivery"
+                android:textColor="#000000"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                android:visibility="visible"
+                android:layout_margin="5dp"
+                android:padding="15dp"
+                android:background="@drawable/yellow_button" />
+        </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -228,11 +252,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="confirm delivery"
-            android:background="#A5E3F4"
             android:textColor="#000000"
             android:textSize="15dp"
             android:textStyle="bold"
-            android:visibility="visible" />
+            android:visibility="visible"
+            android:layout_margin="5dp"
+            android:background="@drawable/round_button" />
     </LinearLayout>
     </LinearLayout>
 

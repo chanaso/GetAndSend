@@ -29,7 +29,9 @@
             android:layout_marginTop="10dp"
             android:listSelector="#A5E3F4"
             android:textDirection="locale"
-            android:background="@drawable/back" />
+            android:background="@drawable/back"
+            android:gravity="center"
+            />
     </LinearLayout>
 
 </RelativeLayout>

@@ -227,15 +227,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapView.onLowMemory();
     }
 
-    //handle back button on the device
+    //handle device back button
     @Override
     public void onBackPressed() {
         // add confirmation dialog
         new AlertDialog.Builder(this)
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .setTitle("Exit Demo App")
-                .setMessage("Are you sure you want to exit?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                .setIcon(R.drawable.ic_sentiment)
+                .setTitle(R.string.exit_title)
+                .setMessage(R.string.exit_message)
+                .setPositiveButton("לצאת", new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -243,7 +243,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
 
                 })
-                .setNegativeButton("No", null)
+                .setNegativeButton("להישאר", null)
                 .show();
 
     }

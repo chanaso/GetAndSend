@@ -296,6 +296,7 @@ public class PackageActivity extends AppCompatActivity{
     }
     private void rejectDeliveryman(String deliverymanKey){
         user2.deletePackage(deliverymanKey, packKey, PACKAGE_LIST_TO_DELIVER);
+        refPackage.child(packKey).child("deliveryman").setValue("");
     }
     private void signPOA(){
         Intent intent = new Intent(PackageActivity.this, PowerOfAttorney.class);
@@ -323,6 +324,13 @@ public class PackageActivity extends AppCompatActivity{
         intent.putExtra("package", jsonPackage);
         intent.putExtra("packageKey", packKey);
         startActivity(intent);
+    }
+
+    //handle device back button
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(PackageActivity.this, NavbarPackagesActivity.class));
+        finish();
     }
 
 }

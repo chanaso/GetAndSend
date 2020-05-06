@@ -56,7 +56,7 @@
     <string name="poa_content_7">חתימת הנמען: </string>
 
 
-    packageActivity
+    <!--    packageActivity-->
     <string name="btn_confirm_delivery">Confirm Delivery</string>
     <string name="delete_packge">Delete package</string>
     <string name="view_profile">View Deliveryman Porfile</string>
@@ -93,6 +93,10 @@
     <string name="reject_package">Delivery was rejected</string>
     <string name="sms_send">SMS send successfully</string>
     <string name="sms_did_not_send">SMS did not send</string>
+
+    <!--    MainActivity exit dialog-->
+    <string name="exit_title">יציאה</string>
+    <string name="exit_message">אתה בטוח שברצונך לצאת מהאפליקציה?</string>
 
 
 </resources>

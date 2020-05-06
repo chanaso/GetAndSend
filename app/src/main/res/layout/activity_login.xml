@@ -85,13 +85,13 @@
         android:layout_width="130dp"
         android:layout_height="50dp"
         android:layout_gravity="center"
-        android:layout_margin="10dp"
-        android:background="?attr/colorControlHighlight"
+        android:layout_margin="15dp"
         android:clickable="true"
         android:gravity="center"
         android:padding="12dp"
         android:text="SIGN IN"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:background="@drawable/natural_round_button"/>
 
     <TextView
         android:id="@+id/txt_CreateAccountID"

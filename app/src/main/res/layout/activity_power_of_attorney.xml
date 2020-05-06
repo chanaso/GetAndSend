@@ -16,7 +16,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:background="@color/ColorLightBlue"
             android:theme="@style/AppTheme"
             app:popupTheme="@style/AppTheme"
             android:gravity="center"
@@ -78,7 +78,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/hint_sign"
                 android:padding="5dp"
-                android:background="@color/ColorPrimary"
+                android:background="@color/ColorLightBlue"
                 android:layout_margin="7dp"/>
 
             <Button
@@ -86,7 +86,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="12dp"
-                android:background="@color/ColorPrimaryDark"
+                android:background="@color/ColorPrimary"
                 android:padding="5dp"
                 android:text="Confirm" />
 

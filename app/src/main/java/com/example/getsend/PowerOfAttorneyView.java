@@ -36,7 +36,7 @@ public class PowerOfAttorneyView extends AppCompatActivity {
     private StorageReference signatureRef;
     private SimpleDateFormat dateFormat;
     private Date todayDate;
-    private User currUser;
+    private User currUser, user2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +53,8 @@ public class PowerOfAttorneyView extends AppCompatActivity {
         String json = sharedPref.getString("currUser", "");
         currUser = gson.fromJson(json, User.class);
         userKey = sharedPref.getString("userKey", "");
+        json = sharedPref.getString("user2", "");
+        user2 = gson.fromJson(json, User.class);
 
         //get current package from previous activity
         Bundle mBundle = getIntent().getExtras();
@@ -73,9 +75,9 @@ public class PowerOfAttorneyView extends AppCompatActivity {
         todayDate = Calendar.getInstance().getTime();
         dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         todayString = dateFormat.format(todayDate);
-//        ToDo
-//        poa_content = getString(R.string.poa_content_1) + " " + currUser.getName() + " \n" + getString(R.string.poa_content_2) + " " + currUser.getId() + "\n"+ getString(R.string.poa_content_3) + " " +packageId + "\n"+ getString(R.string.poa_content_4)+ " " +ownerName + "\n"+getString(R.string.poa_content_5) + " " +ownerId + "\n"+getString(R.string.poa_content_6) + " " +todayString+"\n"+getString(R.string.poa_content_7);
-//        power_of_attorney_content.setText(poa_content);
+
+        poa_content = getString(R.string.poa_content_1) + " " + currUser.getName() + " \n" + getString(R.string.poa_content_2) + " " + currUser.getId() + "\n"+ getString(R.string.poa_content_3) + " " + pack.getPackageId() + "\n"+ getString(R.string.poa_content_4)+ " " + user2.getName() + "\n"+getString(R.string.poa_content_5) + " " + user2.getId() + "\n"+getString(R.string.poa_content_6) + " " +todayString+"\n"+getString(R.string.poa_content_7);
+        power_of_attorney_content.setText(poa_content);
 
         signatureRef = FirebaseStorage.getInstance().getReference("Signatures/"+ packageOwnerKey + ".JPEG");
         signatureRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {

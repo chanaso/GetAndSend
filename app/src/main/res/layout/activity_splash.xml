@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Get and Send"
+        android:text="Get &amp; Send"
         android:textColor="#2196F3"
         android:textSize="36sp"
         android:textStyle="bold"/>

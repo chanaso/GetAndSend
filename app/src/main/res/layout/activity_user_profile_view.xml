@@ -18,16 +18,16 @@
             android:background="@color/ColorOldlace"
             android:orientation="vertical">
 
-            <Button
+            <ImageButton
                 android:id="@+id/btn_closeID"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:background="@color/ColorOldlace"
-                android:text="X"
-                android:textStyle="bold" />
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:src="@drawable/ic_exit"
+                android:layout_margin="10dp"
+                android:background = "@color/ColorOldlace" />
 
             <ImageView
-                android:layout_width="150dp"
+                android:layout_width="110dp"
                 android:layout_height="0dp"
                 android:layout_gravity="center"
                 android:layout_weight="1"
@@ -47,15 +47,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:textSize="25sp"
-                android:textStyle="bold" />
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:layout_margin="15dp"/>
 
             <TextView
                 android:id="@+id/edtxt_rateID"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:textSize="15sp" />
+                android:textSize="25sp"
+                android:layout_margin="15dp"/>
 
             <RatingBar
                 android:id="@+id/ratingBar_viewID"
@@ -63,7 +65,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:progressTint="#000" />
+                android:progressTint="#000"
+                android:layout_margin="10dp"/>
 
         </LinearLayout>
     </LinearLayout>
