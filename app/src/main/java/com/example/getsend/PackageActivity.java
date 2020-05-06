@@ -198,7 +198,7 @@ public class PackageActivity extends AppCompatActivity{
                         btn_confirm.setVisibility(View.INVISIBLE);
                         break;
                     case "On the way...":
-                        btn_2.setText("View Package Power Of Attorney");
+                        btn_1.setText("View Package Power Of Attorney");
                         btn_1.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -289,7 +289,7 @@ public class PackageActivity extends AppCompatActivity{
         startActivity(intent);
     }
     private void rejectDeliveryman(String deliverymanKey){
-        deleteCurrPackage(user2, deliverymanKey, PACKAGE_LIST_TO_DELIVER);
+        user2.deletePackage(deliverymanKey, packKey, PACKAGE_LIST_TO_DELIVER);
     }
     private void signPOA(){
         Intent intent = new Intent(PackageActivity.this, PowerOfAttorney.class);
