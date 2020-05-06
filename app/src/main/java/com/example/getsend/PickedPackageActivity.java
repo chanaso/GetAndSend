@@ -76,6 +76,7 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
 
         setTxtViews();
         btn_confirmDelivery.setOnClickListener(this);
+        btn_view_profile.setOnClickListener(this);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
