@@ -105,16 +105,16 @@ public class ChatActivity extends AppCompatActivity implements RoomListener {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot datas : dataSnapshot.getChildren()){
                     if(datas.exists()){
-                        if(datas.getKey().split(DELIMITER)[0].equals(userKey)){
+                        if(datas.getKey().split(DELIMITER)[1].equals(userKey)){
                             final Message message = new Message(datas.getValue().toString(), data, true);
                             messageAdapter.add(message);
                             messageAdapter.notifyDataSetChanged();
-                            messageTimeStamp = Integer.parseInt(datas.getKey().split(DELIMITER)[1])+1;
+                            messageTimeStamp = Integer.parseInt(datas.getKey().split(DELIMITER)[0])+1;
                         }else {
                             final Message message = new Message(datas.getValue().toString(), data, false);
                             messageAdapter.add(message);
                             messageAdapter.notifyDataSetChanged();
-                            messageTimeStamp = Integer.parseInt(datas.getKey().split(DELIMITER)[1])+1;
+                            messageTimeStamp = Integer.parseInt(datas.getKey().split(DELIMITER)[0])+1;
                         }
                     }
                 }
@@ -136,7 +136,7 @@ public class ChatActivity extends AppCompatActivity implements RoomListener {
                 // Firebase Database keys are strings ordered lexicographically,
                 // therefor used format that the key will be ordered by the timestamp value.
                 String sameLenght = String.format("%05d", messageTimeStamp); // 0 fill to 5 digits num
-                refChat.child(roomName).child(userKey + DELIMITER + sameLenght).setValue(message);
+                refChat.child(roomName).child(sameLenght + DELIMITER + userKey).setValue(message);
                 messageTimeStamp+=1;
                 editText.getText().clear();
             }

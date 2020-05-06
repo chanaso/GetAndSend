@@ -50,7 +50,6 @@ public class PickedPackagesListActivity extends AppCompatActivity {
                 Intent intent = new Intent(PickedPackagesListActivity.this, PickedPackageActivity.class);
                 // transfer the selected package as json to packageActivity which will dispaly that package
                 String pickedPackage = listView_pickedPackages.getItemAtPosition(0).toString().split("~")[1] +"@"+ listView_pickedPackages.getItemAtPosition(i).toString();
-                Toast.makeText(PickedPackagesListActivity.this, pickedPackage, Toast.LENGTH_LONG).show();
                 intent.putExtra("pickedPackage", pickedPackage);
                 startActivity(intent);
                 finish();

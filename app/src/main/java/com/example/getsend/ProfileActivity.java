@@ -41,8 +41,6 @@ public class ProfileActivity extends AppCompatActivity {
         edtRate.setText(String.valueOf(currUser.getRate()));
 
         ratingBar = findViewById(R.id.ratingBar_profileID);
-        if(currUser.getRate() != 0.0) {
-            ratingBar.setRating((float)currUser.getRate());
-        }
+        ratingBar.setRating((float)currUser.getRate());
     }
 }

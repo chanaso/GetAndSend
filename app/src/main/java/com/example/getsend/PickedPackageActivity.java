@@ -162,7 +162,7 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
         refPackage.child(packKey).child("deliveryman").setValue(userKey);
         refPackage.child(packKey).child("status").setValue(PACKAGE_STATUS_IN_PROCCESS);
 
-        // send sms too package owner that theres a deliverman
+        // send sms too package owner that there's a deliveryman
         sendSms();
         // add package to the deliveryMan packages
         currUser.setPackagesToDeliver(packKey, userKey);
