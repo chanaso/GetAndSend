@@ -28,17 +28,16 @@ import com.google.gson.Gson;
 
 public class PickedPackageActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private String location, packageId, userKey, userName, userPhone, packKey, packageOwnerPhone, packageOwnerId;
-    private static final String PACKAGE_STATUS_IN_PROCCESS = "Waiting for approval";
-//    private String location, packageId, userKey, packKey, packageOwnerPhone, packageOwnerId;
+    private String location, packageId, userKey, userName, userPhone, packKey, packageOwnerPhone, packageOwnerId, profileView;
+    private static final String PACKAGE_STATUS_IN_PROCCESS = "Waiting for approval", DELIMITER = "@";
     private static final int SEND_SMS_PERMISSION_REQUEST_CODE = 1;
 
-    private User currUser;
+    private User currUser, user2;
     private TextView edtxt_Size, edtxt_Weight, edtxt_Location, edtxt_Destination, edtxt_PackageId, edtxt_packageOwner;
     private EditText edtxt_deliverymanNote;
-    private Button btn_confirmDelivery;
+    private Button btn_confirmDelivery, btn_view_profile;
     private SharedPreferences sharedPref;
-    private DatabaseReference refPackage;
+    private DatabaseReference refPackage, refUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +60,7 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
         edtxt_Weight = findViewById(R.id.edtxt_WeightID);
         edtxt_Destination = findViewById(R.id.edtxt_DestinationID);
         btn_confirmDelivery = findViewById(R.id.btn_confirmDeliveryID);
+        btn_view_profile = findViewById(R.id.btn_viewPofile);
         edtxt_packageOwner = findViewById(R.id.edtxt_packageOwnerID);
         edtxt_deliverymanNote = findViewById(R.id.edtxt_deliveryNoteID);
 
@@ -71,7 +71,24 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
         currUser = gson.fromJson(json, User.class);
         userKey = sharedPref.getString("userKey", "");
 
+        refUser = FirebaseDatabase.getInstance().getReference().child("User");
+
+        refUser.child(packageId.getPackageOwnerId()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    user2 = dataSnapshot.getValue(User.class);
+                    saveUser2();
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(PickedPackageActivity.this, R.string.error_message, Toast.LENGTH_LONG).show();
+            }
+        });
+
         refPackage = FirebaseDatabase.getInstance().getReference().child("Package");
+
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, SEND_SMS_PERMISSION_REQUEST_CODE);
 
         setTxtViews();
@@ -151,25 +168,53 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
 
     @Override
     public void onClick(View view) {
-        // integrity input check
-        if(edtxt_deliverymanNote.getText().length() > 100){
-            this.edtxt_deliverymanNote.setError("Note should be less than 160 letters");
-            this.edtxt_deliverymanNote.requestFocus();
-            return;
+        switch (view.getId()){
+            case R.id.btn_confirmDeliveryID:
+            {
+                // integrity input check
+                if(edtxt_deliverymanNote.getText().length() > 100){
+                    this.edtxt_deliverymanNote.setError("Note should be less than 160 letters");
+                    this.edtxt_deliverymanNote.requestFocus();
+                    return;
+                }
+
+                //update package status and deliveryman
+                refPackage.child(packKey).child("deliveryman").setValue(userKey);
+                refPackage.child(packKey).child("status").setValue(PACKAGE_STATUS_IN_PROCCESS);
+
+                // send sms too package owner that there's a deliveryman
+                sendSms();
+                // add package to the deliveryMan packages
+                currUser.setPackagesToDeliver(packKey, userKey);
+                updateCurrUserInSP();
+                startActivity(new Intent(PickedPackageActivity.this, MainActivity .class));
+                finish();
+                break;
+            }
+            case R.id.btn_viewPofile:
+            {
+                Gson gson = new Gson();
+                String json = sharedPref.getString("user2", "");
+                user2 = gson.fromJson(json, User.class);
+                profileView = user2.getName() +DELIMITER+ user2.getRate();
+                Intent intent = new Intent(PickedPackageActivity.this, UserProfileViewActivity.class);
+                intent.putExtra("profileView", profileView);
+                startActivity(intent);
+                break;
+            }
+
         }
 
-        //update package status and deliveryman
-        refPackage.child(packKey).child("deliveryman").setValue(userKey);
-        refPackage.child(packKey).child("status").setValue(PACKAGE_STATUS_IN_PROCCESS);
-
-        // send sms too package owner that there's a deliveryman
-        sendSms();
-        // add package to the deliveryMan packages
-        currUser.setPackagesToDeliver(packKey, userKey);
-        updateCurrUserInSP();
-        startActivity(new Intent(PickedPackageActivity.this, MainActivity .class));
-        finish();
-        }
+    }
+    private void saveUser2() {
+        //register user phone & password correct
+        SharedPreferences.Editor prefEditor = sharedPref.edit();
+        // save user to the local memory
+        Gson gson = new Gson();
+        String json = gson.toJson(user2);
+        prefEditor.putString("user2", json);
+        prefEditor.commit();
+    }
 
 
 }
