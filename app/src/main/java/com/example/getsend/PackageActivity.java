@@ -159,7 +159,7 @@ public class PackageActivity extends AppCompatActivity{
                                 rateUser(user2, pack.getDeliveryman());
                                 refPackage.child(packKey).child("status").setValue("Arrived :)");
                                 startActivity(new Intent(PackageActivity.this, NavbarPackagesActivity.class));
-                                finish();
+                                //?finish();
                             }
                         });
                         break;
@@ -234,6 +234,8 @@ public class PackageActivity extends AppCompatActivity{
                                 //Delivery confirmation
                                 rateUser(user2, pack.getPackageOwnerId());
                                 btn_confirm.setVisibility(View.INVISIBLE);
+                                //ToDo
+                                //delete chat room
                             }
                         });
                         break;
