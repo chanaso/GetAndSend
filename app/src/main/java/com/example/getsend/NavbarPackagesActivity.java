@@ -8,8 +8,10 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -91,34 +93,56 @@ public class NavbarPackagesActivity extends AppCompatActivity {
             listView_packages.setAdapter(mAdapter);
             for (String index : userPackagesIdList) {
                 if (!index.equals("")) {
-                    refPackage.child(index).addValueEventListener(new ValueEventListener() {
+
+                    refPackage.addChildEventListener(new ChildEventListener() {
                         @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
+                        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                             if (dataSnapshot.exists()) {
                                 Package pack = dataSnapshot.getValue(Package.class);
-                                packagesOfCurrUser.add(pack);
-                                packagesKeysOfCurrUser.add(dataSnapshot.getKey());
-                                userPackagesList.add(pack.getPackageId() + " " + pack.getLocation() + "\n\n   " + pack.getStatus() + "   ");
-                                mAdapter.notifyDataSetChanged();
+                                if (!userPackagesList.contains(pack.getPackageId() + " " + pack.getLocation() + "\n\n   " + pack.getStatus() + "   ")) {
+                                    packagesOfCurrUser.add(pack);
+                                    packagesKeysOfCurrUser.add(dataSnapshot.getKey());
+                                    userPackagesList.add(pack.getPackageId() + " " + pack.getLocation() + "\n\n   " + pack.getStatus() + "   ");
+                                    mAdapter.notifyDataSetChanged();
+                                }
                             }
                         }
 
                         @Override
+                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                        }
+
+                        @Override
+                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                            Package pack = dataSnapshot.getValue(Package.class);
+                            packagesOfCurrUser.remove(pack);
+                            packagesKeysOfCurrUser.remove(dataSnapshot.getKey());
+                            userPackagesList.remove(pack.getPackageId() + " " + pack.getLocation() + "\n\n   " + pack.getStatus() + "   ");
+                            mAdapter.notifyDataSetChanged();
+                        }
+
+                        @Override
+                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                        }
+
+                        @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
-                            Toast.makeText(NavbarPackagesActivity.this, R.string.error_message, Toast.LENGTH_LONG).show();
+
                         }
                     });
                 }
-            }
+        }
         }
     }
 
-//    @Override
-//    public void onResume()
-//    {  // After a pause OR at startup
-//        super.onResume();
-//        //Refresh activity
-//        mAdapter.notifyDataSetChanged();
-//    }
+    @Override
+    public void onResume()
+    {  // After a pause OR at startup
+        super.onResume();
+        //Refresh activity
+        mAdapter.notifyDataSetChanged();
+    }
 }
 

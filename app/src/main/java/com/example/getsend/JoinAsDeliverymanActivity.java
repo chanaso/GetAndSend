@@ -116,7 +116,7 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
                     if (dataSnapshot.exists()) {
                         for (DataSnapshot datas : dataSnapshot.getChildren()) {
                             Package pack = datas.getValue(Package.class);
-                            if(pack.getDeliveryman().isEmpty() && !pack.getPackageOwnerId().equals(userKey)) {
+                            if(pack.getStatus().equals("Waiting for delivery") && !pack.getPackageOwnerId().equals(userKey)) {
                                 String location = pack.getGeoLocation();
                                 locationsList.add(location);
                             }
