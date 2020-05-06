@@ -126,11 +126,10 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
         });
     }
 
-    public void sendSms() {
+    public void sendSms(String message) {
         if(checkPermission(Manifest.permission.SEND_SMS)){
             SmsManager smsManager = SmsManager.getDefault();
-            smsManager.sendTextMessage(packageOwnerPhone, null,"Hi,\n" + currUser.getName() +" deliveryman wants to take your package number: "+ packageId+"\nplease enter GetAndSend app and confirm the delivery!",null , null);
-            smsManager.sendTextMessage(packageOwnerPhone, null, "Deliveryman Note: " + edtxt_deliverymanNote.getText().toString(),null , null);
+            smsManager.sendTextMessage(packageOwnerPhone, null, message,null , null);
             Toast.makeText(PickedPackageActivity.this, R.string.sms_send, Toast.LENGTH_LONG).show();
         }else {
             Toast.makeText(PickedPackageActivity.this, R.string.sms_did_not_send, Toast.LENGTH_LONG).show();
@@ -168,7 +167,8 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
                 refPackage.child(packKey).child("status").setValue(PACKAGE_STATUS_IN_PROCCESS);
 
                 // send sms too package owner that there's a deliveryman
-                sendSms();
+                sendSms("Hi,\n" + currUser.getName() +" deliveryman wants to take your package number: "+ packageId);
+                sendSms("Deliveryman Note: " + edtxt_deliverymanNote.getText().toString());
                 // add package to the deliveryMan packages
                 currUser.setPackagesToDeliver(packKey, userKey);
                 updateCurrUserInSP();

@@ -31,7 +31,6 @@ public class ChatActivity extends AppCompatActivity implements RoomListener {
     // replace this with a real channelID from Scaledrone dashboard
         private String channelID = "ifROvUFv1iok6T8b";
         private String prefix = "observable-", contactName, packageId, userKey, roomName;
-        private int messageTimeStamp;
         private User currUser;
         private EditText editText;
         private Scaledrone scaledrone;
@@ -70,7 +69,7 @@ public class ChatActivity extends AppCompatActivity implements RoomListener {
             messagesView = (ListView) findViewById(R.id.messages_view);
             messagesView.setAdapter(messageAdapter);
 
-            MemberData data = new MemberData(getRandomName(), getRandomColor());
+            MemberData data = new MemberData(currUser.getName(), "#0000cd");
             retrieveChatHistory(data);
 
             scaledrone = new Scaledrone(channelID, data);
@@ -105,17 +104,17 @@ public class ChatActivity extends AppCompatActivity implements RoomListener {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot datas : dataSnapshot.getChildren()){
                     if(datas.exists()){
-                        if(datas.getKey().split(DELIMITER)[1].equals(userKey)){
-                            final Message message = new Message(datas.getValue().toString(), data, true);
+                        SimpleMessage simpleMessage = datas.getValue(SimpleMessage.class);
+                        if(simpleMessage.getType() == currUser.getType()){
+                            final Message message = new Message(simpleMessage.getText(), data, true);
                             messageAdapter.add(message);
                             messageAdapter.notifyDataSetChanged();
-                            messageTimeStamp = Integer.parseInt(datas.getKey().split(DELIMITER)[0])+1;
                         }else {
-                            final Message message = new Message(datas.getValue().toString(), data, false);
+                            final Message message = new Message(simpleMessage.getText(), new MemberData(contactName, "#0000cd"), false);
                             messageAdapter.add(message);
                             messageAdapter.notifyDataSetChanged();
-                            messageTimeStamp = Integer.parseInt(datas.getKey().split(DELIMITER)[0])+1;
                         }
+                        messagesView.setSelection(messagesView.getAdapter().getCount()-1);
                     }
                 }
             }
@@ -132,12 +131,8 @@ public class ChatActivity extends AppCompatActivity implements RoomListener {
             String message = editText.getText().toString();
             if (message.length() > 0) {
                 scaledrone.publish(roomName, message);
-
-                // Firebase Database keys are strings ordered lexicographically,
-                // therefor used format that the key will be ordered by the timestamp value.
-                String sameLenght = String.format("%05d", messageTimeStamp); // 0 fill to 5 digits num
-                refChat.child(roomName).child(sameLenght + DELIMITER + userKey).setValue(message);
-                messageTimeStamp+=1;
+                SimpleMessage newMessage = new SimpleMessage(message, currUser.getType());
+                refChat.child(roomName).push().setValue(newMessage);
                 editText.getText().clear();
             }
         }
@@ -166,10 +161,6 @@ public class ChatActivity extends AppCompatActivity implements RoomListener {
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
-        }
-
-        private String getRandomName() {
-            return contactName;
         }
 
         private String getRandomColor() {
