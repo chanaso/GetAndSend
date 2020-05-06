@@ -9,7 +9,8 @@ import com.google.firebase.database.ValueEventListener;
 
 public class User {
     private String name, phone, pass, packagesToDeliver, myPackages, id;
-    private int rate, type, numOfRates;
+    private int type, numOfRates;
+    private double rate;
     private static final String DELIMITER = " ";
     private transient DatabaseReference refUser = FirebaseDatabase.getInstance().getReference().child("User");
 
@@ -45,9 +46,9 @@ public class User {
         this.pass = pass;
     }
 
-    public void setRate(int rate){ this.rate = rate; }
+    public void setRate(double rate){ this.rate = rate; }
 
-    public int getRate(){ return rate; }
+    public double getRate(){ return rate; }
 
     public int getType() {
         return type;
@@ -143,7 +144,7 @@ public class User {
         this.name = name;
         this.phone = phone;
         this.pass = pass;
-        this.rate = 0;
+        this.rate = 0.0;
         this.type = -1;
         this.packagesToDeliver = "";
         this.myPackages = "";

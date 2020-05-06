@@ -1,6 +1,7 @@
 package com.example.getsend;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RatingBar;
@@ -8,6 +9,7 @@ import android.widget.TextView;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.Gson;
 
 public class RateUserViewActivity extends Activity {
     private TextView edtxt_user;
@@ -15,14 +17,20 @@ public class RateUserViewActivity extends Activity {
     private String userName, userKey;
     private int numOfRates, userRate;
     private RatingBar bar;
-    private DatabaseReference refUser;
+    private User currUser;
+    private SharedPreferences sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rate_user_view);
 
-        refUser = FirebaseDatabase.getInstance().getReference().child("User");
+        // store from local memory the current user
+        sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPref.getString("currUser", "");
+        currUser = gson.fromJson(json, User.class);
+
         Bundle mBundle = getIntent().getExtras();
         if (mBundle != null) {
             String userDetailsString = mBundle.getString("userToRate");
@@ -42,14 +50,26 @@ public class RateUserViewActivity extends Activity {
             public void onClick(View v) {
                 if(bar.getRating() != 0.0){
                     // set the new rate
-                    refUser.child(userKey).child("rate").setValue((bar.getRating() + userRate)/numOfRates);
+                    double newRate = (bar.getRating() + userRate)/numOfRates;
+                    currUser.getRefUser().child(userKey).child("rate").setValue(newRate);
 
                     // add (1) number of rates to user
-                    refUser.child(userKey).child("numOfRates").setValue(numOfRates);
+                    currUser.getRefUser().child(userKey).child("numOfRates").setValue(numOfRates);
+
+                    currUser.setRate(newRate);
+                    // update rate in the local memory
+                    updateCurrUserInSP();
                 }
                 finish();
             }
         });
 
+    }
+    private void updateCurrUserInSP() {
+        SharedPreferences.Editor prefEditor = sharedPref.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(currUser);
+        prefEditor.putString("currUser", json);
+        prefEditor.commit();
     }
 }

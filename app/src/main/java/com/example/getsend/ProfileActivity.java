@@ -3,7 +3,9 @@ package com.example.getsend;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.EditText;
+import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,6 +16,8 @@ public class ProfileActivity extends AppCompatActivity {
     private SharedPreferences sharedPref;
     private User currUser;
     private TextView edtProfile, edtPhone, edtRate;
+    private RatingBar ratingBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,25 +37,10 @@ public class ProfileActivity extends AppCompatActivity {
         edtPhone = findViewById(R.id.profilePhoneID);
         edtPhone.setText(currUser.getPhone());
 
-        edtRate = findViewById(R.id.profileRateID);
-        switch(String.valueOf(currUser.getRate())){
-            case "1":
-                edtRate.setText("★☆☆☆☆");
-                break;
-            case "2":
-                edtRate.setText("★★☆☆☆");
-                break;
-            case "3":
-                edtRate.setText("★★★☆☆");
-                break;
-            case "4":
-                edtRate.setText("★★★★☆");
-                break;
-            case "5":
-                edtRate.setText("★★★★★");
-                break;
-            default:
-                edtRate.setText("☆☆☆☆☆");
-        }
+        edtRate = findViewById(R.id.edtRateID);
+        edtRate.setText(String.valueOf(currUser.getRate()));
+
+        ratingBar = findViewById(R.id.ratingBar_profileID);
+        ratingBar.setRating((float)currUser.getRate());
     }
 }

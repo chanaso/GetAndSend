@@ -231,13 +231,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             case R.id.btnInvite:
             {
                 startActivity(new Intent(MainActivity.this, InviteDeliveryActivity.class));
-                finish();
                 break;
             }
             case R.id.btnJoin:
             {
                 startActivity(new Intent(MainActivity.this, JoinAsDeliverymanActivity.class));
-                finish();
                 break;
             }
 

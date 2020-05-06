@@ -29,22 +29,29 @@
             android:padding="10dp"
             android:src="@drawable/ic_profile" />
 
+        <TextView
+            android:id="@+id/edtRateID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:textSize="20sp"
+            android:gravity="center"/>
+
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="10dp">
+            android:padding="10dp"
+            android:gravity="center">
 
-            <TextView
-                android:id="@+id/profileRateID"
-                android:layout_width="452dp"
+            <RatingBar
+                android:id="@+id/ratingBar_profileID"
+                style="?android:attr/ratingBarStyle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:padding="10dp"
-                android:text="★★★★☆ "
-                android:textColor="#000000"
-                android:textSize="22dp" />
+                android:layout_gravity="center_horizontal"
+                android:progressTint="#000" />
+
         </LinearLayout>
 
         <LinearLayout
