@@ -244,7 +244,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/yellow_button"
-                android:text="confirm delivery"
+                android:text="View profile"
                 android:textColor="#000000"
                 android:textSize="15dp"
                 android:textStyle="bold"

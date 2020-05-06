@@ -131,6 +131,8 @@ public class ChatActivity extends AppCompatActivity implements RoomListener {
             String message = editText.getText().toString();
             if (message.length() > 0) {
                 scaledrone.publish(roomName, message);
+
+                //push message to database
                 SimpleMessage newMessage = new SimpleMessage(message, currUser.getType());
                 refChat.child(roomName).push().setValue(newMessage);
                 editText.getText().clear();
@@ -161,15 +163,6 @@ public class ChatActivity extends AppCompatActivity implements RoomListener {
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
-        }
-
-        private String getRandomColor() {
-            Random r = new Random();
-            StringBuffer sb = new StringBuffer("#");
-            while(sb.length() < 7){
-                sb.append(Integer.toHexString(r.nextInt()));
-            }
-            return sb.toString().substring(0, 7);
         }
     }
 

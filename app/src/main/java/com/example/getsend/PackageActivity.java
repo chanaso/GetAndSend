@@ -167,6 +167,10 @@ public class PackageActivity extends AppCompatActivity{
                         btn_1.setVisibility(View.INVISIBLE);
                         btn_2.setVisibility(View.INVISIBLE);
                         btn_confirm.setVisibility(View.INVISIBLE);
+
+                        //delete chat room
+                        DatabaseReference refChat = FirebaseDatabase.getInstance().getReference().child("ChatRooms");
+                        refChat.child("observable-"+packKey).removeValue();
                         break;
                 }
             }
@@ -234,8 +238,6 @@ public class PackageActivity extends AppCompatActivity{
                                 //Delivery confirmation
                                 rateUser(user2, pack.getPackageOwnerId());
                                 btn_confirm.setVisibility(View.INVISIBLE);
-                                //ToDo
-                                //delete chat room
                             }
                         });
                         break;

@@ -30,6 +30,7 @@ public class NavbarPackagesActivity extends AppCompatActivity {
     private List<String> packagesKeysOfCurrUser =  new ArrayList<String>();
     private DatabaseReference refPackage;
     private static final int USER_TYPE_DELIVERYMAN = 0;
+    private ArrayAdapter<String> mAdapter;
 
 
     @Override
@@ -37,6 +38,7 @@ public class NavbarPackagesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_packages);
         listView_packages = findViewById(R.id.listView_packagesID);
+
 
         // store from local memory the current user
         sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
@@ -76,20 +78,20 @@ public class NavbarPackagesActivity extends AppCompatActivity {
         if(userPackages.equals(""))
         {
             // theres no packsges for the current user
-            ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(NavbarPackagesActivity.this,
+            mAdapter = new ArrayAdapter<String>(NavbarPackagesActivity.this,
             android.R.layout.simple_list_item_1,
             new String[]{"No packages history"});
             listView_packages.setAdapter(mAdapter);
         }else{
             // dispaly current user packages
             String[] userPackagesIdList = userPackages.split(" ");
-            ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(NavbarPackagesActivity.this,
+            mAdapter = new ArrayAdapter<String>(NavbarPackagesActivity.this,
                     android.R.layout.simple_list_item_1,
                     userPackagesList);
             listView_packages.setAdapter(mAdapter);
             for (String index : userPackagesIdList) {
                 if (!index.equals("")) {
-                    refPackage.child(index).addListenerForSingleValueEvent(new ValueEventListener() {
+                    refPackage.child(index).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.exists()) {
@@ -110,4 +112,13 @@ public class NavbarPackagesActivity extends AppCompatActivity {
             }
         }
     }
+
+//    @Override
+//    public void onResume()
+//    {  // After a pause OR at startup
+//        super.onResume();
+//        //Refresh activity
+//        mAdapter.notifyDataSetChanged();
+//    }
 }
+
