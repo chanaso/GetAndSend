@@ -90,6 +90,7 @@
     <string name="join_as_deliverman">Join as deliverman</string>
     <string name="invite_delivery">Invite delivery</string>
     <string name="delete_package">Package deleted successfully</string>
+    <string name="reject_package">Delivery was rejected</string>
     <string name="sms_send">SMS send successfully</string>
     <string name="sms_did_not_send">SMS did not send</string>
 

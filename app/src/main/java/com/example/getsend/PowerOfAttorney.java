@@ -3,6 +3,7 @@ package com.example.getsend;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -131,6 +132,7 @@ public class PowerOfAttorney extends AppCompatActivity {
                 refPackage.child(packKey).child("status").setValue("On the way...");
                 //ToDo
                 //sms to deliveryman that the delivery approve
+                startActivity(new Intent(PowerOfAttorney.this, NavbarPackagesActivity.class));
                 finish();
             }
         });

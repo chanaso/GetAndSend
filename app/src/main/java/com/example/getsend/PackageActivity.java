@@ -126,6 +126,9 @@ public class PackageActivity extends AppCompatActivity{
                                 rejectDeliveryman(pack.getDeliveryman());
                                 //send SMS to deliveryman that the delivery rejected
                                 sendSms(user2.getPhone(), user2.getName() + " Deliveryman,\nPackage number: "+pack.getPackageId()+ " Rejected by the owner.");
+                                Toast.makeText(PackageActivity.this, R.string.reject_package, Toast.LENGTH_LONG).show();
+                                startActivity(new Intent(PackageActivity.this, NavbarPackagesActivity.class));
+                                finish();
                             }
                         });
                         btn_confirm.setText(" Approve Delivery! ");
@@ -134,6 +137,7 @@ public class PackageActivity extends AppCompatActivity{
                             public void onClick(View v) {
                                 //Approve delivery
                                 signPOA();
+                                finish();
                             }
                         });
                         break;
@@ -154,6 +158,8 @@ public class PackageActivity extends AppCompatActivity{
                                 //Delivery confirmation
                                 rateUser(user2, pack.getDeliveryman());
                                 refPackage.child(packKey).child("status").setValue("Arrived :)");
+                                startActivity(new Intent(PackageActivity.this, NavbarPackagesActivity.class));
+                                finish();
                             }
                         });
                         break;
@@ -299,6 +305,7 @@ public class PackageActivity extends AppCompatActivity{
         intent.putExtra("package", jsonPackage);
         intent.putExtra("packageKey", packKey);
         startActivity(intent);
+        finish();
     }
     private void rateUser(User user, String userKey){
         Intent intent = new Intent(PackageActivity.this, RateUserViewActivity.class);

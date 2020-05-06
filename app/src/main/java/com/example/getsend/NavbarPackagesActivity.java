@@ -60,6 +60,7 @@ public class NavbarPackagesActivity extends AppCompatActivity {
             intent.putExtra("package", jsonPackage);
             intent.putExtra("packageKey", packagesKeysOfCurrUser.get(i));
             startActivity(intent);
+            finish();
         });
     }
 
