@@ -144,7 +144,7 @@ public class ChatActivity extends AppCompatActivity implements RoomListener {
 
         @Override
         public void onOpen(Room room) {
-            System.out.println("Conneted to room");
+            System.out.println("Connected to room");
         }
 
         @Override

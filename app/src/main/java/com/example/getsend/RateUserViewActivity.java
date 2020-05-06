@@ -15,7 +15,8 @@ public class RateUserViewActivity extends Activity {
     private TextView edtxt_user;
     private String[] userDetails;
     private String userName, userKey;
-    private int numOfRates, userRate;
+    private int numOfRates;
+    private double userRate;
     private RatingBar bar;
     private User currUser;
     private SharedPreferences sharedPref;
@@ -34,14 +35,14 @@ public class RateUserViewActivity extends Activity {
         Bundle mBundle = getIntent().getExtras();
         if (mBundle != null) {
             String userDetailsString = mBundle.getString("userToRate");
-
             userDetails = userDetailsString.split("@");
             userName = userDetails[0];
             userKey = userDetails[1];
-            userRate = Integer.parseInt(userDetails[2]);
+            userRate = Double.parseDouble(userDetails[2]);
             numOfRates = Integer.parseInt(userDetails[3]) + 1;
             getIntent().removeExtra("showMessage");
         }
+
         edtxt_user = findViewById(R.id.edtxt_userToRateID);
         edtxt_user.setText("Please rate " + userName + " :)");
         bar = findViewById(R.id.ratingbarID);
