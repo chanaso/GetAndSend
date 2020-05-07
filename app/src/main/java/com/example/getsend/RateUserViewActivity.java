@@ -1,14 +1,13 @@
 package com.example.getsend;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 
 public class RateUserViewActivity extends Activity {
@@ -51,7 +50,7 @@ public class RateUserViewActivity extends Activity {
             public void onClick(View v) {
                 if(bar.getRating() != 0.0){
                     // set the new rate
-                    double newRate = (bar.getRating() + userRate)/numOfRates;
+                    double newRate = ((bar.getRating()*(numOfRates-1)) + userRate)/numOfRates;
                     currUser.getRefUser().child(userKey).child("rate").setValue(newRate);
 
                     // add (1) number of rates to user
@@ -61,6 +60,7 @@ public class RateUserViewActivity extends Activity {
                     // update rate in the local memory
                     updateCurrUserInSP();
                 }
+                startActivity(new Intent(RateUserViewActivity.this, NavbarPackagesActivity.class));
                 finish();
             }
         });

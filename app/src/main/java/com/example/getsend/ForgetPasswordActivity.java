@@ -11,11 +11,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskExecutors;
 import com.google.firebase.FirebaseException;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.PhoneAuthCredential;
@@ -30,7 +27,7 @@ import com.hbb20.CountryCodePicker;
 
 import java.util.concurrent.TimeUnit;
 
-public class ForgotPasswordActivity extends AppCompatActivity implements View.OnClickListener {
+public class ForgetPasswordActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText edtxt_phoneNumber, edtxt_pass, edtxt_passCon, edtxt_verifiCode;
     private Button btn_Enter, btn_Verify;
@@ -44,7 +41,7 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_forgot_paswword);
+        setContentView(R.layout.activity_forget_paswword);
 
         btn_Enter = findViewById(R.id.btn_EnterID);
         btn_Verify = findViewById(R.id.btn_VerifyID);
@@ -86,19 +83,19 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
     PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
         @Override
         public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
-            Toast.makeText(ForgotPasswordActivity.this, R.string.verification_code_failed_Too_many_tries, Toast.LENGTH_LONG).show();
+            Toast.makeText(ForgetPasswordActivity.this, R.string.verification_code_failed_Too_many_tries, Toast.LENGTH_LONG).show();
         }
 
         @Override
         public void onVerificationFailed(@NonNull FirebaseException e) {
-            Toast.makeText(ForgotPasswordActivity.this, R.string.verification_code_failed_please_try_again, Toast.LENGTH_LONG).show();
+            Toast.makeText(ForgetPasswordActivity.this, R.string.verification_code_failed_please_try_again, Toast.LENGTH_LONG).show();
 
         }
         @Override
         public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
             super.onCodeSent(s, forceResendingToken);
             codeSend = s;
-            Toast.makeText(ForgotPasswordActivity.this, R.string.verification_code_sent, Toast.LENGTH_LONG).show();
+            Toast.makeText(ForgetPasswordActivity.this, R.string.verification_code_sent, Toast.LENGTH_LONG).show();
 
         }
     };
@@ -175,7 +172,7 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
                     } else {
                         if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                             // The verification code entered was invalid
-                            Toast.makeText(ForgotPasswordActivity.this, "Inncorrect Verification Code", Toast.LENGTH_LONG).show();
+                            Toast.makeText(ForgetPasswordActivity.this, "Inncorrect Verification Code", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -191,7 +188,7 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
         prefEditor.putString("currUser", json);
         prefEditor.putString("userKey", userKey);
         prefEditor.commit();
-        startActivity(new Intent(ForgotPasswordActivity.this, MainActivity.class));
+        startActivity(new Intent(ForgetPasswordActivity.this, MainActivity.class));
         finish();
     }
 
@@ -205,5 +202,12 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
                 sendVerificationCode();
                 break;
         }
+    }
+
+    //handle device back button
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(ForgetPasswordActivity.this, LoginActivity.class));
+        finish();
     }
 }
