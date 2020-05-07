@@ -33,7 +33,7 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
     private static final int SEND_SMS_PERMISSION_REQUEST_CODE = 1;
 
     private User currUser;
-    private TextView edtxt_Size, edtxt_Weight, edtxt_Location, edtxt_Destination, edtxt_PackageId, edtxt_packageOwner;
+    private TextView edtxt_Size, edtxt_Weight, edtxt_Location, edtxt_Destination, edtxt_PackageId;
     private EditText edtxt_deliverymanNote;
     private Button btn_confirmDelivery, btn_view_profile;
     private SharedPreferences sharedPref;
@@ -61,7 +61,6 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
         edtxt_Destination = findViewById(R.id.edtxt_DestinationID);
         btn_confirmDelivery = findViewById(R.id.btn_confirmDeliveryID);
         btn_view_profile = findViewById(R.id.btn_viewPofile);
-        edtxt_packageOwner = findViewById(R.id.edtxt_packageOwnerID);
         edtxt_deliverymanNote = findViewById(R.id.edtxt_deliveryNoteID);
 
         // store from local memory the current user
@@ -103,7 +102,6 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
                                         packageOwnerPhone = user.getPhone();
                                         packageOwnerRate = String.valueOf(user.getRate());
                                         packageOwnerName = user.getName();
-                                        edtxt_packageOwner.setText(packageOwnerName);
                                     }
                                 }
 
