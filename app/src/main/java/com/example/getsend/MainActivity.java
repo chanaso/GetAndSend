@@ -3,7 +3,9 @@ package com.example.getsend;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.method.LinkMovementMethod;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -302,6 +304,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 break;
             case R.id.nav_sign_out:
                 signOut();
+                break;
+            case R.id.nav_mail:
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                Uri data = Uri.parse("mailto:contact.getandsend@gmail.com");
+                intent.setData(data);
+                startActivity(intent);
                 break;
 
         }
