@@ -11,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
 
+import java.text.DecimalFormat;
+
 public class ProfileActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPref;
@@ -37,8 +39,10 @@ public class ProfileActivity extends AppCompatActivity {
         edtPhone = findViewById(R.id.profilePhoneID);
         edtPhone.setText(currUser.getPhone());
 
+        DecimalFormat df = new DecimalFormat("#.##");
+
         edtRate = findViewById(R.id.edtRateID);
-        edtRate.setText(String.valueOf(currUser.getRate()));
+        edtRate.setText(df.format(currUser.getRate()));
 
         ratingBar = findViewById(R.id.ratingBar_profileID);
         ratingBar.setRating((float)currUser.getRate());

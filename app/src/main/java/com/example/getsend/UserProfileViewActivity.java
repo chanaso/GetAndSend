@@ -7,6 +7,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.text.DecimalFormat;
+
 public class UserProfileViewActivity extends AppCompatActivity {
 
     private TextView edtxt_name, edtxt_rate;
@@ -32,8 +34,10 @@ public class UserProfileViewActivity extends AppCompatActivity {
         edtxt_name = findViewById(R.id.edtxt_nameID);
         edtxt_name.setText(profileViewDetails[0]);
 
+        DecimalFormat df = new DecimalFormat("#.##");
+
         edtxt_rate = findViewById(R.id.edtxt_rateID);
-        edtxt_rate.setText(rate);
+        edtxt_rate.setText(df.format((Float .parseFloat(rate))));
 
         ratingBar = findViewById(R.id.ratingBar_viewID);
         ratingBar.setRating(Float.parseFloat(rate));
