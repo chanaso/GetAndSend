@@ -238,7 +238,7 @@ public class PackageActivity extends AppCompatActivity{
                             public void onClick(View v) {
                                 //Delivery confirmation
                                 //Clean up before close the package delivery
-                                cleanUpDelivery(user2Key);
+                                cleanUpDelivery(pack.getPackageOwnerId());
                                 //change the package status and rate
                                 refPackage.child(packKey).child("status").setValue("Arrived :)");
                                 btn_confirm.setVisibility(View.INVISIBLE);
@@ -355,10 +355,12 @@ public class PackageActivity extends AppCompatActivity{
         signatureRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
+                Toast.makeText(PackageActivity.this, "signature deleted successfully "+userKey, Toast.LENGTH_LONG).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
+                Toast.makeText(PackageActivity.this, "Failed connect to storage "+userKey, Toast.LENGTH_LONG).show();
             }
         });
 

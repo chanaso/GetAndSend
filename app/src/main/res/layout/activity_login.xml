@@ -71,14 +71,15 @@
 
     <TextView
         android:id="@+id/txt_forgotPassID"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:clickable="true"
         android:gravity="center"
         android:padding="5dp"
         android:text="@string/forgot_your_password"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:layout_gravity="center"/>
 
     <Button
         android:id="@+id/btn_LogInID"
