@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.getsend">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -15,31 +16,60 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ForgetPasswordActivity"></activity>
-        <activity android:name=".ChatActivity" />
+        <activity android:name=".ForgetPasswordActivity" tools:ignore="LockedOrientationActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".ChatActivity" tools:ignore="LockedOrientationActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".RateUserViewActivity"
-            android:theme="@android:style/Theme.Dialog" />
-        <activity android:name=".UserProfileViewActivity" />
-        <activity android:name=".PickedPackageActivity" />
-        <activity android:name=".PowerOfAttorneyView" />
-        <activity android:name=".PackageActivity" />
-        <activity android:name=".PickedPackagesListActivity" />
-        <activity android:name=".JoinAsDeliverymanActivity" />
-        <activity android:name=".NavbarPackagesActivity" />
-        <activity android:name=".InviteDeliveryActivity" />
-        <activity android:name=".ProfileActivity" />
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".PowerOfAttorney" />
-        <activity android:name=".SignUpActivity" />
-        <activity android:name=".SplashActivity">
+            android:theme="@android:style/Theme.Dialog"
+            tools:ignore="LockedOrientationActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".UserProfileViewActivity" tools:ignore="LockedOrientationActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".PickedPackageActivity"
+            tools:ignore="LockedOrientationActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".PowerOfAttorneyView"
+            tools:ignore="LockedOrientationActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".PackageActivity"
+            tools:ignore="LockedOrientationActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".PickedPackagesListActivity"
+            tools:ignore="LockedOrientationActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".JoinAsDeliverymanActivity"
+            tools:ignore="LockedOrientationActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".NavbarPackagesActivity"
+            tools:ignore="LockedOrientationActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".InviteDeliveryActivity"
+            tools:ignore="LockedOrientationActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ProfileActivity"
+            tools:ignore="LockedOrientationActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".LoginActivity"
+            tools:ignore="LockedOrientationActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".PowerOfAttorney"
+            tools:ignore="LockedOrientationActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".SignUpActivity"
+            tools:ignore="LockedOrientationActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".SplashActivity" tools:ignore="LockedOrientationActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" />
+        <activity android:name=".MainActivity" tools:ignore="LockedOrientationActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
