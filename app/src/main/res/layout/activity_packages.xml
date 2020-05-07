@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".NavbarPackagesActivity">
+    tools:context=".NavbarPackagesActivity"
+    android:background="#d1d1d1">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,9 +28,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:listSelector="#A5E3F4"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:dividerHeight="10dp"
+            android:divider="#d1d1d1"
+            android:listSelector="@color/ColorOldlace"
             android:textDirection="locale"
-            android:background="@drawable/back"
+            android:background="#fff"
             android:gravity="center"
             />
     </LinearLayout>
