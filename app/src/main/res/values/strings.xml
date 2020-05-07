@@ -97,6 +97,7 @@
     <!--    MainActivity exit dialog-->
     <string name="exit_title">יציאה</string>
     <string name="exit_message">אתה בטוח שברצונך לצאת מהאפליקציה?</string>
+    <string name="contact_us"><a href="mailto:contact.getandsend@gmail.com" target="_top">Contact us</a></string>
 
 
 

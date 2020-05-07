@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private SharedPreferences sharedPref;
     private Button btnJoin, btnInvite;
     private DatabaseReference refUser;
+    private TextView txt_contactUs;
 
 
     @Override
@@ -74,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         btnInvite = (Button) findViewById(R.id.btnInvite);
         btnJoin = (Button) findViewById(R.id.btnJoin);
+        txt_contactUs = findViewById(R.id.txt_contactUsID);
 
         //navBar view
         Toolbar toolbar = findViewById(R.id.toolBar);
@@ -106,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         btnInvite.setOnClickListener(this);
         btnJoin.setOnClickListener(this);
+        txt_contactUs.setOnClickListener(this);
     }
 
     private void checkUserExist() {
@@ -263,7 +266,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 startActivity(new Intent(MainActivity.this, JoinAsDeliverymanActivity.class));
                 break;
             }
-
+            case R.id.txt_contactUsID:
+            {
+                txt_contactUs.setMovementMethod(LinkMovementMethod.getInstance());
+            }
         }
     }
 
@@ -285,33 +291,31 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
-            case R.id.nav_profile:
+            case R.id.nav_profile:{
+
                 startActivity(new Intent(MainActivity.this, ProfileActivity.class));
                 break;
-            case R.id.nav_myPackeges:
+            }
+            case R.id.nav_myPackeges:{
                 if(currUser.getType() != OWNER){
                     userTypeUpdate(OWNER);
                     updateCurrUserInSP();
                 }
                 startActivity(new Intent(MainActivity.this, NavbarPackagesActivity.class));
                 break;
-            case R.id.nav_packegesToDeliver:
-                if(currUser.getType() != DELIVERYMAN){
+            }
+            case R.id.nav_packegesToDeliver: {
+                if (currUser.getType() != DELIVERYMAN) {
                     userTypeUpdate(DELIVERYMAN);
                     updateCurrUserInSP();
                 }
                 startActivity(new Intent(MainActivity.this, NavbarPackagesActivity.class));
                 break;
-            case R.id.nav_sign_out:
+            }
+            case R.id.nav_sign_out:{
                 signOut();
                 break;
-            case R.id.nav_mail:
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                Uri data = Uri.parse("mailto:contact.getandsend@gmail.com");
-                intent.setData(data);
-                startActivity(intent);
-                break;
-
+            }
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
