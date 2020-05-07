@@ -77,8 +77,8 @@ public class NavbarPackagesActivity extends AppCompatActivity {
         {
             // theres no packsges for the current user
             ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(NavbarPackagesActivity.this,
-            android.R.layout.simple_list_item_1,
-            new String[]{"No packages history"});
+                    android.R.layout.simple_list_item_1,
+                    new String[]{"No packages history"});
             listView_packages.setAdapter(mAdapter);
         }else{
             // dispaly current user packages
@@ -110,11 +110,6 @@ public class NavbarPackagesActivity extends AppCompatActivity {
             }
         }
     }
-//    @Override
-//    public void onResume()
-//    {  // After a pause OR at startup
-//        super.onResume();
-//        //Refresh here
-//    }
+
 }
 

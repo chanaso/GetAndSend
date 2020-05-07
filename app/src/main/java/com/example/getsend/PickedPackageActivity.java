@@ -79,9 +79,7 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
         btn_view_profile.setOnClickListener(this);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-
     }
-
 
     private void setTxtViews() {
         refPackage.orderByChild("packageId").equalTo(packageId).addListenerForSingleValueEvent(new ValueEventListener() {
