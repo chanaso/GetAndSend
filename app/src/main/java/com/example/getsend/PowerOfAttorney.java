@@ -166,7 +166,6 @@ public class PowerOfAttorney extends AppCompatActivity {
                 dialog.dismiss();
                 Toast.makeText(getApplicationContext(), "Successfully Saved", Toast.LENGTH_SHORT).show();
                 // Calling the same class
-//                Picasso.with(PowerOfAttorney.this).load(downloadUri).into(imageView);
                 imageView.setImageBitmap(bitmap);
                 onRestart();
                 onStart();

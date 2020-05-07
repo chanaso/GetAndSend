@@ -1,14 +1,13 @@
 package com.example.getsend;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 
 public class RateUserViewActivity extends Activity {
@@ -61,6 +60,7 @@ public class RateUserViewActivity extends Activity {
                     // update rate in the local memory
                     updateCurrUserInSP();
                 }
+                startActivity(new Intent(RateUserViewActivity.this, NavbarPackagesActivity.class));
                 finish();
             }
         });

@@ -4,7 +4,8 @@ package com.example.getsend;
 // Waiting for delivery
 // Waiting for approval
 // On the way...
-// Arrived :)
+// Arrived -only the owner approve the delivery
+// Arrived :) -both owner and deliveryman approve the delivery
 
 public class Package {
     private String size, location, destination, geoLocation, geoDestination, packageOwnerId, deliveryman, status, packageId;

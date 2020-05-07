@@ -107,9 +107,6 @@ public class PackageActivity extends AppCompatActivity{
                         btn_confirm.setOnClickListener(v -> {
                             //Delete package option
                             deleteCurrPackage(currUser, userKey, MY_PACKAGE_LIST);
-                            Toast.makeText(PackageActivity.this, R.string.delete_package, Toast.LENGTH_LONG).show();
-                            startActivity(new Intent(PackageActivity.this, NavbarPackagesActivity.class));
-                            finish();
                         });
                         break;
                     case "Waiting for approval":
@@ -137,7 +134,6 @@ public class PackageActivity extends AppCompatActivity{
                             public void onClick(View v) {
                                 //Approve delivery
                                 signPOA();
-                                finish();
                             }
                         });
                         break;
@@ -156,13 +152,12 @@ public class PackageActivity extends AppCompatActivity{
                             @Override
                             public void onClick(View v) {
                                 //Delivery confirmation
+                                refPackage.child(packKey).child("status").setValue("Arrived");
                                 rateUser(user2, pack.getDeliveryman());
-                                refPackage.child(packKey).child("status").setValue("Arrived :)");
-                                startActivity(new Intent(PackageActivity.this, NavbarPackagesActivity.class));
-                                //?finish();
                             }
                         });
                         break;
+                    case "Arrived":
                     case "Arrived :)":
                         btn_1.setVisibility(View.INVISIBLE);
                         btn_2.setVisibility(View.INVISIBLE);
@@ -190,18 +185,19 @@ public class PackageActivity extends AppCompatActivity{
                     }
                 });
                 switch (pack.getStatus()) {
-                    case "Waiting for delivery":
-                        btn_1.setVisibility(View.INVISIBLE);
-                        btn_2.setText("View Owner Details");
-                        btn_2.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                //View owner details
-                                viewUserDetails(pack.getPackageOwnerId());
-                            }
-                        });
-                        btn_confirm.setVisibility(View.INVISIBLE);
-                        break;
+//                    case "Waiting for delivery":
+//                        btn_1.setVisibility(View.INVISIBLE);
+//                        btn_2.setText("View Owner Details");
+//                        btn_2.setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View v) {
+//                                //View owner details
+//                                viewUserDetails(pack.getPackageOwnerId());
+//                            }
+//                        });
+//                        btn_confirm.setVisibility(View.INVISIBLE);
+//                        break;
+                    case "Arrived :)":
                     case "Waiting for approval":
                         btn_1.setVisibility(View.INVISIBLE);
                         btn_2.setVisibility(View.INVISIBLE);
@@ -228,7 +224,7 @@ public class PackageActivity extends AppCompatActivity{
                             Toast.makeText(PackageActivity.this, "The owner didn't confirm the arrival yet", Toast.LENGTH_LONG).show();
                         });
                         break;
-                    case "Arrived :)":
+                    case "Arrived":
                         btn_1.setVisibility(View.INVISIBLE);
                         btn_2.setVisibility(View.INVISIBLE);
                         btn_confirm.setText(" Delivery Confirmation ");
@@ -236,10 +232,12 @@ public class PackageActivity extends AppCompatActivity{
                             @Override
                             public void onClick(View v) {
                                 //Delivery confirmation
-                                rateUser(user2, pack.getPackageOwnerId());
+                                refPackage.child(packKey).child("status").setValue("Arrived :)");
                                 btn_confirm.setVisibility(View.INVISIBLE);
+                                rateUser(user2, pack.getPackageOwnerId());
                             }
                         });
+
                         break;
                 }
              }
@@ -282,6 +280,9 @@ public class PackageActivity extends AppCompatActivity{
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 dataSnapshot.getRef().removeValue();
+                Toast.makeText(PackageActivity.this, R.string.delete_package, Toast.LENGTH_LONG).show();
+                startActivity(new Intent(PackageActivity.this, NavbarPackagesActivity.class));
+                finish();
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -299,8 +300,11 @@ public class PackageActivity extends AppCompatActivity{
         startActivity(intent);
     }
     private void rejectDeliveryman(String deliverymanKey){
-        user2.deletePackage(deliverymanKey, packKey, PACKAGE_LIST_TO_DELIVER);
+        //delete the package from the deliveryman list
+        user2.deletePackage(PACKAGE_LIST_TO_DELIVER, packKey, deliverymanKey);
+        //delete the deliveryman from the package details
         refPackage.child(packKey).child("deliveryman").setValue("");
+        refPackage.child(packKey).child("status").setValue("Waiting for delivery");
     }
     private void signPOA(){
         Intent intent = new Intent(PackageActivity.this, PowerOfAttorney.class);
@@ -314,10 +318,11 @@ public class PackageActivity extends AppCompatActivity{
     }
     private void rateUser(User user, String userKey){
         Intent intent = new Intent(PackageActivity.this, RateUserViewActivity.class);
-        // transfer the selected user as json to packageActivity which will dispaly that package
+        // transfer the selected user as json to packageActivity which will display that package
         String userDetails = user.getName()+DELIMITER+ userKey + DELIMITER + user.getRate() + DELIMITER + user.getNumOfRates();
         intent.putExtra("userToRate", userDetails);
         startActivity(intent);
+        finish();
     }
 
     private void openPOAView(){
