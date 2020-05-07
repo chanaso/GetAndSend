@@ -50,7 +50,7 @@ public class RateUserViewActivity extends Activity {
             public void onClick(View v) {
                 if(bar.getRating() != 0.0){
                     // set the new rate
-                    double newRate = ((bar.getRating()*(numOfRates-1) + userRate)/numOfRates;
+                    double newRate = ((bar.getRating()*(numOfRates-1)) + userRate)/numOfRates;
                     currUser.getRefUser().child(userKey).child("rate").setValue(newRate);
 
                     // add (1) number of rates to user
