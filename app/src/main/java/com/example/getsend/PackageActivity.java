@@ -143,7 +143,11 @@ public class PackageActivity extends AppCompatActivity{
                         });
                         break;
                     case "On the way...":
-                        btn_1.setVisibility(View.INVISIBLE);
+                        btn_1.setText("View Deliveryman Details");
+                        btn_1.setOnClickListener(v -> {
+                            //View deliveryman details
+                            viewUserDetails(pack.getDeliveryman());
+                        });
                         btn_2.setText(" Open chat ");
                         btn_2.setOnClickListener(new View.OnClickListener() {
                             @Override
