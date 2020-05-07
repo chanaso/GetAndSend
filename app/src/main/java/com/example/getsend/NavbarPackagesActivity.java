@@ -54,8 +54,10 @@ public class NavbarPackagesActivity extends AppCompatActivity {
             Intent intent = new Intent(NavbarPackagesActivity.this, PackageActivity.class);
             // transfer the selected package as json to packageActivity which will dispaly that package
             // checking what the location of the selected package and transfer all the package details
+            String[] m = listView_packages.getItemAtPosition(i).toString().split("\n\n");
+            String location = m[1] +" "+ m[0];
             String jsonPackage = gson.toJson(packagesOfCurrUser.stream().
-                    filter(p -> (p.getPackageId()+" "+p.getLocation()).equals(listView_packages.getItemAtPosition(i).toString().split("\n")[0])).
+                    filter(p -> (p.getPackageId()+" "+p.getLocation()).equals(location)).
                     findAny().orElse(null));
             intent.putExtra("package", jsonPackage);
             intent.putExtra("packageKey", packagesKeysOfCurrUser.get(i));
@@ -96,7 +98,7 @@ public class NavbarPackagesActivity extends AppCompatActivity {
                                 Package pack = dataSnapshot.getValue(Package.class);
                                 packagesOfCurrUser.add(pack);
                                 packagesKeysOfCurrUser.add(dataSnapshot.getKey());
-                                userPackagesList.add(pack.getPackageId() + " " + pack.getLocation() + "\n\n   " + pack.getStatus() + "   ");
+                                userPackagesList.add(pack.getLocation() + "\n\n" + pack.getPackageId() + "\n\n" +  pack.getStatus());
                                 mAdapter.notifyDataSetChanged();
                             }
                         }
