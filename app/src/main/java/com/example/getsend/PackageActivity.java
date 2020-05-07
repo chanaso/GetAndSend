@@ -11,15 +11,20 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 
 public class PackageActivity extends AppCompatActivity{
@@ -162,10 +167,6 @@ public class PackageActivity extends AppCompatActivity{
                         btn_1.setVisibility(View.INVISIBLE);
                         btn_2.setVisibility(View.INVISIBLE);
                         btn_confirm.setVisibility(View.INVISIBLE);
-
-                        //delete chat room
-                        DatabaseReference refChat = FirebaseDatabase.getInstance().getReference().child("ChatRooms");
-                        refChat.child("observable-"+packKey).removeValue();
                         break;
                 }
             }
@@ -232,6 +233,9 @@ public class PackageActivity extends AppCompatActivity{
                             @Override
                             public void onClick(View v) {
                                 //Delivery confirmation
+                                //Clean up before close the package delivery
+                                cleanUpDelivery(user2Key);
+                                //change the package status and rate
                                 refPackage.child(packKey).child("status").setValue("Arrived :)");
                                 btn_confirm.setVisibility(View.INVISIBLE);
                                 rateUser(user2, pack.getPackageOwnerId());
@@ -333,6 +337,27 @@ public class PackageActivity extends AppCompatActivity{
         intent.putExtra("package", jsonPackage);
         intent.putExtra("packageKey", packKey);
         startActivity(intent);
+    }
+
+    private void cleanUpDelivery(String userKey){
+        //delete chat room from database
+        DatabaseReference refChat = FirebaseDatabase.getInstance().getReference().child("ChatRooms");
+        refChat.child("observable-"+packKey).removeValue();
+
+        //delete signature from storage
+        StorageReference signatureRef = FirebaseStorage.getInstance().getReference("Signatures/"+ userKey + ".JPEG");
+
+        // Delete the file
+        signatureRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+            }
+        });
+
     }
 
     //handle device back button
