@@ -2,6 +2,7 @@ package com.example.getsend;
 
 import android.os.Bundle;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -16,6 +17,7 @@ public class UserProfileViewActivity extends AppCompatActivity {
     private String[] profileViewDetails;
     private final String DELIMITER = "@";
     private RatingBar ratingBar;
+    private ImageView imageProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
