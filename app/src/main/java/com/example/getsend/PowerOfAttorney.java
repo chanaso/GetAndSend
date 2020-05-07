@@ -1,10 +1,12 @@
 package com.example.getsend;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -13,6 +15,7 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -26,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -130,14 +134,29 @@ public class PowerOfAttorney extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 refPackage.child(packKey).child("status").setValue("On the way...");
-                //ToDo
                 //sms to deliveryman that the delivery approve
+                sendSms(user2.getPhone(), "Hi,\n" + "delivery approved!\npackage number: " + pack.getPackageId());
                 startActivity(new Intent(PowerOfAttorney.this, NavbarPackagesActivity.class));
                 finish();
             }
         });
     }
 
+    public void sendSms(String phone, String message) {
+        if(checkPermission(Manifest.permission.SEND_SMS)){
+            SmsManager smsManager = SmsManager.getDefault();
+            smsManager.sendTextMessage(phone, null, message,null , null);
+            Toast.makeText(PowerOfAttorney.this, R.string.sms_send, Toast.LENGTH_LONG).show();
+        }else {
+            Toast.makeText(PowerOfAttorney.this, R.string.sms_did_not_send, Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+    public boolean checkPermission(String permission){
+        int check = ContextCompat.checkSelfPermission(this, permission);
+        return (check == PackageManager.PERMISSION_GRANTED);
+    }
     // Function for Digital Signature
     public void dialog_action() {
 
