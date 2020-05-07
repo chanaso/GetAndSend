@@ -66,6 +66,28 @@ public class NavbarPackagesActivity extends AppCompatActivity {
         });
     }
 
+    public String get_status(String status){
+        String str_to_print;
+        switch (status){
+            case "Waiting for delivery":
+                str_to_print = getString(R.string.waiting);
+                break;
+            case "Waiting for approval":
+                str_to_print = getString(R.string.waiting_for_confirm);
+                break;
+            case "On the way...":
+                str_to_print = getString(R.string.on_the_way);
+                break;
+            case "Arrived":
+            case "Arrived :)":
+                str_to_print = getString(R.string.arrived);
+                break;
+            default:
+                str_to_print = "";
+        }
+        return str_to_print;
+    }
+
     //extract packages id for current user and display them
     public void extractUserPackages() {
         String userPackages;
@@ -98,7 +120,7 @@ public class NavbarPackagesActivity extends AppCompatActivity {
                                 Package pack = dataSnapshot.getValue(Package.class);
                                 packagesOfCurrUser.add(pack);
                                 packagesKeysOfCurrUser.add(dataSnapshot.getKey());
-                                userPackagesList.add(pack.getLocation() + "\n\n" + pack.getPackageId() + "\n\n" +  pack.getStatus());
+                                userPackagesList.add("מספר חבילה: " + pack.getPackageId()+"\n\n"+pack.getLocation() + "\n\n--  סטטוס: " +  get_status(pack.getStatus())+" --");
                                 mAdapter.notifyDataSetChanged();
                             }
                         }

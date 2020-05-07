@@ -108,9 +108,9 @@
     <string name="phone_number_profile">מספר טלפון: \</string>
 
     <!--    Package Status-->
-    <string name="waiting">מחכה למשלוח </string>
+    <string name="waiting">מחכה למשלוח</string>
     <string name="on_the_way">בדרך...</string>
-    <string name="waiting_for_confirm">מחכה לאישור משלוח </string>
+    <string name="waiting_for_confirm">מחכה לאישור משלוח</string>
     <string name="arrived">הגיעה ליעד</string>
 
     <string name="send">שלח דירוג</string>

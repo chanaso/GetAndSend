@@ -20,10 +20,7 @@
             android:id="@+id/nav_sign_out"
             android:icon="@drawable/ic_sign_out"
             android:title="יציאה"></item>
-        <item
-            android:id="@+id/nav_mail"
-            android:icon="@drawable/ic_email"
-            android:title="צור קשר"></item>
+
 
     </group>
 
