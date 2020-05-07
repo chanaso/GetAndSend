@@ -167,7 +167,9 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
 
                 // send sms too package owner that there's a deliveryman
                 sendSms("Hi,\n" + currUser.getName() +" deliveryman wants to take your package number: "+ packageId);
-                sendSms("Deliveryman Note: " + edtxt_deliverymanNote.getText().toString());
+                if(!edtxt_deliverymanNote.getText().toString().trim().matches("")){
+                    sendSms("Deliveryman Note: " + edtxt_deliverymanNote.getText().toString());
+                }
                 // add package to the deliveryMan packages
                 currUser.setPackagesToDeliver(packKey, userKey);
                 updateCurrUserInSP();
