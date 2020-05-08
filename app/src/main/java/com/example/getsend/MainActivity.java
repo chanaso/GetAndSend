@@ -128,19 +128,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         imageView.setOnClickListener(this);
         showImg();
 
-//
-//        LayoutInflater inflater = getLayoutInflater();
-//        View layout = inflater.inflate(R.layout.toast_layout, (ViewGroup) findViewById(R.id.toast_root));
-//
-//        TextView toastText = layout.findViewById(R.id.toast_text);
-//        ImageView toastImage = layout.findViewById(R.id.toast_image);
-//
-//        Toast toast = new Toast(getApplicationContext());
-//        toast.setGravity(Gravity.TOP, 0, 0);
-//        toast.setDuration(Toast.LENGTH_LONG);
-//        toast.setView(layout);
-//
-//        toast.show();
     }
 
     private void checkUserExist() {
@@ -319,6 +306,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
+
+    
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
