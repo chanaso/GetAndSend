@@ -27,7 +27,7 @@ public class UserProfileViewActivity extends AppCompatActivity {
     private ImageView imageProfile;
     private StorageReference imagesRef;
     private String userKey;
-    private final long ONE_MEGABYTE = 1024 * 1024;
+    final long ONE_MEGABYTE = 1024 * 1024 *5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

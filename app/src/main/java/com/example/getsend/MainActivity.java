@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private TextView txt_contactUs, txt_dialog;
     private ImageView imageView;
     private StorageReference imagesRef;
-    private final long ONE_MEGABYTE = 1024 * 1024;
+    final long ONE_MEGABYTE = 1024 * 1024 *5;
     private static int SELECT_PICTURE = 1;
     private Dialog dialog;
 
