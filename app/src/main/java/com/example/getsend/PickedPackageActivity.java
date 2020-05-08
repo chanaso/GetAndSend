@@ -154,7 +154,7 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
             {
                 // integrity input check
                 if(edtxt_deliverymanNote.getText().length() > 100){
-                    this.edtxt_deliverymanNote.setError("Note should be less than 160 letters");
+                    this.edtxt_deliverymanNote.setError(getString(R.string.note_length));
                     this.edtxt_deliverymanNote.requestFocus();
                     return;
                 }

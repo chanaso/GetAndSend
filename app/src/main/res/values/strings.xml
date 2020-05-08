@@ -108,7 +108,21 @@
     <string name="arrived">הגיעה ליעד</string>
 
     <string name="send">שלח דירוג</string>
+    <string name="rate_note">דרג את \</string>
     <string name="note">שלח הודעה לנמען החבילה</string>
+    <string name="note_length">ההודעה צריכה להיות קצרה מ 160 תווים</string>
+
+
+    <!--    ForgetPasswordActivity-->
+    <string name="require_phone">נא להזין מספר טלפון</string>
+    <string name="invalid_phone">מספר הטלפון אינו חוקי</string>
+    <string name="require_pass">נא להזין סיסמא</string>
+    <string name="invalid_pass">סיסמא צריכה להכיל לפחות 6 מספרים</string>
+    <string name="require_validation">נא להזין קוד אימות</string>
+    <string name="same_pass">סיסמאות לא תואמות</string>
+    <string name="incorrect_validation">קוד אימות שגוי</string>
+    <string name="user_added">משתמש נרשם בהצלחה</string>
+    <string name="incorrect_id">נא להזין מספר ת״ז חוקי</string>
 
 
 
