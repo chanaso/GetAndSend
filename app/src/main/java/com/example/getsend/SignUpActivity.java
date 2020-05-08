@@ -67,19 +67,19 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
         // validation check
         if(name.isEmpty()){
-            edtxt_userName.setError("user name required");
+            edtxt_userName.setError(getString(R.string.require_name));
             edtxt_userName.requestFocus();
             return;
         }
 
         if(phone.isEmpty()){
-            edtxt_phoneNumber.setError("phone number required");
+            edtxt_phoneNumber.setError(getString(R.string.require_phone));
             edtxt_phoneNumber.requestFocus();
             return;
         }
 
         if(phone.length() != 13){
-            edtxt_phoneNumber.setError("please enter a valid phone number");
+            edtxt_phoneNumber.setError(getString(R.string.invalid_phone));
             edtxt_phoneNumber.requestFocus();
             return;
         }

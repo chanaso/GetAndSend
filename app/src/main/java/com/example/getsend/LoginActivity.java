@@ -47,10 +47,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     public void loginUser(){
         final String prePhone = ccp.getSelectedCountryCode();
+        String phone1 = edtxt_Phone.getText().toString().trim();
         final String phone = "+" + prePhone + edtxt_Phone.getText().toString().trim();
         password = edtxt_Password.getText().toString().trim();
-        integrityCheck();
 
+        //check inputs validation
+        if (phone1.matches("")) {
+            edtxt_Phone.setError(getString(R.string.require_phone));
+            edtxt_Phone.requestFocus();
+            return;
+        }
+        if (password.matches("")) {
+            edtxt_Password.setError(getString(R.string.require_pass));
+            edtxt_Password.requestFocus();
+            return;
+        }
         //check if the user is registered already and if the phone number exist in db
         refUser.orderByChild("phone").equalTo(phone).addListenerForSingleValueEvent(new ValueEventListener() {
             String value;
@@ -129,20 +140,5 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onStart() {
         super.onStart();
-    }
-
-    //check inputs validation
-    public void integrityCheck() {
-        String phone = edtxt_Phone.getText().toString().trim();
-        if (phone.matches("")) {
-            edtxt_Phone.setError("phone number required");
-            edtxt_Phone.requestFocus();
-            return;
-        }
-        if (password.matches("")) {
-            edtxt_Password.setError("password required");
-            edtxt_Password.requestFocus();
-            return;
-        }
     }
 }
