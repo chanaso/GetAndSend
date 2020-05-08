@@ -165,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 ImageView toastImage = layout.findViewById(R.id.toast_image);
 
                 Toast toast = new Toast(getApplicationContext());
-                toast.setGravity(Gravity.TOP, 0, 0);
+                toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.setDuration(Toast.LENGTH_LONG);
                 toast.setView(layout);
 
