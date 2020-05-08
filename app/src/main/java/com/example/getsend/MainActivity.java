@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private SharedPreferences sharedPref;
     private Button btnJoin, btnInvite;
     private DatabaseReference refUser;
-    private TextView txt_contactUs;
+    private TextView txt_contactUs, txt_dialog;
     private ImageView imageView;
     private StorageReference imagesRef;
     private final long ONE_MEGABYTE = 1024 * 1024;
@@ -296,7 +296,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     intent.setType("image/*");
                     intent.setAction(Intent.ACTION_GET_CONTENT);
                     startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
-                    dialog.dismiss();
+                    txt_dialog = dialog.findViewById(R.id.txt_dialogImgID);
+                    txt_dialog.setText("התמונה נטענת, אנא המתן...");
+                    bt_yes.setVisibility(View.GONE);
+                    bt_no.setVisibility(View.GONE);
                 });
 
                 bt_no.setOnClickListener(v1 -> dialog.dismiss());
@@ -324,7 +327,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 // or failure of image
                 imagesRef.putFile(selectedImageURI).addOnSuccessListener(taskSnapshot -> {
                             // Image uploaded successfully
-                            })
+                    dialog.dismiss();
+                    Toast.makeText(MainActivity.this, R.string.update_img_successfully, Toast.LENGTH_LONG).show();
+                })
 
                         .addOnFailureListener((OnFailureListener) e -> Toast.makeText(MainActivity.this, "Failed to upload image", Toast.LENGTH_SHORT).show());
 

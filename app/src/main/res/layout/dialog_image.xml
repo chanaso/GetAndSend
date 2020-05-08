@@ -15,9 +15,10 @@
         android:gravity="center" />
 
     <TextView
+        android:id="@+id/txt_dialogImgID"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Would you like to update your profile image?"
+        android:text="@string/image_update"
         android:padding="50dp"
         android:textSize="20dp"
         android:gravity="center" />
@@ -33,13 +34,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="YES" />
+            android:text="@string/yes" />
 
         <Button
             android:id="@+id/btnNoID"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="NO" />
+            android:text="@string/no" />
     </LinearLayout>
 </LinearLayout>

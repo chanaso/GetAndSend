@@ -114,10 +114,11 @@
 
 
     <!--    ForgetPasswordActivity-->
+    <string name="require_name">נא להזין שם משתמש</string>
     <string name="require_phone">נא להזין מספר טלפון</string>
     <string name="invalid_phone">מספר הטלפון אינו חוקי</string>
     <string name="require_pass">נא להזין סיסמא</string>
-    <string name="invalid_pass">סיסמא צריכה להכיל לפחות 6 מספרים</string>
+    <string name="invalid_pass">סיסמא צריכה להכיל לפחות 6 ספרות</string>
     <string name="require_validation">נא להזין קוד אימות</string>
     <string name="same_pass">סיסמאות לא תואמות</string>
     <string name="incorrect_validation">קוד אימות שגוי</string>
@@ -126,5 +127,11 @@
 
     <string name="main_expl">פתח את התפריט בצד המסך לצפייה ברשימות שלך…</string>
 
+
+    <!--    dialog image-->
+    <string name="image_update">האם ברצונך לעדכן את תמונת הפרופיל שלך?</string>
+    <string name="yes">כן</string>
+    <string name="no">לא</string>
+    <string name="update_img_successfully">התמונה עודכנה בהצלחה!</string>
 
 </resources>
