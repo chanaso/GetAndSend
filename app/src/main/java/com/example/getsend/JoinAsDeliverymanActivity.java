@@ -4,12 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -91,20 +85,6 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
         currUser = gson.fromJson(json, User.class);
         userKey = sharedPref.getString("userKey", "");
 
-
-
-        LayoutInflater inflater = getLayoutInflater();
-        View layout = inflater.inflate(R.layout.toast_layout, (ViewGroup) findViewById(R.id.toast_root));
-
-        TextView toastText = layout.findViewById(R.id.toast_text);
-        ImageView toastImage = layout.findViewById(R.id.toast_image);
-
-        Toast toast = new Toast(getApplicationContext());
-        toast.setGravity(Gravity.CENTER, 0, 0);
-        toast.setDuration(Toast.LENGTH_LONG);
-        toast.setView(layout);
-
-        toast.show();
 
     }
 
