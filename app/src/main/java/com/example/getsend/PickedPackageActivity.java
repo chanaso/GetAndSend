@@ -179,7 +179,7 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
             }
             case R.id.btn_viewPofile:
             {
-                profileView = packageOwnerName +DELIMITER+ packageOwnerRate;
+                profileView = packageOwnerName +DELIMITER+ packageOwnerRate + DELIMITER +packageOwnerId;
                 Intent intent = new Intent(PickedPackageActivity.this, UserProfileViewActivity.class);
                 intent.putExtra("profileView", profileView);
                 startActivity(intent);
