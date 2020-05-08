@@ -54,8 +54,8 @@ public class NavbarPackagesActivity extends AppCompatActivity {
             Intent intent = new Intent(NavbarPackagesActivity.this, PackageActivity.class);
             // transfer the selected package as json to packageActivity which will dispaly that package
             // checking what the location of the selected package and transfer all the package details
-            String[] m = listView_packages.getItemAtPosition(i).toString().split("\n\n");
-            String location = m[1] +" "+ m[0];
+            String[] m = listView_packages.getItemAtPosition(i).toString().replace("מספר חבילה: ","").replace("--  סטטוס: ", "").replace(" --", "").split("\n\n");
+            String location = m[0] +" "+ m[1];
             String jsonPackage = gson.toJson(packagesOfCurrUser.stream().
                     filter(p -> (p.getPackageId()+" "+p.getLocation()).equals(location)).
                     findAny().orElse(null));
