@@ -142,33 +142,33 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
         // integrity input check
         if(pass.length() < 6){
-            this.edtxt_pass.setError("password should be at least 6 numbers");
+            this.edtxt_pass.setError(getString(R.string.invalid_pass));
             this.edtxt_pass.requestFocus();
             return;
         }
 
         if(pass.matches("")){
-            this.edtxt_pass.setError("password required");
+            this.edtxt_pass.setError(getString(R.string.require_pass));
             this.edtxt_pass.requestFocus();
             return;
         }
 
         if(code.matches("")){
-            this.edtxt_verifiCode.setError("verification code required");
+            this.edtxt_verifiCode.setError(getString(R.string.require_validation));
             this.edtxt_verifiCode.requestFocus();
             return;
         }
 
         if(!pass.equals(passCon))
         {
-            this.edtxt_pass.setError("passwords not the same");
+            this.edtxt_pass.setError(getString(R.string.same_pass));
             this.edtxt_pass.requestFocus();
             return;
         }
 
         if(id.length() != 9)
         {
-            this.edtxt_userId.setError("Incorrect Id");
+            this.edtxt_userId.setError(getString(R.string.incorrect_id));
             this.edtxt_userId.requestFocus();
             return;
         }
@@ -187,7 +187,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                         DatabaseReference ref = refUser.push();
                         userKey = ref.getKey();
                         ref.setValue(user);
-                        Toast.makeText(SignUpActivity.this, "User registered successfully!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(SignUpActivity.this, getString(R.string.user_added), Toast.LENGTH_LONG).show();
                         // saving the user that registered to local memory.
                         SharedPreferences.Editor prefEditor = sharedPref.edit();
                         Gson gson = new Gson();
@@ -200,7 +200,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                     } else {
                         if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                             // The verification code entered was invalid
-                            Toast.makeText(SignUpActivity.this, "Inncorrect Verification Code", Toast.LENGTH_LONG).show();
+                            Toast.makeText(SignUpActivity.this,getString(R.string.incorrect_validation), Toast.LENGTH_LONG).show();
                         }
                     }
                 });

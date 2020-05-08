@@ -183,7 +183,7 @@ public class PowerOfAttorney extends AppCompatActivity {
             public void onClick(View v) {
                 mSignature.save(view, StoredPath);
                 dialog.dismiss();
-                Toast.makeText(getApplicationContext(), "Successfully Saved", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "נשלח בהצלחה", Toast.LENGTH_SHORT).show();
                 // Calling the same class
                 imageView.setImageBitmap(bitmap);
                 onRestart();

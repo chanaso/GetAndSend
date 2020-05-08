@@ -4,13 +4,12 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="access_token">sk.eyJ1IjoiYW5hZWx6IiwiYSI6ImNrOTZiaWp6djBkMngzZ3BjMmE2d2FkM3UifQ.J7imtyBcJKi2D7HF6uj2sQ</string>
-    <string name="textview">hello</string>
-    <string name="textviewwight">the package wight</string>
 
-    <string name="under_line_Profile"><u>Profile</u></string>
-    <string name="under_line_packages"><u>Packages List</u></string>
-    <string name="under_line_package"><u>Package Details</u></string>
-    <string name="confirm_delivery"><u>Confirm delivery</u></string>
+    <string name="under_line_Profile">הפרופיל שלי</string>
+    <string name="under_line_packages">רשימת החבילות</string>
+    <string name="under_line_packages_picked">רשימת החבילות במיקום הנבחר</string>
+    <string name="under_line_package">פרטי החבילה</string>
+    <string name="confirm_delivery">אשר משלוח</string>
 
 
     <!--Location tracking activity permission toasts-->
@@ -19,31 +18,27 @@
 
     <!-- JoinAsDeliveryManActivity -->
     <string name="capital">Capital: %1$s</string>
-    <string name="tap_on_marker_instruction">Tap on a marker</string>
-    <string name="reEnter_location">Please enter a valid location</string>
 
     <!-- InviteDeliveryActivity -->
     <!-- xml-->
-    <string name="under_line_order_delivery"><u>Order delivery</u></string>
-    <string name="complete_the_following">Complete the following information\n about your package:</string>
-    <string name="package_id">Package ID:</string>
-    <string name="user_id">Your ID:</string>
-    <string name="weight">Weight(gr):</string>
-    <string name="size">Size(sqm):</string>
-    <string name="location">Location:</string>
-    <string name="destination">Destination:</string>
-    <string name="click_here_to_choose_location">Click here to choose location</string>
-    <string name="upload_my_package">upload my package</string>
+    <string name="under_line_order_delivery">הזמן משלוח</string>
+    <string name="complete_the_following">מלא את הפרטים הבאים בנוגע לחבילה שלך: \</string>
+    <string name="package_id">מספר מזהה חבילה: \</string>
+    <string name="weight">משקל (גרם): \</string>
+    <string name="size">גודל (סמ״ר): \ </string>
+    <string name="location">מיקום: \</string>
+    <string name="destination">יעד: \</string>
+    <string name="click_here_to_choose_location">לחץ כאן לבחירת מיקום</string>
+    <string name="upload_my_package">עדכון החבילה</string>
+    <string name="status">סטטוס החבילה: \</string>
 
     <!--    SignatureActivity-->
-    <string name="signature_title">Digital Signature</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
-    <string name="hint_sign">Add Signature</string>
-    <string name="dialog_title">SIGN HERE</string>
-    <string name="hint_cancel">Cancel</string>
-    <string name="hint_clear">Clear</string>
-    <string name="hint_save">Save</string>
+    <string name="signature_title">חתימה דיגיטאלית</string>
+    <string name="hint_sign">חתימה</string>
+    <string name="dialog_title">חתום כאן</string>
+    <string name="hint_cancel">ביטול</string>
+    <string name="hint_clear">מחיקה</string>
+    <string name="hint_save">שמור</string>
 
     <!--    PowerOfAttorney-->
     <string name="poa_title">ייפוי כח לקבלת דבר דואר</string>
@@ -54,50 +49,80 @@
     <string name="poa_content_5">מספר זהות הנמען: </string>
     <string name="poa_content_6">תאריך: </string>
     <string name="poa_content_7">חתימת הנמען: </string>
+    <string name="confirm">אישור </string>
+
 
 
     <!--    packageActivity-->
-    <string name="btn_confirm_delivery">Confirm Delivery</string>
-    <string name="delete_packge">Delete package</string>
-    <string name="view_profile">View Deliveryman Porfile</string>
-    <string name="chat">Chat with deliveryman</string>
-    <string name="view_poa">View Power Of Attorney</string>
+    <string name="btn_confirm_delivery">אשר משלוח</string>
+    <string name="btn_delete_package">מחק חבילה</string>
+    <string name="view_profile">צפיה בפרטי השליח</string>
+    <string name="chat">צ׳ט עם השליח</string>
+    <string name="btn_reject_package">בטל משלוח</string>
+    <string name="approve_delivery">אשר הגעה של החבילה</string>
+    <string name="view_profile_owner">צפיה בפרטי הנמען</string>
 
 
     <!-- access to firebase failed-->
-    <string name="error_message">Access_to_Firebase_failed...</string>
+    <string name="error_message">החיבור לשרת נכשל, נסה להפעיל מחדש את האפליקציה</string>
 
 
     <!-- verification code-->
-    <string name="verification_code_failed_Too_many_tries">Too many tries. Please try again later!</string>
-    <string name="verification_code_failed_please_try_again">Please try again!</string>
-    <string name="verification_code_sent">Sent</string>
-    <string name="User_does_not_exist">User does not exist</string>
+    <string name="verification_code_failed_Too_many_tries">יותר מידי ניסיונות! נסה שוב מאוחר יותר</string>
+    <string name="verification_code_failed_please_try_again">בבקשה נסה שוב!</string>
+    <string name="verification_code_sent">נשלח</string>
+    <string name="User_does_not_exist">משתמש לא קיים</string>
 
-    <string name="input_placeholder">Write a message</string>
-    <string name="create_account">Create Account</string>
-    <string name="forgot_your_password"><u>Forgot your password?</u></string>
-    <string name="phone_number">Phone number</string>
-    <string name="confirm_password">Confirm Password</string>
-    <string name="user_name">User name</string>
-    <string name="get_verification_code">Get verification code</string>
-    <string name="verification_code">Verification code</string>
-    <string name="password">Password</string>
-    <string name="id_number">Id number</string>
-    <string name="sign_up">SIGN UP</string>
-    <string name="new_password">New password</string>
-    <string name="sign_in">Sign in</string>
-    <string name="join_as_deliverman">Join as deliverman</string>
-    <string name="invite_delivery">Invite delivery</string>
-    <string name="delete_package">Package deleted successfully</string>
-    <string name="reject_package">Delivery was rejected</string>
-    <string name="sms_send">SMS send successfully</string>
-    <string name="sms_did_not_send">SMS did not send</string>
+    <string name="input_placeholder">כתוב הודעה</string>
+    <string name="create_account">צור חשבון חדש</string>
+    <string name="forgot_your_password"><u>שכחת סיסמא?</u></string>
+    <string name="phone_number">מספר טלפון</string>
+    <string name="confirm_password">אימות סיסמא</string>
+    <string name="user_name">שם משתמש (שם פרטי + משפחה)</string>
+    <string name="get_verification_code">קבל קוד אימות</string>
+    <string name="verification_code">הקוד שהתקבל</string>
+    <string name="password">סיסמא</string>
+    <string name="id_number">מספר ת״ז</string>
+    <string name="sign_up">הרשמה</string>
+    <string name="new_password">סיסמא חדשה</string>
+    <string name="sign_in">כניסה</string>
+    <string name="join_as_deliverman">הצטרף כשליח</string>
+    <string name="invite_delivery">הזמן משלוח</string>
+    <string name="delete_package">חבילה נמחקה בהצלחה</string>
+    <string name="reject_package">המשלוח בוטל</string>
+    <string name="sms_send">נשלח בהצלחה SMS</string>
+    <string name="sms_did_not_send"></string>
 
     <!--    MainActivity exit dialog-->
     <string name="exit_title">יציאה</string>
     <string name="exit_message">אתה בטוח שברצונך לצאת מהאפליקציה?</string>
-    <string name="contact_us"><a href="mailto:contact.getandsend@gmail.com" target="_top">Contact us</a></string>
+    <string name="contact_us"><a href="mailto:contact.getandsend@gmail.com" target="_top">צור איתנו קשר</a></string>
+
+    <string name="user_name_profile">שם משתמש: \</string>
+    <string name="phone_number_profile">מספר טלפון: \</string>
+
+    <!--    Package Status-->
+    <string name="waiting">מחכה למשלוח</string>
+    <string name="on_the_way">בדרך...</string>
+    <string name="waiting_for_confirm">מחכה לאישור משלוח</string>
+    <string name="arrived">הגיעה ליעד</string>
+
+    <string name="send">שלח דירוג</string>
+    <string name="rate_note">דרג את \</string>
+    <string name="note">שלח הודעה לנמען החבילה</string>
+    <string name="note_length">ההודעה צריכה להיות קצרה מ 160 תווים</string>
+
+
+    <!--    ForgetPasswordActivity-->
+    <string name="require_phone">נא להזין מספר טלפון</string>
+    <string name="invalid_phone">מספר הטלפון אינו חוקי</string>
+    <string name="require_pass">נא להזין סיסמא</string>
+    <string name="invalid_pass">סיסמא צריכה להכיל לפחות 6 מספרים</string>
+    <string name="require_validation">נא להזין קוד אימות</string>
+    <string name="same_pass">סיסמאות לא תואמות</string>
+    <string name="incorrect_validation">קוד אימות שגוי</string>
+    <string name="user_added">משתמש נרשם בהצלחה</string>
+    <string name="incorrect_id">נא להזין מספר ת״ז חוקי</string>
 
 
 

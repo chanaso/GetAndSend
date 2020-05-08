@@ -9,7 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="20dp"
+        android:layout_margin="5dp">
 
         <TextView
             android:layout_width="match_parent"
@@ -24,7 +25,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/ColorPrimaryLight"
+            android:background="@color/ColorLightBlue"
             android:padding="7dp"
             android:text="@string/complete_the_following"
             android:textColor="#000000"
@@ -39,8 +40,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="@string/package_id"
+                android:textSize="17sp"
                 android:textColor="#000000" />
 
             <EditText
@@ -66,6 +67,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/weight"
+                android:textSize="17sp"
                 android:textColor="#000000" />
 
             <EditText
@@ -91,6 +93,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/size"
+                android:textSize="17sp"
                 android:textColor="#000000" />
 
             <EditText
@@ -111,6 +114,7 @@
             android:layout_marginStart="5dp"
             android:padding="5dp"
             android:text="@string/location"
+            android:textSize="17sp"
             android:textColor="#000000" />
 
         <EditText
@@ -122,7 +126,7 @@
             android:focusable="false"
             android:inputType="none"
             android:hint="@string/click_here_to_choose_location"
-            android:textSize="18sp"
+            android:textSize="15sp"
             android:importantForAutofill="no"/>
 
         <TextView
@@ -131,6 +135,7 @@
             android:layout_marginStart="5dp"
             android:padding="1dp"
             android:text="@string/destination"
+            android:textSize="17sp"
             android:textColor="#000000" />
 
         <EditText
@@ -142,7 +147,7 @@
             android:focusable="false"
             android:inputType="none"
             android:hint="@string/click_here_to_choose_location"
-            android:textSize="18sp"
+            android:textSize="15sp"
             android:importantForAutofill="no" />
 
         <Button
@@ -150,7 +155,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="15dp"
-            android:text="@string/upload_my_package" />
+            android:text="@string/upload_my_package"
+            android:textSize="17sp"
+            android:background="@drawable/natural_round_button"
+            android:textStyle="bold"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

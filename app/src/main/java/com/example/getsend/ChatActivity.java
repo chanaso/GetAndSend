@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,8 +21,6 @@ import com.scaledrone.lib.Listener;
 import com.scaledrone.lib.Room;
 import com.scaledrone.lib.RoomListener;
 import com.scaledrone.lib.Scaledrone;
-
-import java.util.Random;
 
 public class ChatActivity extends AppCompatActivity implements RoomListener {
 
@@ -194,4 +191,5 @@ public class ChatActivity extends AppCompatActivity implements RoomListener {
                     ", color='" + color + '\'' +
                     '}';
         }
-    }
+
+}

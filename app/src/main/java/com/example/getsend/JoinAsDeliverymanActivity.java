@@ -4,18 +4,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.widget.Toast;
 
-import com.google.firebase.database.ChildEventListener;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.mapbox.android.core.permissions.PermissionsListener;
@@ -272,7 +269,7 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
                 } else {
                     DecimalFormat two = new DecimalFormat("#0.00");
                     if (two.format(longitudeF).equals(two.format(longitude)) &&  two.format(latitudeF).equals(two.format(latitude))) {
-                        Toast.makeText(JoinAsDeliverymanActivity.this, "Please zoom in the map\nto pick the package!",Toast.LENGTH_LONG).show();
+                        Toast.makeText(JoinAsDeliverymanActivity.this, "התקרב יותר לנקודה על מנת לבחור אותה",Toast.LENGTH_LONG).show();
                     }
 
                 }

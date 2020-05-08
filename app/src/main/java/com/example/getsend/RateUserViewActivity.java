@@ -43,7 +43,7 @@ public class RateUserViewActivity extends Activity {
         }
 
         edtxt_user = findViewById(R.id.edtxt_userToRateID);
-        edtxt_user.setText("Please rate " + userName + " :)");
+        edtxt_user.setText(getString(R.string.rate_note) + userName + " :)");
         bar = findViewById(R.id.ratingbarID);
         findViewById(R.id.btn_sendID).setOnClickListener(new View.OnClickListener() {
 

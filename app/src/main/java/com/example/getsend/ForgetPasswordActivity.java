@@ -11,11 +11,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskExecutors;
 import com.google.firebase.FirebaseException;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.PhoneAuthCredential;
@@ -68,13 +65,13 @@ public class ForgetPasswordActivity extends AppCompatActivity implements View.On
 
         // validation check
         if(phone.isEmpty()){
-            edtxt_phoneNumber.setError("phone number required");
+            edtxt_phoneNumber.setError(getString(R.string.require_phone));
             edtxt_phoneNumber.requestFocus();
             return;
         }
 
         if(phone.length() != 13){
-            edtxt_phoneNumber.setError("please enter a valid phone number");
+            edtxt_phoneNumber.setError(getString(R.string.invalid_phone));
             edtxt_phoneNumber.requestFocus();
             return;
         }
@@ -118,26 +115,26 @@ public class ForgetPasswordActivity extends AppCompatActivity implements View.On
 
         // integrity input check
         if(pass.length() < 6){
-            this.edtxt_pass.setError("password should be at least 6 numbers");
+            this.edtxt_pass.setError(getString(R.string.invalid_pass));
             this.edtxt_pass.requestFocus();
             return;
         }
 
         if(pass.matches("")){
-            this.edtxt_pass.setError("password required");
+            this.edtxt_pass.setError(getString(R.string.require_pass));
             this.edtxt_pass.requestFocus();
             return;
         }
 
         if(code.matches("")){
-            this.edtxt_verifiCode.setError("verification code required");
+            this.edtxt_verifiCode.setError(getString(R.string.require_validation));
             this.edtxt_verifiCode.requestFocus();
             return;
         }
 
         if(!pass.equals(passCon))
         {
-            this.edtxt_pass.setError("passwords not the same");
+            this.edtxt_pass.setError(getString(R.string.same_pass));
             this.edtxt_pass.requestFocus();
             return;
         }
@@ -175,7 +172,7 @@ public class ForgetPasswordActivity extends AppCompatActivity implements View.On
                     } else {
                         if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                             // The verification code entered was invalid
-                            Toast.makeText(ForgetPasswordActivity.this, "Inncorrect Verification Code", Toast.LENGTH_LONG).show();
+                            Toast.makeText(ForgetPasswordActivity.this, getString(R.string.incorrect_validation), Toast.LENGTH_LONG).show();
                         }
                     }
                 });

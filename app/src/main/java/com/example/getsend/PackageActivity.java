@@ -108,7 +108,7 @@ public class PackageActivity extends AppCompatActivity{
                     case "Waiting for delivery":
                         btn_1.setVisibility(View.INVISIBLE);
                         btn_2.setVisibility(View.INVISIBLE);
-                        btn_confirm.setText("Delete Package");
+                        btn_confirm.setText(R.string.btn_delete_package);
                         btn_confirm.setOnClickListener(v -> {
                             //Delete package option
                             deleteCurrPackage(currUser, userKey, MY_PACKAGE_LIST);
@@ -118,12 +118,12 @@ public class PackageActivity extends AppCompatActivity{
                         });
                         break;
                     case "Waiting for approval":
-                        btn_1.setText("View Deliveryman Details");
+                        btn_1.setText(R.string.view_profile);
                         btn_1.setOnClickListener(v -> {
                             //View deliveryman details
                             viewUserDetails(pack.getPackageOwnerId());
                         });
-                        btn_2.setText("Reject Deliveryman");
+                        btn_2.setText(R.string.btn_reject_package);
                         btn_2.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -136,7 +136,7 @@ public class PackageActivity extends AppCompatActivity{
                                 finish();
                             }
                         });
-                        btn_confirm.setText(" Approve Delivery! ");
+                        btn_confirm.setText(R.string.approve_delivery);
                         btn_confirm.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -147,12 +147,12 @@ public class PackageActivity extends AppCompatActivity{
                         });
                         break;
                     case "On the way...":
-                        btn_1.setText("View Deliveryman Details");
+                        btn_1.setText(R.string.view_profile);
                         btn_1.setOnClickListener(v -> {
                             //View deliveryman details
                             viewUserDetails(pack.getDeliveryman());
                         });
-                        btn_2.setText(" Open chat ");
+                        btn_2.setText(R.string.chat);
                         btn_2.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -160,7 +160,7 @@ public class PackageActivity extends AppCompatActivity{
                                 openChat();
                             }
                         });
-                        btn_confirm.setText(" Delivery Confirmation ");
+                        btn_confirm.setText(R.string.approve_delivery);
                         btn_confirm.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -213,7 +213,7 @@ public class PackageActivity extends AppCompatActivity{
                         btn_confirm.setVisibility(View.INVISIBLE);
                         break;
                     case "On the way...":
-                        btn_1.setText("View Package Power Of Attorney");
+                        btn_1.setText(R.string.view_profile_owner);
                         btn_1.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -221,22 +221,22 @@ public class PackageActivity extends AppCompatActivity{
                                 openPOAView();
                             }
                         });
-                        btn_2.setText(" Open chat ");
+                        btn_2.setText(R.string.chat);
                         btn_2.setOnClickListener(v -> {
                             //Open chat
                             openChat();
 
                         });
-                        btn_confirm.setText(" Delivery Confirmation ");
+                        btn_confirm.setText(R.string.approve_delivery);
                         btn_confirm.setOnClickListener(v -> {
                             //Delivery confirmation
-                            Toast.makeText(PackageActivity.this, "The owner didn't confirm the arrival yet", Toast.LENGTH_LONG).show();
+                            Toast.makeText(PackageActivity.this, "הנמען עוד לא אישר את הגעת החבילה", Toast.LENGTH_LONG).show();
                         });
                         break;
                     case "Arrived":
                         btn_1.setVisibility(View.INVISIBLE);
                         btn_2.setVisibility(View.INVISIBLE);
-                        btn_confirm.setText(" Delivery Confirmation ");
+                        btn_confirm.setText(R.string.approve_delivery);
                         btn_confirm.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -359,12 +359,10 @@ public class PackageActivity extends AppCompatActivity{
         signatureRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Toast.makeText(PackageActivity.this, "signature deleted successfully "+userKey, Toast.LENGTH_LONG).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                Toast.makeText(PackageActivity.this, "Failed connect to storage "+userKey, Toast.LENGTH_LONG).show();
             }
         });
 

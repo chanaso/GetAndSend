@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -18,6 +17,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 
 import java.text.DecimalFormat;
+
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -62,6 +62,7 @@ public class ProfileActivity extends AppCompatActivity {
         ratingBar.setRating((float)currUser.getRate());
     }
 
+
     private void showImg() {
         imagesRef = FirebaseStorage.getInstance().getReference("Images/"+ userKey + ".jpg");
         imagesRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
@@ -71,4 +72,5 @@ public class ProfileActivity extends AppCompatActivity {
             imageView.setImageBitmap(bm);
         }).addOnFailureListener(exception -> Toast.makeText(ProfileActivity.this, R.string.error_message , Toast.LENGTH_SHORT));
     }
+
 }
