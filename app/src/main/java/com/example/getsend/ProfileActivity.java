@@ -1,15 +1,23 @@
 package com.example.getsend;
 
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 
 import java.text.DecimalFormat;
+
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -17,6 +25,10 @@ public class ProfileActivity extends AppCompatActivity {
     private User currUser;
     private TextView edtProfile, edtPhone, edtRate;
     private RatingBar ratingBar;
+    private StorageReference imagesRef;
+    private String userKey;
+    private final long ONE_MEGABYTE = 1024 * 1024;
+    private ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +42,10 @@ public class ProfileActivity extends AppCompatActivity {
         Gson gson = new Gson();
         String json = sharedPref.getString("currUser", "");
         currUser = gson.fromJson(json, User.class);
+        userKey = sharedPref.getString("userKey", "");
+
+        imageView = findViewById(R.id.image_ViewProfileID);
+        showImg();
 
         edtProfile = findViewById(R.id.profileNameID);
         edtProfile.setText(currUser.getName());
@@ -46,5 +62,15 @@ public class ProfileActivity extends AppCompatActivity {
         ratingBar.setRating((float)currUser.getRate());
     }
 
+
+    private void showImg() {
+        imagesRef = FirebaseStorage.getInstance().getReference("Images/"+ userKey + ".jpg");
+        imagesRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+            Bitmap bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            DisplayMetrics dm = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(dm);
+            imageView.setImageBitmap(bm);
+        }).addOnFailureListener(exception -> Toast.makeText(ProfileActivity.this, R.string.error_message , Toast.LENGTH_SHORT));
+    }
 
 }

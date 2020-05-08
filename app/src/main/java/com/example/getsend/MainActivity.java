@@ -1,14 +1,22 @@
 package com.example.getsend;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
+import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,12 +28,19 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
@@ -38,13 +53,14 @@ import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
+import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
+import java.util.UUID;
 
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener, PermissionsListener, NavigationView.OnNavigationItemSelectedListener
-{
-
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener, PermissionsListener, NavigationView.OnNavigationItemSelectedListener {
     private final int OWNER = 1, DELIVERYMAN = 0;
     private PermissionsManager permissionsManager;
     private MapboxMap mapboxMap;
@@ -56,10 +72,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Button btnJoin, btnInvite;
     private DatabaseReference refUser;
     private TextView txt_contactUs;
+    private ImageView imageView;
+    private StorageReference imagesRef;
+    private final long ONE_MEGABYTE = 1024 * 1024;
+    private static int SELECT_PICTURE = 1;
+    private Dialog dialog;
+
 
 
     @Override
-    protected void  onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Mapbox access token is configured here. This needs to be called either in your application
@@ -82,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         setSupportActionBar(toolbar);
 
         drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open,R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -98,10 +120,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         checkUserExist();
 
         //navBar view
-        NavigationView nav_view= (NavigationView)findViewById(R.id.nav_view);//this is navigation view from my main xml where i call another xml file
+        NavigationView nav_view = (NavigationView) findViewById(R.id.nav_view);//this is navigation view from my main xml where i call another xml file
         View header = nav_view.getHeaderView(0);//set View header to nav_view first element (i guess)
-        TextView txt = (TextView)header.findViewById(R.id.UserNameID);//now assign textview imeNaloga to header.id since we made View header.
+        TextView txt = (TextView) header.findViewById(R.id.UserNameID);//now assign textview imeNaloga to header.id since we made View header.
         txt.setText(currUser.getName());// And now just set text to that textview
+
+        imageView = header.findViewById(R.id.userImageID);
 
         nav_view.setNavigationItemSelectedListener(this);
         nav_view.bringToFront();
@@ -109,17 +133,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         btnInvite.setOnClickListener(this);
         btnJoin.setOnClickListener(this);
         txt_contactUs.setOnClickListener(this);
+        imageView.setOnClickListener(this);
+        showImg();
     }
 
     private void checkUserExist() {
         //  check if the user exist in the db
-        refUser.child(userKey).addValueEventListener(new ValueEventListener(){
+        refUser.child(userKey).addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot){
-                if(!dataSnapshot.exists()) {
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists()) {
                     signOut();
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Toast.makeText(MainActivity.this, R.string.error_message, Toast.LENGTH_LONG).show();
@@ -133,12 +160,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
             @Override
             public void onStyleLoaded(@NonNull Style style) {
-                        enableLocationComponent(style);
-                    }
-                });
+                enableLocationComponent(style);
+            }
+        });
     }
 
-    @SuppressWarnings( {"MissingPermission"})
+    @SuppressWarnings({"MissingPermission"})
     private void enableLocationComponent(@NonNull Style loadedMapStyle) {
         // Check if permissions are enabled and if not request
         if (PermissionsManager.areLocationPermissionsGranted(this)) {
@@ -177,12 +204,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onPermissionResult(boolean granted) {
         if (granted) {
-            mapboxMap.getStyle(new Style.OnStyleLoaded() {
-                @Override
-                public void onStyleLoaded(@NonNull Style style) {
-                    enableLocationComponent(style);
-                }
-            });
+            mapboxMap.getStyle(style -> enableLocationComponent(style));
         } else {
             Toast.makeText(this, R.string.user_location_permission_not_granted, Toast.LENGTH_LONG).show();
             finish();
@@ -190,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
-    @SuppressWarnings( {"MissingPermission"})
+    @SuppressWarnings({"MissingPermission"})
     protected void onStart() {
         super.onStart();
         mapView.onStart();
@@ -240,8 +262,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .setIcon(R.drawable.ic_sentiment)
                 .setTitle(R.string.exit_title)
                 .setMessage(R.string.exit_message)
-                .setPositiveButton("לצאת", new DialogInterface.OnClickListener()
-                {
+                .setPositiveButton("לצאת", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         finish();
@@ -255,22 +276,78 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.btnInvite:
-            {
+        switch (v.getId()) {
+            case R.id.btnInvite: {
                 startActivity(new Intent(MainActivity.this, InviteDeliveryActivity.class));
                 break;
             }
-            case R.id.btnJoin:
-            {
+            case R.id.btnJoin: {
                 startActivity(new Intent(MainActivity.this, JoinAsDeliverymanActivity.class));
                 break;
             }
-            case R.id.txt_contactUsID:
-            {
+            case R.id.txt_contactUsID: {
                 txt_contactUs.setMovementMethod(LinkMovementMethod.getInstance());
+                break;
+            }
+            case R.id.userImageID: {
+                dialog = new Dialog(this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.dialog_image);
+                dialog.show();
+
+                Button bt_yes = dialog.findViewById(R.id.btnYesID);
+                Button bt_no = dialog.findViewById(R.id.btnNoID);
+
+                bt_yes.setOnClickListener(v12 -> {
+                    Intent intent = new Intent();
+                    intent.setType("image/*");
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
+                    dialog.dismiss();
+                });
+
+                bt_no.setOnClickListener(v1 -> dialog.dismiss());
+                break;
             }
         }
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == SELECT_PICTURE) {
+
+                //Get ImageURi and load with help of picasso
+                Uri selectedImageURI = data.getData();
+                Picasso.with(MainActivity.this).load(data.getData()).noPlaceholder().centerCrop().fit()
+                        .into((ImageView) findViewById(R.id.userImageID));
+
+                imagesRef = FirebaseStorage.getInstance().getReference("Images/"+ userKey + ".jpg");
+
+                // adding listeners on upload
+                // or failure of image
+                imagesRef.putFile(selectedImageURI).addOnSuccessListener(taskSnapshot -> {
+                            // Image uploaded successfully
+                            })
+
+                        .addOnFailureListener((OnFailureListener) e -> Toast.makeText(MainActivity.this, "Failed to upload image", Toast.LENGTH_SHORT).show());
+
+            }
+
+        }
+    }
+
+    private void showImg() {
+
+        imagesRef = FirebaseStorage.getInstance().getReference("Images/"+ userKey + ".jpg");
+        imagesRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+            Bitmap bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            DisplayMetrics dm = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(dm);
+            imageView.setImageBitmap(bm);
+        }).addOnFailureListener(exception -> Toast.makeText(MainActivity.this, R.string.error_message , Toast.LENGTH_SHORT));
     }
 
     // update user type to be 1- user as a delivery getter

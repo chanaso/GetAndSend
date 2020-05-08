@@ -121,7 +121,7 @@ public class PackageActivity extends AppCompatActivity{
                         btn_1.setText(R.string.view_profile);
                         btn_1.setOnClickListener(v -> {
                             //View deliveryman details
-                            viewUserDetails(pack.getDeliveryman());
+                            viewUserDetails(pack.getPackageOwnerId());
                         });
                         btn_2.setText(R.string.btn_reject_package);
                         btn_2.setOnClickListener(new View.OnClickListener() {
@@ -306,7 +306,7 @@ public class PackageActivity extends AppCompatActivity{
         Gson gson = new Gson();
         String json = sharedPref.getString("user2", "");
         user2 = gson.fromJson(json, User.class);
-        profileView = user2.getName() +DELIMITER+ user2.getRate();
+        profileView = user2.getName() +DELIMITER+ user2.getRate()+DELIMITER+userViewKey;
         Intent intent = new Intent(PackageActivity.this, UserProfileViewActivity.class);
         intent.putExtra("profileView", profileView);
         startActivity(intent);
