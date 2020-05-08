@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         btnJoin.setOnClickListener(this);
         txt_contactUs.setOnClickListener(this);
         imageView.setOnClickListener(this);
-        ShowImg();
+        showImg();
     }
 
     private void checkUserExist() {
@@ -330,7 +330,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 // or failure of image
                 imagesRef.putFile(selectedImageURI).addOnSuccessListener(taskSnapshot -> {
                             // Image uploaded successfully
-                            Toast.makeText(MainActivity.this, "Image Uploaded!!", Toast.LENGTH_SHORT).show(); })
+                            })
 
                         .addOnFailureListener((OnFailureListener) e -> Toast.makeText(MainActivity.this, "Failed to upload image", Toast.LENGTH_SHORT).show());
 
@@ -339,7 +339,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    private void ShowImg() {
+    private void showImg() {
 
         imagesRef = FirebaseStorage.getInstance().getReference("Images/"+ userKey + ".jpg");
         imagesRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
@@ -347,7 +347,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             DisplayMetrics dm = new DisplayMetrics();
             getWindowManager().getDefaultDisplay().getMetrics(dm);
             imageView.setImageBitmap(bm);
-        }).addOnFailureListener(exception -> Toast.makeText(MainActivity.this,R.string.access_token , Toast.LENGTH_SHORT));
+        }).addOnFailureListener(exception -> Toast.makeText(MainActivity.this, R.string.error_message , Toast.LENGTH_SHORT));
     }
 
     // update user type to be 1- user as a delivery getter
