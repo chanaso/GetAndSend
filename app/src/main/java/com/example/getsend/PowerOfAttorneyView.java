@@ -92,7 +92,7 @@ public class PowerOfAttorneyView extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Exception exception) {
                 // Handle any errors
-                Toast.makeText(PowerOfAttorneyView.this,"error..." , Toast.LENGTH_SHORT);
+                Toast.makeText(PowerOfAttorneyView.this,R.string.error_message , Toast.LENGTH_SHORT);
             }
         });
         btn_exit.setOnClickListener(new View.OnClickListener() {

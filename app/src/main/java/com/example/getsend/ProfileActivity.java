@@ -2,10 +2,8 @@ package com.example.getsend;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -47,4 +45,6 @@ public class ProfileActivity extends AppCompatActivity {
         ratingBar = findViewById(R.id.ratingBar_profileID);
         ratingBar.setRating((float)currUser.getRate());
     }
+
+
 }

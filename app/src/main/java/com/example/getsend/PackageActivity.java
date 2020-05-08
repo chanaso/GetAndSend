@@ -230,7 +230,7 @@ public class PackageActivity extends AppCompatActivity{
                         btn_confirm.setText(R.string.approve_delivery);
                         btn_confirm.setOnClickListener(v -> {
                             //Delivery confirmation
-                            Toast.makeText(PackageActivity.this, "The owner didn't confirm the arrival yet", Toast.LENGTH_LONG).show();
+                            Toast.makeText(PackageActivity.this, "הנמען עוד לא אישר את הגעת החבילה", Toast.LENGTH_LONG).show();
                         });
                         break;
                     case "Arrived":
@@ -359,12 +359,10 @@ public class PackageActivity extends AppCompatActivity{
         signatureRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Toast.makeText(PackageActivity.this, "signature deleted successfully "+userKey, Toast.LENGTH_LONG).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                Toast.makeText(PackageActivity.this, "Failed connect to storage "+userKey, Toast.LENGTH_LONG).show();
             }
         });
 
