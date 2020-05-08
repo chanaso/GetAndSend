@@ -4,11 +4,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -75,6 +77,15 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
         mapView = findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
+
+        View parentLayout = findViewById(android.R.id.content);
+        Snackbar.make(parentLayout, "הגדל/הקטן את המפה בכדי לבחור חבילה\n לבחירת חבילה לחץ על הסימון", Snackbar.LENGTH_LONG)
+                .setAction("אני יודע", view -> {
+
+                })
+                .setActionTextColor(getResources().getColor(android.R.color.holo_blue_dark ))
+                .show();
+
         refPackage = FirebaseDatabase.getInstance().getReference().child("Package");
         locationsList = new ArrayList<>();
 
