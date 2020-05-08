@@ -96,6 +96,7 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
         currUser = gson.fromJson(json, User.class);
         userKey = sharedPref.getString("userKey", "");
 
+
     }
 
 
