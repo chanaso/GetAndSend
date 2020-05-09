@@ -61,6 +61,7 @@
     <string name="btn_reject_package">בטל משלוח</string>
     <string name="approve_delivery">אשר הגעה של החבילה</string>
     <string name="view_profile_owner">צפיה בפרטי הנמען</string>
+    <string name="view_profile_owner_POA">צפיה בייפוי כוח</string>
 
 
     <!-- access to firebase failed-->

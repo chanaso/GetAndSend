@@ -213,7 +213,7 @@ public class PackageActivity extends AppCompatActivity{
                         btn_confirm.setVisibility(View.INVISIBLE);
                         break;
                     case "On the way...":
-                        btn_1.setText(R.string.view_profile_owner);
+                        btn_1.setText(R.string.view_profile_owner_POA);
                         btn_1.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
