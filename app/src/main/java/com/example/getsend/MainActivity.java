@@ -1,7 +1,6 @@
 package com.example.getsend;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -177,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 Toast toast = new Toast(getApplicationContext());
                 toast.setGravity(Gravity.CENTER, 0, 0);
-                toast.setDuration(Toast.LENGTH_LONG);
+                toast.setDuration(Toast.LENGTH_SHORT);
                 toast.setView(layout);
 
                 toast.show();
@@ -292,10 +291,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         switch (v.getId()) {
             case R.id.btnInvite: {
                 startActivity(new Intent(MainActivity.this, InviteDeliveryActivity.class));
+                finish();
                 break;
             }
             case R.id.btnJoin: {
                 startActivity(new Intent(MainActivity.this, JoinAsDeliverymanActivity.class));
+                finish();
                 break;
             }
             case R.id.txt_contactUsID: {
