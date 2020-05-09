@@ -56,9 +56,6 @@ public class RateUserViewActivity extends Activity {
                     // add (1) number of rates to user
                     currUser.getRefUser().child(userKey).child("numOfRates").setValue(numOfRates);
 
-                    currUser.setRate(newRate);
-                    // update rate in the local memory
-                    updateCurrUserInSP();
                 }
                 startActivity(new Intent(RateUserViewActivity.this, NavbarPackagesActivity.class));
                 finish();
@@ -66,11 +63,5 @@ public class RateUserViewActivity extends Activity {
         });
 
     }
-    private void updateCurrUserInSP() {
-        SharedPreferences.Editor prefEditor = sharedPref.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(currUser);
-        prefEditor.putString("currUser", json);
-        prefEditor.commit();
-    }
+
 }
