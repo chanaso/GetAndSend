@@ -66,10 +66,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private SharedPreferences sharedPref;
     private Button btnJoin, btnInvite;
     private DatabaseReference refUser;
-    private TextView txt_contactUs, txt_dialog;
+    private TextView txt_contactUs, txt_dialog, txt_imgNote;
     private ImageView imageView;
     private StorageReference imagesRef;
-    final long ONE_MEGABYTE = 1024 * 1024 *5;
+    final long ONE_MEGABYTE = 1024 * 1024 * 5;
     private static int SELECT_PICTURE = 1;
     private Dialog dialog;
 
@@ -99,7 +99,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         setSupportActionBar(toolbar);
 
         drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close){
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                txt_imgNote.setVisibility(View.VISIBLE);
+                txt_imgNote.setText(getString(R.string.click_here_to_update_your_profile_image));
+                //make the textView update note disappear
+                txt_imgNote.postDelayed(() -> txt_imgNote.setVisibility(View.INVISIBLE), 3000);
+            }
+        };
+
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -118,7 +128,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         NavigationView nav_view = (NavigationView) findViewById(R.id.nav_view);//this is navigation view from my main xml where i call another xml file
         View header = nav_view.getHeaderView(0);//set View header to nav_view first element (i guess)
         TextView txt = (TextView) header.findViewById(R.id.UserNameID);//now assign textview imeNaloga to header.id since we made View header.
-        txt.setText(currUser.getName());// And now just set text to that textview
+        txt_imgNote = header.findViewById(R.id.txt_updateImgNoteID);
+        txt.setText(currUser.getName());// And now just set text to that textviewn
 
         imageView = header.findViewById(R.id.userImageID);
 
@@ -271,16 +282,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .setIcon(R.drawable.ic_sentiment)
                 .setTitle(R.string.exit_title)
                 .setMessage(R.string.exit_message)
-                .setPositiveButton("לצאת", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                    }
-
-                })
+                .setPositiveButton("לצאת", (dialog, which) -> finish())
                 .setNegativeButton("להישאר", null)
                 .show();
-
     }
 
     @Override
@@ -313,7 +317,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     intent.setAction(Intent.ACTION_GET_CONTENT);
                     startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
                     txt_dialog = dialog.findViewById(R.id.txt_dialogImgID);
-                    txt_dialog.setText("התמונה נטענת, אנא המתן...");
+                    txt_dialog.setText(getString(R.string.loading_image));
                     bt_yes.setVisibility(View.GONE);
                     bt_no.setVisibility(View.GONE);
                 });
@@ -345,12 +349,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             // Image uploaded successfully
                     dialog.dismiss();
                     Toast.makeText(MainActivity.this, R.string.update_img_successfully, Toast.LENGTH_LONG).show();
-                })
-
-                        .addOnFailureListener((OnFailureListener) e -> Toast.makeText(MainActivity.this, "Failed to upload image", Toast.LENGTH_SHORT).show());
-
+                }).addOnFailureListener((OnFailureListener) e -> Toast.makeText(MainActivity.this, R.string.faild_to_upload_img, Toast.LENGTH_SHORT).show());
             }
-
         }
     }
 

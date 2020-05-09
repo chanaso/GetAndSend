@@ -79,8 +79,8 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
         mapView.getMapAsync(this);
 
         View parentLayout = findViewById(android.R.id.content);
-        Snackbar.make(parentLayout, "הגדל/הקטן את המפה בכדי לבחור חבילה\n לבחירת חבילה לחץ על הסימון", Snackbar.LENGTH_LONG)
-                .setAction("אני יודע", view -> {
+        Snackbar.make(parentLayout, R.string.pick_package_snackbar, Snackbar.LENGTH_LONG)
+                .setAction(R.string.got_it_snackbar, view -> {
 
                 })
                 .setActionTextColor(getResources().getColor(android.R.color.holo_blue_dark ))

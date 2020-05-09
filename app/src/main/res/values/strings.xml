@@ -128,10 +128,17 @@
     <string name="main_expl">פתח את התפריט בצד המסך לצפייה ברשימות שלך…</string>
 
 
-    <!--    dialog image-->
+    <!--    dialog image MainActivity-->
     <string name="image_update">האם ברצונך לעדכן את תמונת הפרופיל שלך?</string>
     <string name="yes">כן</string>
     <string name="no">לא</string>
     <string name="update_img_successfully">התמונה עודכנה בהצלחה!</string>
+    <string name="loading_image">התמונה נטענת, אנא המתן...</string>
+    <string name="faild_to_upload_img">Failed to upload image</string>
+
+    <!--    snackbar JoinAsDeliverymanActivity-->
+    <string name="pick_package_snackbar">הגדל/הקטן את המפה בכדי לבחור חבילה\n לבחירת חבילה לחץ על הסימון</string>
+    <string name="got_it_snackbar">הבנתי</string>
+    <string name="click_here_to_update_your_profile_image">לחץ כאן בכדי לעדכן\n את תמונת הפרופיל שלך ---></string>
 
 </resources>

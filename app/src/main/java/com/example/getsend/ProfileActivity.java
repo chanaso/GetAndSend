@@ -27,7 +27,7 @@ public class ProfileActivity extends AppCompatActivity {
     private RatingBar ratingBar;
     private StorageReference imagesRef;
     private String userKey;
-    final long ONE_MEGABYTE = 1024 * 1024 *5;
+    final long ONE_MEGABYTE = 1024 * 1024 * 5;
     private ImageView imageView;
 
     @Override
