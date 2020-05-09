@@ -139,6 +139,6 @@
     <!--    snackbar JoinAsDeliverymanActivity-->
     <string name="pick_package_snackbar">הגדל/הקטן את המפה בכדי לבחור חבילה\n לבחירת חבילה לחץ על הסימון</string>
     <string name="got_it_snackbar">הבנתי</string>
-    <string name="click_here_to_update_your_profile_image">לחץ כאן בכדי לעדכן\n את תמונת הפרופיל שלך ---></string>
+    <string name="click_here_to_update_your_profile_image">לחץ כאן בכדי לעדכן את\n תמונת הפרופיל שלך</string>
 
 </resources>
