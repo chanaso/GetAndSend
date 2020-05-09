@@ -290,4 +290,10 @@ public class JoinAsDeliverymanActivity extends AppCompatActivity implements
         return true;
     }
 
+    //handle device back button
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(JoinAsDeliverymanActivity.this, MainActivity.class));
+        finish();
+    }
 }

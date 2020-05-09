@@ -194,4 +194,11 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
     public void onDestroy() {
         super.onDestroy();
     }
+
+    //handle device back button
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(InviteDeliveryActivity.this, MainActivity.class));
+        finish();
+    }
 }
