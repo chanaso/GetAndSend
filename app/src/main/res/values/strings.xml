@@ -140,5 +140,7 @@
     <string name="pick_package_snackbar">הגדל/הקטן את המפה בכדי לבחור חבילה\n לבחירת חבילה לחץ על הסימון</string>
     <string name="got_it_snackbar">הבנתי</string>
     <string name="click_here_to_update_your_profile_image">לחץ כאן בכדי לעדכן את\n➤ תמונת הפרופיל שלך</string>
+    <string name="package_added">החבילה נוספה בהצלחה</string>
+    <string name="resize_the_map">הגדל את המפה על מנת לבחור את החבילה</string>
 
 </resources>

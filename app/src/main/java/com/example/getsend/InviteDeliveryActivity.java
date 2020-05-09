@@ -83,7 +83,7 @@ public class InviteDeliveryActivity extends AppCompatActivity implements View.On
                 DatabaseReference newRefPackage = refPackage.push();
                 lastPackageKey = newRefPackage.getKey();
                 newRefPackage.setValue(new_package);
-                Toast.makeText(InviteDeliveryActivity.this, "Package added successfully!", Toast.LENGTH_LONG).show();
+                Toast.makeText(InviteDeliveryActivity.this, R.string.package_added, Toast.LENGTH_LONG).show();
 
                 addPackageToCurrentUser();
                 cleanEdtTxts();

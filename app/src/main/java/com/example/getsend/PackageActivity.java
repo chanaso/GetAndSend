@@ -121,7 +121,7 @@ public class PackageActivity extends AppCompatActivity{
                         btn_1.setText(R.string.view_profile);
                         btn_1.setOnClickListener(v -> {
                             //View deliveryman details
-                            viewUserDetails(pack.getPackageOwnerId());
+                            viewUserDetails(pack.getDeliveryman());
                         });
                         btn_2.setText(R.string.btn_reject_package);
                         btn_2.setOnClickListener(new View.OnClickListener() {
