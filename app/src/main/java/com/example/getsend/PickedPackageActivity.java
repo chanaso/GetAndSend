@@ -188,6 +188,11 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
 
         }
 
-
+    //handle device back button
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(PickedPackageActivity.this, PickedPackagesListActivity.class));
+        finish();
+    }
 }
 

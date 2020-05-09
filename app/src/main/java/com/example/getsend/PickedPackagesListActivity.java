@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -80,6 +79,12 @@ public class PickedPackagesListActivity extends AppCompatActivity {
 
             }
         });
+    }
+    //handle device back button
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(PickedPackagesListActivity.this, JoinAsDeliverymanActivity.class));
+        finish();
     }
 
 }
