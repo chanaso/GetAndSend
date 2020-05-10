@@ -79,7 +79,7 @@ public class PowerOfAttorneyView extends AppCompatActivity {
         poa_content = getString(R.string.poa_content_1) + " " + currUser.getName() + " \n" + getString(R.string.poa_content_2) + " " + currUser.getId() + "\n"+ getString(R.string.poa_content_3) + " " + pack.getPackageId() + "\n"+ getString(R.string.poa_content_4)+ " " + user2.getName() + "\n"+getString(R.string.poa_content_5) + " " + user2.getId() + "\n"+getString(R.string.poa_content_6) + " " +todayString+"\n"+getString(R.string.poa_content_7);
         power_of_attorney_content.setText(poa_content);
 
-        signatureRef = FirebaseStorage.getInstance().getReference("Signatures/"+ packageOwnerKey + ".JPEG");
+        signatureRef = FirebaseStorage.getInstance().getReference("Signatures/"+ packKey + ".JPEG");
         signatureRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                     @Override
                     public void onSuccess(byte[] bytes) {

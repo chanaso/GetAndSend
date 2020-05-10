@@ -116,7 +116,7 @@ public class PowerOfAttorney extends AppCompatActivity {
         }
 
         // get today date
-        StoredPath = userKey + ".JPEG";
+        StoredPath = packKey + ".JPEG";
         todayDate = Calendar.getInstance().getTime();
         dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         todayString = dateFormat.format(todayDate);

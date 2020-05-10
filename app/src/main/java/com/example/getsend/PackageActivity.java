@@ -379,7 +379,7 @@ public class PackageActivity extends AppCompatActivity{
         refChat.child("observable-"+packKey).removeValue();
 
         //delete signature from storage
-        StorageReference signatureRef = FirebaseStorage.getInstance().getReference("Signatures/"+ userKey + ".JPEG");
+        StorageReference signatureRef = FirebaseStorage.getInstance().getReference("Signatures/"+ packKey + ".JPEG");
 
         // Delete the file
         signatureRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
