@@ -1,6 +1,7 @@
 package com.example.getsend;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -17,11 +18,12 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class PickedPackagesListActivity extends AppCompatActivity {
-    private String pickedPackageLocation;
+    private String pickedPackageLocation, userKey;
     private DatabaseReference refPackage;
     private ListView listView_pickedPackages;
     private ArrayAdapter<String> mAdapter;
     private ArrayList<String> userPickedPackagesList = new ArrayList<String>();
+    private SharedPreferences sharedPref;
 
 
 
@@ -32,6 +34,9 @@ public class PickedPackagesListActivity extends AppCompatActivity {
 
         listView_pickedPackages = findViewById(R.id.listView_pickedPackagesID);
         refPackage = FirebaseDatabase.getInstance().getReference().child("Package");
+
+        sharedPref = getSharedPreferences("userDetails", MODE_PRIVATE);
+        userKey = sharedPref.getString("userKey", "");
 
         mAdapter = new ArrayAdapter<String>(PickedPackagesListActivity.this,
                 android.R.layout.simple_list_item_1,
@@ -66,7 +71,7 @@ public class PickedPackagesListActivity extends AppCompatActivity {
                         if (userPickedPackagesList.isEmpty()) {
                             userPickedPackagesList.add("~" + pack.getLocation() + "~");
                         }
-                        if(pack.getDeliveryman().isEmpty()) {
+                        if(pack.getDeliveryman().isEmpty() && !pack.getPackageOwnerId().equals(userKey)) {
                             userPickedPackagesList.add(pack.getPackageId());
                             mAdapter.notifyDataSetChanged();
                         }
