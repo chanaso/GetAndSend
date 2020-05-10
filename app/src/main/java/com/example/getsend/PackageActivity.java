@@ -87,7 +87,9 @@ public class PackageActivity extends AppCompatActivity{
             edtxt_Destination = findViewById(R.id.edtxt_DestinationID);
             edtxt_Destination.setText(pack.getDestination());
             edtxt_Status = findViewById(R.id.edtxt_StatusID);
-            edtxt_Status.setText(pack.getStatus());
+            edtxt_Status.setText(get_status(pack.getStatus()));
+
+
 
             if(currUser.getType() == OWNER) {
                 //get the deliveryman details from DB
@@ -254,6 +256,30 @@ public class PackageActivity extends AppCompatActivity{
                 }
              }
     }
+
+    public String get_status(String status){
+        String str_to_print;
+        switch (status){
+            case "Waiting for delivery":
+                str_to_print = getString(R.string.waiting);
+                break;
+            case "Waiting for approval":
+                str_to_print = getString(R.string.waiting_for_confirm);
+                break;
+            case "On the way...":
+                str_to_print = getString(R.string.on_the_way);
+                break;
+            case "Arrived":
+            case "Arrived :)":
+                str_to_print = getString(R.string.arrived);
+                break;
+            default:
+                str_to_print = "";
+        }
+        return str_to_print;
+    }
+
+
     public void sendSms(String phone, String message) {
         if(checkPermission(Manifest.permission.SEND_SMS)){
             SmsManager smsManager = SmsManager.getDefault();
