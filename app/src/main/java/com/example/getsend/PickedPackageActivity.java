@@ -43,7 +43,7 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_picked_package);
-
+        //Get package details from caller activity
         Bundle mBundle = getIntent().getExtras();
         if (mBundle != null) {
             String[] pickedPackage = mBundle.getString("pickedPackage").split("@");
@@ -70,6 +70,7 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
         currUser = gson.fromJson(json, User.class);
         userKey = sharedPref.getString("userKey", "");
 
+        //Reference to package DB to get the picked package
         refPackage = FirebaseDatabase.getInstance().getReference().child("Package");
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, SEND_SMS_PERMISSION_REQUEST_CODE);
 
@@ -123,6 +124,7 @@ public class PickedPackageActivity extends AppCompatActivity implements View.OnC
         });
     }
 
+    //send SMS to owner that we found a deliveryman to deliver he's package
     public void sendSms(String message) {
         if(checkPermission(Manifest.permission.SEND_SMS)){
             SmsManager smsManager = SmsManager.getDefault();

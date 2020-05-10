@@ -55,7 +55,7 @@ public class PickedPackagesListActivity extends AppCompatActivity {
             }
         });
     }
-
+    //get all the packages on the picked location to show to the user
     private void displayPackages(String pickedPackageLocation) {
         refPackage.orderByChild("geoLocation").equalTo(pickedPackageLocation).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

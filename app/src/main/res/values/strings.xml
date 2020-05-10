@@ -58,6 +58,7 @@
     <string name="btn_delete_package">מחק חבילה</string>
     <string name="view_profile">צפיה בפרטי השליח</string>
     <string name="chat">צ׳ט עם השליח</string>
+    <string name="chat2">צ׳ט עם הנמען</string>
     <string name="btn_reject_package">בטל משלוח</string>
     <string name="approve_delivery">אשר הגעה של החבילה</string>
     <string name="view_profile_owner">צפיה בפרטי הנמען</string>

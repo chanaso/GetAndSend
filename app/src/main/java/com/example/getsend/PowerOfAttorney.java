@@ -120,6 +120,7 @@ public class PowerOfAttorney extends AppCompatActivity {
         todayDate = Calendar.getInstance().getTime();
         dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         todayString = dateFormat.format(todayDate);
+        // build the POA content
         poa_content = getString(R.string.poa_content_1) + " " + user2.getName() + " \n" + getString(R.string.poa_content_2) + " " + user2.getId() + "\n"+ getString(R.string.poa_content_3) + " " +pack.getPackageId() + "\n"+ getString(R.string.poa_content_4)+ " " + currUser.getName() + "\n"+getString(R.string.poa_content_5) + " " +currUser.getId() + "\n"+getString(R.string.poa_content_6) + " " +todayString+"\n"+getString(R.string.poa_content_7);
         power_of_attorney_content.setText(poa_content);
 
@@ -141,7 +142,7 @@ public class PowerOfAttorney extends AppCompatActivity {
             }
         });
     }
-
+    //send SMS to deliveryman after approve the delivery
     public void sendSms(String phone, String message) {
         if(checkPermission(Manifest.permission.SEND_SMS)){
             SmsManager smsManager = SmsManager.getDefault();
@@ -199,6 +200,7 @@ public class PowerOfAttorney extends AppCompatActivity {
         });
         dialog.show();
     }
+    //functions to transfer bitmap image to view
     public Bitmap getBitmapFromView(View view)
     {
         Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
@@ -259,6 +261,7 @@ public class PowerOfAttorney extends AppCompatActivity {
             canvas.drawPath(path, paint);
         }
 
+        //same the user draw to the signature image
         @Override
         public boolean onTouchEvent(MotionEvent event) {
             float eventX = event.getX();

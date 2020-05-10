@@ -89,8 +89,7 @@ public class PackageActivity extends AppCompatActivity{
             edtxt_Status = findViewById(R.id.edtxt_StatusID);
             edtxt_Status.setText(get_status(pack.getStatus()));
 
-
-
+            //check if the current user is the owner or the deliveryman
             if(currUser.getType() == OWNER) {
                 //get the deliveryman details from DB
                 refUser.child(pack.getDeliveryman()).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -196,18 +195,7 @@ public class PackageActivity extends AppCompatActivity{
                     }
                 });
                 switch (pack.getStatus()) {
-//                    case "Waiting for delivery":
-//                        btn_1.setVisibility(View.INVISIBLE);
-//                        btn_2.setText("View Owner Details");
-//                        btn_2.setOnClickListener(new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View v) {
-//                                //View owner details
-//                                viewUserDetails(pack.getPackageOwnerId());
-//                            }
-//                        });
-//                        btn_confirm.setVisibility(View.INVISIBLE);
-//                        break;
+
                     case "Arrived :)":
                     case "Waiting for approval":
                         btn_1.setVisibility(View.INVISIBLE);
@@ -223,7 +211,7 @@ public class PackageActivity extends AppCompatActivity{
                                 openPOAView();
                             }
                         });
-                        btn_2.setText(R.string.chat);
+                        btn_2.setText(R.string.chat2);
                         btn_2.setOnClickListener(v -> {
                             //Open chat
                             openChat();

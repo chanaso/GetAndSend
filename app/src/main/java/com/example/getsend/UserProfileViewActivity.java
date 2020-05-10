@@ -61,6 +61,7 @@ public class UserProfileViewActivity extends AppCompatActivity {
         btn_close.setOnClickListener(view -> finish());
     }
 
+    //get the user profile picture from the storage
     private void showImg() {
         imagesRef = FirebaseStorage.getInstance().getReference("Images/"+ userKey + ".jpg");
         imagesRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
